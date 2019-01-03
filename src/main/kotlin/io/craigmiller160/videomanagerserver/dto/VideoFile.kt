@@ -13,7 +13,7 @@ import javax.persistence.Table
 @Table(name = "video_files")
 data class VideoFile(
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         var fileId: Long = 0,
         var fileName: String = "",
         var displayName: String = "",

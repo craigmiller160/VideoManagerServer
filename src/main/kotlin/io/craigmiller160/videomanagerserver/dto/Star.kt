@@ -10,7 +10,7 @@ import javax.persistence.Table
 @Table(name = "stars")
 data class Star (
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         var starId: Long = 0,
         var starName: String = ""
 )

@@ -10,7 +10,7 @@ import javax.persistence.Table
 @Table(name = "categories")
 data class Category (
         @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         var categoryId: Long = 0,
         var categoryName: String = "",
         var hidden: Boolean = false
