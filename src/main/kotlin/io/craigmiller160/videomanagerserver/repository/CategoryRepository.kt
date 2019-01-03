@@ -1,0 +1,6 @@
+package io.craigmiller160.videomanagerserver.repository
+
+import io.craigmiller160.videomanagerserver.dto.Category
+import org.springframework.data.repository.CrudRepository
+
+interface CategoryRepository : CrudRepository<Category,Long>
