@@ -22,5 +22,17 @@ data class VideoFile(
         @JoinTable(name = "file_categories",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "category_id")])
-        var categories: Set<Category> = HashSet()
+        var categories: Set<Category> = HashSet(),
+
+        @ManyToMany
+        @JoinTable(name = "file_series",
+                joinColumns = [JoinColumn(name = "file_id")],
+                inverseJoinColumns = [JoinColumn(name = "series_id")])
+        var series: Set<Series> = HashSet(),
+
+        @ManyToMany
+        @JoinTable(name = "file_stars",
+                joinColumns = [JoinColumn(name = "file_id")],
+                inverseJoinColumns = [JoinColumn(name = "star_id")])
+        var stars: Set<Series> = HashSet()
 )
