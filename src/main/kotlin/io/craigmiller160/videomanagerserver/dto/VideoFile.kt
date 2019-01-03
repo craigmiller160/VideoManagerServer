@@ -4,6 +4,9 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 @Entity
@@ -13,5 +16,11 @@ data class VideoFile(
         @GeneratedValue(strategy = GenerationType.AUTO)
         var fileId: Long = 0,
         var fileName: String = "",
-        var displayName: String = ""
+        var displayName: String = "",
+
+        @ManyToMany
+        @JoinTable(name = "file_categories",
+                joinColumns = [JoinColumn(name = "file_id")],
+                inverseJoinColumns = [JoinColumn(name = "category_id")])
+        var categories: Set<Category> = HashSet()
 )
