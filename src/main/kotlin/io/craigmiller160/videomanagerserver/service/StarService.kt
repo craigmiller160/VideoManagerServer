@@ -5,7 +5,7 @@ import java.util.Optional
 
 interface StarService {
 
-    fun getAllStars(): Set<Star>
+    fun getAllStars(): List<Star>
 
     fun getStar(starId: Long): Optional<Star>
 

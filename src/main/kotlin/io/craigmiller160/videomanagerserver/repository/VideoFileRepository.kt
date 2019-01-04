@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.dto.VideoFile
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.PagingAndSortingRepository
 
-interface VideoFileRepository : CrudRepository<VideoFile,Long>
+interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long>

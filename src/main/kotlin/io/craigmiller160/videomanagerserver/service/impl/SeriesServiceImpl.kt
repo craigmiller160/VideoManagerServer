@@ -12,8 +12,8 @@ class SeriesServiceImpl @Autowired constructor(
         private val seriesRepo: SeriesRepository
 ) : SeriesService {
 
-    override fun getAllSeries(): Set<Series> {
-        return seriesRepo.findAll().toSet()
+    override fun getAllSeries(): List<Series> {
+        return seriesRepo.findAll().toList()
     }
 
     override fun getSeries(seriesId: Long): Optional<Series> {

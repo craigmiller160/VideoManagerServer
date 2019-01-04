@@ -2,13 +2,9 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
-import io.craigmiller160.videomanagerserver.util.getFirst
-import io.craigmiller160.videomanagerserver.util.getIndex
-import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -51,8 +47,7 @@ class CategoryServiceImplTest {
         val actualCategories = categoryService.getAllCategories()
         assertNotNull(actualCategories)
         assertEquals(expectedCategories.size, actualCategories.size)
-        assertThat(getFirst(actualCategories), equalTo(expectedCategories[0]))
-        assertThat(getIndex(actualCategories, 1), equalTo(expectedCategories[1]))
+        assertEquals(expectedCategories, actualCategories)
     }
 
     @Test

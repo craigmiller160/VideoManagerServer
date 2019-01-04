@@ -7,5 +7,6 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "video")
 data class VideoConfiguration (
         var vlcCommand: String = "",
-        var filePathRoot: String = ""
+        var filePathRoot: String = "",
+        var apiPageSize: Int = 0
 )

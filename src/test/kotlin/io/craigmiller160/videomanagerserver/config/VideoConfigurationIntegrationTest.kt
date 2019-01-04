@@ -14,6 +14,7 @@ class VideoConfigurationIntegrationTest {
     companion object {
         private const val VLC_COMMAND = "VLC_COMMAND"
         private const val FILE_PATH_ROOT = "FILE_PATH_ROOT"
+        private const val PAGE_SIZE = 10
     }
 
     @Autowired
@@ -27,6 +28,11 @@ class VideoConfigurationIntegrationTest {
     @Test
     fun testFilePathRoot() {
         assertEquals(FILE_PATH_ROOT, videoConfig.filePathRoot)
+    }
+
+    @Test
+    fun testApiPageSize() {
+        assertEquals(PAGE_SIZE, videoConfig.apiPageSize)
     }
 
 }

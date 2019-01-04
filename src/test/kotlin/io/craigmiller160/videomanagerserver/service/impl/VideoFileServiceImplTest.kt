@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
+import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import org.junit.Assert.assertEquals
@@ -8,16 +9,23 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.argThat
+import org.mockito.Mockito.isA
+import org.mockito.Mockito.isNull
 import org.mockito.MockitoAnnotations
+import org.mockito.Spy
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import java.util.Optional
 
 class VideoFileServiceImplTest {
 
     companion object {
 
-        private const val FIRST_NAME = "FirstName"
+        private const val FIRST_NAME = "ZFirstName"
         private const val SECOND_NAME = "SecondName"
         private const val THIRD_NAME = "ThirdName"
 
@@ -26,28 +34,35 @@ class VideoFileServiceImplTest {
                 VideoFile(fileId = 2, fileName = SECOND_NAME)
         )
 
+        private val expectedFilesPage = PageImpl(expectedFiles)
+
     }
 
     private lateinit var videoFileService: VideoFileServiceImpl
 
     @Mock
     private lateinit var videoFileRepo: VideoFileRepository
+    @Mock
+    private lateinit var videoConfig: VideoConfiguration
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        videoFileService = VideoFileServiceImpl(videoFileRepo)
+        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig)
     }
 
     @Test
     fun testGetAllVideoFiles() {
-        `when`(videoFileRepo.findAll())
-                .thenReturn(expectedFiles)
+        `when`(videoFileRepo.findAll(isA(Pageable::class.java)))
+                .thenReturn(expectedFilesPage)
 
-        val actualFiles = videoFileService.getAllVideoFiles()
+        `when`(videoConfig.apiPageSize)
+                .thenReturn(20)
+
+        val actualFiles = videoFileService.getAllVideoFiles(1)
         assertNotNull(actualFiles)
         assertEquals(expectedFiles.size, actualFiles.size)
-        assertEquals(expectedFiles.toSet(), actualFiles)
+        assertEquals(expectedFiles, actualFiles)
     }
 
     @Test

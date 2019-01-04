@@ -5,7 +5,7 @@ import java.util.Optional
 
 interface SeriesService {
 
-    fun getAllSeries(): Set<Series>
+    fun getAllSeries(): List<Series>
 
     fun getSeries(seriesId: Long): Optional<Series>
 

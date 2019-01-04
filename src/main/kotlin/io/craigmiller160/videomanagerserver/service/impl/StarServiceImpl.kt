@@ -12,8 +12,8 @@ class StarServiceImpl @Autowired constructor(
         private val starRepo: StarRepository
 ): StarService {
 
-    override fun getAllStars(): Set<Star> {
-        return starRepo.findAll().toSet()
+    override fun getAllStars(): List<Star> {
+        return starRepo.findAll().toList()
     }
 
     override fun getStar(starId: Long): Optional<Star> {

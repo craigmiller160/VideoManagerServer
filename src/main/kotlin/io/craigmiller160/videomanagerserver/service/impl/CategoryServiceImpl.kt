@@ -12,8 +12,8 @@ class CategoryServiceImpl @Autowired constructor(
         private val categoryRepo: CategoryRepository
 ) : CategoryService {
 
-    override fun getAllCategories(): Set<Category> {
-        return categoryRepo.findAll().toSet()
+    override fun getAllCategories(): List<Category> {
+        return categoryRepo.findAll().toList()
     }
 
     override fun getCategory(categoryId: Long): Optional<Category> {

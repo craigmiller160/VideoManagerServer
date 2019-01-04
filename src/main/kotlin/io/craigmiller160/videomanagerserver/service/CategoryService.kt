@@ -5,7 +5,7 @@ import java.util.Optional
 
 interface CategoryService {
 
-    fun getAllCategories(): Set<Category>
+    fun getAllCategories(): List<Category>
 
     fun getCategory(categoryId: Long): Optional<Category>
 

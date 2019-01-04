@@ -46,7 +46,7 @@ class SeriesServiceImplTest {
 
         val actualSeries = seriesService.getAllSeries()
         assertNotNull(actualSeries)
-        assertEquals(expectedSeries.toSet(), actualSeries)
+        assertEquals(expectedSeries, actualSeries)
     }
 
     @Test

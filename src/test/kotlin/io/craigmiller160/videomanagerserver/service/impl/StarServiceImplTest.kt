@@ -47,7 +47,7 @@ class StarServiceImplTest {
         val actualStars = starService.getAllStars()
         assertNotNull(actualStars)
         assertEquals(expectedStars.size, actualStars.size)
-        assertEquals(expectedStars.toSet(), actualStars)
+        assertEquals(expectedStars, actualStars)
     }
 
     @Test

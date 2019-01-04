@@ -1,19 +1,23 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
+import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.Optional
 
 @Service
 class VideoFileServiceImpl @Autowired constructor(
-        private val videoFileRepo: VideoFileRepository
+        private val videoFileRepo: VideoFileRepository,
+        private val videoConfig: VideoConfiguration
 ): VideoFileService {
 
-    override fun getAllVideoFiles(): Set<VideoFile> {
-        return videoFileRepo.findAll().toSet()
+    override fun getAllVideoFiles(page: Int): List<VideoFile> {
+        val pageable = PageRequest.of(page, videoConfig.apiPageSize)
+        return videoFileRepo.findAll(pageable).toList()
     }
 
     override fun getVideoFile(fileId: Long): Optional<VideoFile> {
