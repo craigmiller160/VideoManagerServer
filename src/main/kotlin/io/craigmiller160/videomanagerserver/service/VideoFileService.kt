@@ -5,7 +5,7 @@ import java.util.Optional
 
 interface VideoFileService {
 
-    fun getAllVideoFiles(page: Int): List<VideoFile>
+    fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile>
 
     fun getVideoFile(fileId: Long): Optional<VideoFile>
 

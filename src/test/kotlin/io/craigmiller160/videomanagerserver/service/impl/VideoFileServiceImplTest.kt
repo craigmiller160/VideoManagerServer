@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import java.util.Optional
 
 class VideoFileServiceImplTest {
@@ -59,7 +60,7 @@ class VideoFileServiceImplTest {
         `when`(videoConfig.apiPageSize)
                 .thenReturn(20)
 
-        val actualFiles = videoFileService.getAllVideoFiles(1)
+        val actualFiles = videoFileService.getAllVideoFiles(1, Sort.Direction.DESC.toString())
         assertNotNull(actualFiles)
         assertEquals(expectedFiles.size, actualFiles.size)
         assertEquals(expectedFiles, actualFiles)

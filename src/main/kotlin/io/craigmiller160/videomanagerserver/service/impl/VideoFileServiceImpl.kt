@@ -6,6 +6,7 @@ import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -15,8 +16,13 @@ class VideoFileServiceImpl @Autowired constructor(
         private val videoConfig: VideoConfiguration
 ): VideoFileService {
 
-    override fun getAllVideoFiles(page: Int): List<VideoFile> {
-        val pageable = PageRequest.of(page, videoConfig.apiPageSize)
+    override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
+        val sort = Sort.by(
+                Sort.Order(Sort.Direction.valueOf(sortDirection), "displayName", Sort.NullHandling.NULLS_LAST),
+                Sort.Order(Sort.Direction.valueOf(sortDirection), "fileName", Sort.NullHandling.NULLS_LAST)
+        )
+
+        val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
         return videoFileRepo.findAll(pageable).toList()
     }
 
