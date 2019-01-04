@@ -16,7 +16,7 @@ class CategoryServiceImpl @Autowired constructor(
         return categoryRepo.findAll().toSet()
     }
 
-    override fun getCategoryId(categoryId: Long): Optional<Category> {
+    override fun getCategory(categoryId: Long): Optional<Category> {
         return categoryRepo.findById(categoryId)
     }
 

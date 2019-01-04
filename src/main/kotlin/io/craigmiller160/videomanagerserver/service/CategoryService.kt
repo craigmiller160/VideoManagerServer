@@ -7,7 +7,7 @@ interface CategoryService {
 
     fun getAllCategories(): Set<Category>
 
-    fun getCategoryId(categoryId: Long): Optional<Category>
+    fun getCategory(categoryId: Long): Optional<Category>
 
     fun addCategory(category: Category): Category
 

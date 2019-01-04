@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.util.getFirst
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -56,8 +57,6 @@ class VideoFileRepositoryIntegrationTest {
         file = videoFileRepo.save(file)
         return file.fileId
     }
-
-    private fun <T> getFirst(set: Set<T>) = set.stream().findFirst().get()
 
     @Test
     fun testInsertAll() {
