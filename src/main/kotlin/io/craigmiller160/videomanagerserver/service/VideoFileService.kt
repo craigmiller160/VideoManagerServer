@@ -1,13 +1,18 @@
 package io.craigmiller160.videomanagerserver.service
 
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import java.util.Optional
 
 interface VideoFileService {
 
-    fun addVideoFile(videoFile: VideoFile)
+    fun getAllVideoFiles(): Set<VideoFile>
 
-    fun updateVideoFile(fileId: Long, videoFile: VideoFile)
+    fun getVideoFile(fileId: Long): Optional<VideoFile>
 
-    fun deleteVideoFile(fileId: Long)
+    fun addVideoFile(videoFile: VideoFile): VideoFile
+
+    fun updateVideoFile(fileId: Long, videoFile: VideoFile): Optional<VideoFile>
+
+    fun deleteVideoFile(fileId: Long): Optional<VideoFile>
 
 }
