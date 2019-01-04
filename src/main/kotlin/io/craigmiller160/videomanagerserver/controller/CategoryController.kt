@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/categories")
 class CategoryController @Autowired constructor(
-    private val categoryService: CategoryService
+        private val categoryService: CategoryService
 ) {
 
     @GetMapping
@@ -29,10 +29,8 @@ class CategoryController @Autowired constructor(
     }
 
     @GetMapping("/{categoryId}")
-    fun getCategory(@PathVariable("categoryId") categoryId: Long): ResponseEntity<Category> {
-        return categoryService.getCategory(categoryId)
-                .map { result -> ResponseEntity.ok(result) }
-                .orElseGet { ResponseEntity.noContent().build() }
+    fun getCategory(@PathVariable categoryId: Long): ResponseEntity<Category> {
+        return okOrNoContent(categoryService.getCategory(categoryId))
     }
 
     @PostMapping()
@@ -41,17 +39,13 @@ class CategoryController @Autowired constructor(
     }
 
     @PutMapping("/{categoryId}")
-    fun updateCategory(@PathVariable("categoryId") categoryId: Long, @RequestBody category: Category): ResponseEntity<Category> {
-        return categoryService.updateCategory(categoryId, category)
-                .map { result -> ResponseEntity.ok(result) }
-                .orElseGet { ResponseEntity.noContent().build() }
+    fun updateCategory(@PathVariable categoryId: Long, @RequestBody category: Category): ResponseEntity<Category> {
+        return okOrNoContent(categoryService.updateCategory(categoryId, category))
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable("categoryId") categoryId: Long): ResponseEntity<Category> {
-        return categoryService.deleteCategory(categoryId)
-                .map { result -> ResponseEntity.ok(result) }
-                .orElseGet { ResponseEntity.noContent().build() }
+    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<Category> {
+        return okOrNoContent(categoryService.deleteCategory(categoryId))
     }
 
 }
