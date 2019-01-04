@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import io.craigmiller160.videomanagerserver.service.SeriesService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -13,7 +14,10 @@ class SeriesServiceImpl @Autowired constructor(
 ) : SeriesService {
 
     override fun getAllSeries(): List<Series> {
-        return seriesRepo.findAll().toList()
+        val sort = Sort.by(
+                Sort.Order(Sort.Direction.ASC, "seriesName", Sort.NullHandling.NULLS_LAST)
+        )
+        return seriesRepo.findAll(sort).toList()
     }
 
     override fun getSeries(seriesId: Long): Optional<Series> {

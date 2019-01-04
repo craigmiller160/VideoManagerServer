@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.service.CategoryService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -13,7 +14,10 @@ class CategoryServiceImpl @Autowired constructor(
 ) : CategoryService {
 
     override fun getAllCategories(): List<Category> {
-        return categoryRepo.findAll().toList()
+        val sort = Sort.by(
+                Sort.Order(Sort.Direction.ASC, "categoryName", Sort.NullHandling.NULLS_LAST)
+        )
+        return categoryRepo.findAll(sort).toList()
     }
 
     override fun getCategory(categoryId: Long): Optional<Category> {

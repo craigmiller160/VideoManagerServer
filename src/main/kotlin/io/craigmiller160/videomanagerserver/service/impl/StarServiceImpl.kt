@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.service.StarService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -13,7 +14,10 @@ class StarServiceImpl @Autowired constructor(
 ): StarService {
 
     override fun getAllStars(): List<Star> {
-        return starRepo.findAll().toList()
+        val sort = Sort.by(
+                Sort.Order(Sort.Direction.ASC, "starName", Sort.NullHandling.NULLS_LAST)
+        )
+        return starRepo.findAll(sort).toList()
     }
 
     override fun getStar(starId: Long): Optional<Star> {
