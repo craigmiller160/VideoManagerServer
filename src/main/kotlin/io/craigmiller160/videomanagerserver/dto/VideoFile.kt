@@ -1,6 +1,8 @@
 package io.craigmiller160.videomanagerserver.dto
 
+import javax.persistence.CascadeType
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -18,21 +20,21 @@ data class VideoFile(
         var fileName: String = "",
         var displayName: String = "",
 
-        @ManyToMany
+        @ManyToMany (fetch = FetchType.EAGER)
         @JoinTable(name = "file_categories",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "category_id")])
         var categories: Set<Category> = HashSet(),
 
-        @ManyToMany
+        @ManyToMany (fetch = FetchType.EAGER)
         @JoinTable(name = "file_series",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "series_id")])
         var series: Set<Series> = HashSet(),
 
-        @ManyToMany
+        @ManyToMany (fetch = FetchType.EAGER)
         @JoinTable(name = "file_stars",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "star_id")])
-        var stars: Set<Series> = HashSet()
+        var stars: Set<Star> = HashSet()
 )
