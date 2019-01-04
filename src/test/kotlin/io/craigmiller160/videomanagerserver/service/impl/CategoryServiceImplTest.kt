@@ -59,7 +59,6 @@ class CategoryServiceImplTest {
     fun testGetCategory() {
         `when`(categoryRepo.findById(1))
                 .thenReturn(Optional.of(expectedCategories[0]))
-
         `when`(categoryRepo.findById(2))
                 .thenReturn(Optional.of(expectedCategories[1]))
 
