@@ -2,10 +2,10 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
@@ -57,20 +57,20 @@ class VideoFileServiceImpl @Autowired constructor(
 
     override fun startVideoFileScan(): FileScanStatus {
         if (fileScanRunning.get()) {
-            return FileScanStatus(true, SCAN_STATUS_ALREADY_RUNNING, true)
+            return createScanAlreadyRunningStatus()
         }
         fileScanRunning.set(true)
         fileScanner.scanForFiles {
             fileScanRunning.set(false)
         }
-        return FileScanStatus(true, SCAN_STATUS_RUNNING)
+        return createScanRunningStatus()
     }
 
     override fun isVideoFileScanRunning(): FileScanStatus {
         val scanRunning = fileScanRunning.get()
         if (scanRunning) {
-            return FileScanStatus(true, SCAN_STATUS_RUNNING)
+            return createScanRunningStatus()
         }
-        return FileScanStatus(false, SCAN_STATUS_NOT_RUNNING)
+        return createScanNotRunningStatus()
     }
 }

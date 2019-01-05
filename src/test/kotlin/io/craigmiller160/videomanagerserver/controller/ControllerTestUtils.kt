@@ -15,6 +15,9 @@ fun assertNoContentResponse(response: MockHttpServletResponse) {
     assertEquals(204, response.status)
 }
 
-fun assertBadRequest(response: MockHttpServletResponse) {
+fun assertBadRequest(response: MockHttpServletResponse, body: String? = null) {
     assertEquals(400, response.status)
+    body?.let {
+        assertEquals(response.contentAsString, body)
+    }
 }

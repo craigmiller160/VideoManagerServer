@@ -1,20 +1,20 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
-import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.json.JacksonTester
-import org.springframework.data.domain.Sort
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.util.Optional
@@ -31,12 +31,16 @@ class VideoFileControllerTest {
 
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
+    private lateinit var jacksonStatus: JacksonTester<FileScanStatus>
 
     private lateinit var videoFileNoId: VideoFile
     private lateinit var videoFile1: VideoFile
     private lateinit var videoFile2: VideoFile
     private lateinit var videoFile3: VideoFile
     private lateinit var videoFileList: List<VideoFile>
+    private lateinit var scanRunning: FileScanStatus
+    private lateinit var scanNotRunning: FileScanStatus
+    private lateinit var scanAlreadyRunning: FileScanStatus
 
     @Before
     fun setup() {
@@ -45,6 +49,10 @@ class VideoFileControllerTest {
         videoFile2 = VideoFile(2, "SecondFile")
         videoFile3 = VideoFile(3, "ThirdFile")
         videoFileList = listOf(videoFile1, videoFile2, videoFile3)
+
+        scanRunning = createScanRunningStatus()
+        scanNotRunning = createScanNotRunningStatus()
+        scanAlreadyRunning = createScanAlreadyRunningStatus()
 
         MockitoAnnotations.initMocks(this)
         JacksonTester.initFields(this, ObjectMapper())
@@ -120,6 +128,32 @@ class VideoFileControllerTest {
 
         response = mockMvcHandler.doDelete("/video-files/5")
         assertNoContentResponse(response)
+    }
+
+    @Test
+    fun testStartVideoScan() {
+        `when`(videoFileService.startVideoFileScan())
+                .thenReturn(scanRunning)
+                .thenReturn(scanAlreadyRunning)
+
+        var response = mockMvcHandler.doPost("/video-files/scanner")
+        assertOkResponse(response, jacksonStatus.write(scanRunning).json)
+
+        response = mockMvcHandler.doPost("/video-files/scanner")
+        assertBadRequest(response, jacksonStatus.write(scanAlreadyRunning).json)
+    }
+
+    @Test
+    fun testIsVideoScanRunning() {
+        `when`(videoFileService.isVideoFileScanRunning())
+                .thenReturn(scanNotRunning)
+                .thenReturn(scanRunning)
+
+        var response = mockMvcHandler.doGet("/video-files/scanner")
+        assertOkResponse(response, jacksonStatus.write(scanNotRunning).json)
+
+        response = mockMvcHandler.doGet("/video-files/scanner")
+        assertOkResponse(response, jacksonStatus.write(scanRunning).json)
     }
 
 }

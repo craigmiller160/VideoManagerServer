@@ -17,13 +17,14 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
         ).andReturn().response
     }
 
-    fun doPost(uri: String, json: String): MockHttpServletResponse {
-        return mockMvc.perform(
-                post(uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andReturn().response
+    fun doPost(uri: String, json: String? = null): MockHttpServletResponse {
+        val builder = post(uri).accept(MediaType.APPLICATION_JSON)
+        json?.let {
+            builder.contentType(MediaType.APPLICATION_JSON)
+                    .content(json)
+        }
+
+        return mockMvc.perform(builder).andReturn().response
     }
 
     fun doPut(uri: String, json: String): MockHttpServletResponse {
