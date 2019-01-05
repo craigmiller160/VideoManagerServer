@@ -8,9 +8,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.springframework.data.domain.Sort
 import java.util.Optional
 
 class SeriesServiceImplTest {
@@ -41,7 +43,7 @@ class SeriesServiceImplTest {
 
     @Test
     fun testGetAllSeries() {
-        `when`(seriesRepo.findAll())
+        `when`(seriesRepo.findAll(isA(Sort::class.java)))
                 .thenReturn(expectedSeries)
 
         val actualSeries = seriesService.getAllSeries()

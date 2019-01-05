@@ -56,12 +56,10 @@ class CategoryControllerTest {
                 .thenReturn(listOf())
 
         var response = mockMvcHandler.doGet("/categories")
-        assertEquals(200, response.status)
-        assertEquals(CONTENT_TYPE_JSON, response.contentType)
-        assertEquals(response.contentAsString, jacksonCategoryList.write(categoryList).json)
+        assertOkResponse(response, jacksonCategoryList.write(categoryList).json)
 
         response = mockMvcHandler.doGet("/categories")
-        assertEquals(204, response.status)
+        assertNoContentResponse(response)
     }
 
     @Test
@@ -72,23 +70,20 @@ class CategoryControllerTest {
                 .thenReturn(Optional.empty())
 
         var response = mockMvcHandler.doGet("/categories/1")
-        assertEquals(200, response.status)
-        assertEquals(CONTENT_TYPE_JSON, response.contentType)
-        assertEquals(response.contentAsString, jacksonCategory.write(category1).json)
+        assertOkResponse(response, jacksonCategory.write(category1).json)
 
         response = mockMvcHandler.doGet("/categories/5")
-        assertEquals(204, response.status)
+        assertNoContentResponse(response)
     }
 
     @Test
     fun testAddCategory() {
+        val categoryWithId = categoryNoId.copy(categoryId = 1)
         `when`(categoryService.addCategory(categoryNoId))
-                .thenReturn(category1)
+                .thenReturn(categoryWithId)
 
         val response = mockMvcHandler.doPost("/categories", jacksonCategory.write(categoryNoId).json)
-        assertEquals(200, response.status)
-        assertEquals(CONTENT_TYPE_JSON, response.contentType)
-        assertEquals(response.contentAsString, jacksonCategory.write(category1).json)
+        assertOkResponse(response, jacksonCategory.write(categoryWithId).json)
     }
 
     @Test
@@ -100,12 +95,10 @@ class CategoryControllerTest {
                 .thenReturn(Optional.empty())
 
         var response = mockMvcHandler.doPut("/categories/1", jacksonCategory.write(category2).json)
-        assertEquals(200, response.status)
-        assertEquals(CONTENT_TYPE_JSON, response.contentType)
-        assertEquals(response.contentAsString, jacksonCategory.write(updatedCategory).json)
+        assertOkResponse(response, jacksonCategory.write(updatedCategory).json)
 
         response = mockMvcHandler.doPut("/categories/5", jacksonCategory.write(category3).json)
-        assertEquals(204, response.status)
+        assertNoContentResponse(response)
     }
 
     @Test
@@ -115,12 +108,10 @@ class CategoryControllerTest {
                 .thenReturn(Optional.empty())
 
         var response = mockMvcHandler.doDelete("/categories/1")
-        assertEquals(200, response.status)
-        assertEquals(CONTENT_TYPE_JSON, response.contentType)
-        assertEquals(response.contentAsString, jacksonCategory.write(category1).json)
+        assertOkResponse(response, jacksonCategory.write(category1).json)
 
         response = mockMvcHandler.doDelete("/categories/5")
-        assertEquals(204, response.status)
+        assertNoContentResponse(response)
     }
 
 }

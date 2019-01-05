@@ -43,6 +43,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun testAddStar() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateVideoFile() {
         TODO("Finish this")
     }

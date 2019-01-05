@@ -8,9 +8,12 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Sort
 import java.util.Optional
 
 class CategoryServiceImplTest {
@@ -41,7 +44,7 @@ class CategoryServiceImplTest {
 
     @Test
     fun testGetAllCategories() {
-        `when`(categoryRepo.findAll())
+        `when`(categoryRepo.findAll(isA(Sort::class.java)))
                 .thenReturn(expectedCategories)
 
         val actualCategories = categoryService.getAllCategories()

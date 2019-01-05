@@ -43,6 +43,11 @@ class StarControllerTest {
     }
 
     @Test
+    fun testAddStar() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateStar() {
         TODO("Finish this")
     }
