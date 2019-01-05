@@ -15,6 +15,7 @@ class VideoConfigurationIntegrationTest {
         private const val VLC_COMMAND = "VLC_COMMAND"
         private const val FILE_PATH_ROOT = "FILE_PATH_ROOT"
         private const val PAGE_SIZE = 10
+        private const val FILE_EXTS = "FILE_EXTS"
     }
 
     @Autowired
@@ -33,6 +34,11 @@ class VideoConfigurationIntegrationTest {
     @Test
     fun testApiPageSize() {
         assertEquals(PAGE_SIZE, videoConfig.apiPageSize)
+    }
+
+    @Test
+    fun testFileExts() {
+        assertEquals(FILE_EXTS, videoConfig.fileExts)
     }
 
 }

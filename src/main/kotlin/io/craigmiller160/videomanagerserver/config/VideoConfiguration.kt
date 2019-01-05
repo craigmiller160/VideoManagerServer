@@ -8,5 +8,13 @@ import org.springframework.stereotype.Component
 data class VideoConfiguration (
         var vlcCommand: String = "",
         var filePathRoot: String = "",
-        var apiPageSize: Int = 0
-)
+        var apiPageSize: Int = 0,
+        var fileExts: String = ""
+) {
+
+    fun splitFileExts(): List<String> {
+        return fileExts.split(",")
+                .map { ext -> ext.trim() }
+    }
+
+}
