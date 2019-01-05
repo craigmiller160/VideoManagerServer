@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -9,14 +10,10 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.argThat
 import org.mockito.Mockito.isA
-import org.mockito.Mockito.isNull
 import org.mockito.MockitoAnnotations
-import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -45,11 +42,13 @@ class VideoFileServiceImplTest {
     private lateinit var videoFileRepo: VideoFileRepository
     @Mock
     private lateinit var videoConfig: VideoConfiguration
+    @Mock
+    private lateinit var fileScanner: FileScanner
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig)
+        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner)
     }
 
     @Test
@@ -127,6 +126,16 @@ class VideoFileServiceImplTest {
 
         actualFile = videoFileService.deleteVideoFile(1)
         assertFalse(actualFile.isPresent)
+    }
+
+    @Test
+    fun testStartVideoFileScan() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun isVideoFileScanRunning() {
+        TODO("Finish this")
     }
 
 }

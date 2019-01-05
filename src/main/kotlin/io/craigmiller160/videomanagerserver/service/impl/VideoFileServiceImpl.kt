@@ -1,7 +1,9 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,12 +11,16 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
-        private val videoConfig: VideoConfiguration
+        private val videoConfig: VideoConfiguration,
+        private val fileScanner: FileScanner
 ): VideoFileService {
+
+    private val fileScanRunning = AtomicBoolean(false)
 
     override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
         val sort = Sort.by(
@@ -44,5 +50,20 @@ class VideoFileServiceImpl @Autowired constructor(
         val videoFileOptional = videoFileRepo.findById(fileId)
         videoFileRepo.deleteById(fileId)
         return videoFileOptional
+    }
+
+    override fun startVideoFileScan(): FileScanStatus {
+        if (fileScanRunning.get()) {
+            return FileScanStatus(true, true)
+        }
+        fileScanRunning.set(true)
+        fileScanner.scanForFiles {
+            fileScanRunning.set(false)
+        }
+        return FileScanStatus(true)
+    }
+
+    override fun isVideoFileScanRunning(): FileScanStatus {
+        return FileScanStatus(fileScanRunning.get())
     }
 }
