@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.dto
 
-import javax.persistence.CascadeType
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
@@ -17,6 +17,7 @@ data class VideoFile(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var fileId: Long = 0,
+        @Column(unique = true)
         var fileName: String = "",
         var displayName: String = "",
 
