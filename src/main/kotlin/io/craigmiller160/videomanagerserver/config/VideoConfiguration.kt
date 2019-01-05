@@ -1,7 +1,9 @@
 package io.craigmiller160.videomanagerserver.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
+import org.springframework.web.filter.CommonsRequestLoggingFilter
 
 @Component
 @ConfigurationProperties(prefix = "video")
