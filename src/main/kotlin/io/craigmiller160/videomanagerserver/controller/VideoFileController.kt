@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.lang.IllegalArgumentException
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -68,6 +68,20 @@ class VideoFileController @Autowired constructor(
     @DeleteMapping("/{videoFileId}")
     fun deleteVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFile> {
         return okOrNoContent(videoFileService.deleteVideoFile(videoFileId))
+    }
+
+    @PostMapping("/scanner")
+    fun startVideoFileScan(): ResponseEntity<FileScanStatus> {
+        val status = videoFileService.startVideoFileScan()
+        if (status.alreadyRunning) {
+            return ResponseEntity.badRequest().body(status)
+        }
+        return ResponseEntity.ok(status)
+    }
+
+    @GetMapping("/scanner")
+    fun isVideoFileScanRunning(): ResponseEntity<FileScanStatus> {
+        return ResponseEntity.ok(videoFileService.isVideoFileScanRunning())
     }
 
 }
