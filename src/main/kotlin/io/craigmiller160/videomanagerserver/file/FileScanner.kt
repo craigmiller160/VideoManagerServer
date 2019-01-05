@@ -28,6 +28,8 @@ class FileScanner @Autowired constructor(
                         .filter { p -> fileExts.contains(p.toFile().extension) }
                         .map { p -> p.toString().replace(Regex("^$filePathRoot"), "") }
                         .forEach { name -> videoFileRepo.mergeVideoFilesByName(name) }
+
+                done()
             }
         }
     }
