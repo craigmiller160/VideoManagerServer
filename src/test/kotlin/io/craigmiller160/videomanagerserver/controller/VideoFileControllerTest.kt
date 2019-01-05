@@ -14,11 +14,13 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
 import org.mockito.MockitoAnnotations
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.util.Optional
 
+@SpringBootTest
 class VideoFileControllerTest {
 
     private lateinit var mockMvc: MockMvc
@@ -28,6 +30,7 @@ class VideoFileControllerTest {
     private lateinit var videoFileService: VideoFileService
 
     private lateinit var videoFileController: VideoFileController
+    private lateinit var videoManagerControllerAdvice: VideoManagerControllerAdvice
 
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
@@ -58,7 +61,11 @@ class VideoFileControllerTest {
         JacksonTester.initFields(this, ObjectMapper())
 
         videoFileController = VideoFileController(videoFileService)
-        mockMvc = MockMvcBuilders.standaloneSetup(videoFileController).build()
+        videoManagerControllerAdvice = VideoManagerControllerAdvice()
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(videoFileController)
+                .setControllerAdvice(videoManagerControllerAdvice)
+                .build()
         mockMvcHandler = MockMvcHandler(mockMvc)
     }
 
