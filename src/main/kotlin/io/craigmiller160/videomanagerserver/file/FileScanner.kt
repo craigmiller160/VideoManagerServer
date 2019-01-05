@@ -16,7 +16,7 @@ class FileScanner @Autowired constructor(
         private val videoFileRepo: VideoFileRepository
 ) {
 
-    fun scanForFiles(done: () -> Unit) {
+    fun scanForFiles(done: () -> Unit = {}) {
         val filePathRoot = videoConfig.filePathRoot
         val fileExts = videoConfig.splitFileExts()
 
