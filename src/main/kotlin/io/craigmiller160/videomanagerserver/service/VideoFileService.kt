@@ -20,4 +20,6 @@ interface VideoFileService {
 
     fun isVideoFileScanRunning(): FileScanStatus
 
+    fun playVideo(videoFile: VideoFile)
+
 }

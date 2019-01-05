@@ -34,6 +34,12 @@ class VideoFileController @Autowired constructor(
         }
     }
 
+    private fun validateVideoFileName(videoFileName: String) {
+        if (videoFileName.isEmpty()) {
+            throw java.lang.IllegalArgumentException("Video file name must be provided")
+        }
+    }
+
     @ExceptionHandler
     fun handleIllegalArgumentException(ex: IllegalArgumentException, response: HttpServletResponse) {
         response.sendError(HttpStatus.BAD_REQUEST.value())
@@ -82,6 +88,13 @@ class VideoFileController @Autowired constructor(
     @GetMapping("/scanner")
     fun isVideoFileScanRunning(): ResponseEntity<FileScanStatus> {
         return ResponseEntity.ok(videoFileService.isVideoFileScanRunning())
+    }
+
+    @PostMapping("/play")
+    fun playVideo(@RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
+        validateVideoFileName(videoFile.fileName)
+        videoFileService.playVideo(videoFile)
+        return ResponseEntity.ok(videoFile)
     }
 
 }

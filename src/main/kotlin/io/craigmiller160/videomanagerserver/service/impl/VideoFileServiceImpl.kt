@@ -73,4 +73,10 @@ class VideoFileServiceImpl @Autowired constructor(
         }
         return createScanNotRunningStatus()
     }
+
+    override fun playVideo(videoFile: VideoFile) {
+        val fullPath = "${videoConfig.filePathRoot}/${videoFile.fileName}"
+        val procBuilder = ProcessBuilder("vlc", fullPath)
+        procBuilder.start()
+    }
 }
