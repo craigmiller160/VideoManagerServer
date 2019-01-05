@@ -1,12 +1,18 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.util.Optional
 
 class VideoFileControllerTest {
 
@@ -29,7 +35,18 @@ class VideoFileControllerTest {
 
     @Before
     fun setup() {
-        TODO("Finish this")
+        videoFileNoId = VideoFile(fileName = "NoId")
+        videoFile1 = VideoFile(1, "FirstFile")
+        videoFile2 = VideoFile(2, "SecondFile")
+        videoFile3 = VideoFile(3, "ThirdFile")
+        videoFileList = listOf(videoFile1, videoFile2, videoFile3)
+
+        MockitoAnnotations.initMocks(this)
+        JacksonTester.initFields(this, ObjectMapper())
+
+        videoFileController = VideoFileController(videoFileService)
+        mockMvc = MockMvcBuilders.standaloneSetup(videoFileController).build()
+        mockMvcHandler = MockMvcHandler(mockMvc)
     }
 
     @Test
@@ -39,22 +56,54 @@ class VideoFileControllerTest {
 
     @Test
     fun testGetVideoFile() {
-        TODO("Finish this")
+        `when`(videoFileService.getVideoFile(1))
+                .thenReturn(Optional.of(videoFile1))
+        `when`(videoFileService.getVideoFile(5))
+                .thenReturn(Optional.empty())
+
+        var response = mockMvcHandler.doGet("/video-files/1")
+        assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
+
+        response = mockMvcHandler.doGet("/video-files/5")
+        assertNoContentResponse(response)
     }
 
     @Test
     fun testAddStar() {
-        TODO("Finish this")
+        val videoFileWithId = videoFileNoId.copy(fileId = 1)
+        `when`(videoFileService.addVideoFile(videoFileNoId))
+                .thenReturn(videoFileWithId)
+
+        val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
+        assertOkResponse(response, jacksonVideoFile.write(videoFileWithId).json)
     }
 
     @Test
     fun testUpdateVideoFile() {
-        TODO("Finish this")
+        val updatedVideoFile = videoFile2.copy(fileId = 1)
+        `when`(videoFileService.updateVideoFile(1, videoFile2))
+                .thenReturn(Optional.of(updatedVideoFile))
+        `when`(videoFileService.updateVideoFile(5, videoFile3))
+                .thenReturn(Optional.empty())
+
+        var response = mockMvcHandler.doPut("/video-files/1", jacksonVideoFile.write(videoFile2).json)
+        assertOkResponse(response, jacksonVideoFile.write(updatedVideoFile).json)
+
+        response = mockMvcHandler.doPut("/video-files/5", jacksonVideoFile.write(videoFile3).json)
+        assertNoContentResponse(response)
     }
 
     @Test
     fun testDeleteVideoFile() {
-        TODO("Finish this")
+        `when`(videoFileService.deleteVideoFile(1))
+                .thenReturn(Optional.of(videoFile1))
+                .thenReturn(Optional.empty())
+
+        var response = mockMvcHandler.doDelete("/video-files/1")
+        assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
+
+        response = mockMvcHandler.doDelete("/video-files/5")
+        assertNoContentResponse(response)
     }
 
 }
