@@ -40,7 +40,8 @@ class VideoFileController @Autowired constructor(
     }
 
     @GetMapping
-    fun getAllVideoFiles(@RequestParam page: Int, @RequestParam sortDirection: String = "ASC"): ResponseEntity<List<VideoFile>> {
+    fun getAllVideoFiles(@RequestParam(required = false, defaultValue = "0") page: Int,
+                         @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFile>> {
         validateSortDirection(sortDirection)
         val videoFiles = videoFileService.getAllVideoFiles(page, sortDirection)
         if (videoFiles.isEmpty()) {

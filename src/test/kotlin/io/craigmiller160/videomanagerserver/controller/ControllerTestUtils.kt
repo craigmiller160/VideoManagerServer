@@ -14,3 +14,7 @@ fun assertOkResponse(response: MockHttpServletResponse, content: String) {
 fun assertNoContentResponse(response: MockHttpServletResponse) {
     assertEquals(204, response.status)
 }
+
+fun assertBadRequest(response: MockHttpServletResponse) {
+    assertEquals(400, response.status)
+}

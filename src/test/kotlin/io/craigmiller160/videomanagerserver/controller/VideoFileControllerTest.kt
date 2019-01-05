@@ -5,11 +5,16 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyInt
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.data.domain.Sort
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.util.Optional
@@ -51,7 +56,18 @@ class VideoFileControllerTest {
 
     @Test
     fun testGetAllVideoFiles() {
-        TODO("Finish this")
+        `when`(videoFileService.getAllVideoFiles(anyInt(), anyString()))
+                .thenReturn(videoFileList)
+                .thenReturn(listOf())
+
+        var response = mockMvcHandler.doGet("/video-files")
+        assertOkResponse(response, jacksonVideoFileList.write(videoFileList).json)
+
+        response = mockMvcHandler.doGet("/video-files")
+        assertNoContentResponse(response)
+
+        response = mockMvcHandler.doGet("/video-files?page=0&sortDirection=FooBar")
+        assertBadRequest(response)
     }
 
     @Test
