@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.dto
 
 data class VideoSearch (
-        var searchText: String?,
-        var seriesId: Long?,
-        var starId: Long?,
-        var categoryId: Long?
+        var searchText: String? = null,
+        var seriesId: Long? = null,
+        var starId: Long? = null,
+        var categoryId: Long? = null
 )

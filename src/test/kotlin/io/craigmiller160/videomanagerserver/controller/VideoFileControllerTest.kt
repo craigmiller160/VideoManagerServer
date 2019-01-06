@@ -10,7 +10,6 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -38,6 +37,7 @@ class VideoFileControllerTest {
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatus>
+    private lateinit var jacksonSearch: JacksonTester<VideoSearch>
 
     private lateinit var videoFileNoId: VideoFile
     private lateinit var videoFile1: VideoFile
@@ -172,10 +172,12 @@ class VideoFileControllerTest {
                 .thenReturn(videoFileList)
                 .thenReturn(listOf())
 
-        var response = mockMvcHandler.doGet("/video-files/search")
+        val search = VideoSearch("HelloWorld")
+
+        var response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
         assertOkResponse(response, jacksonVideoFileList.write(videoFileList).json)
 
-        response = mockMvcHandler.doGet("/video-files/search")
+        response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
         assertNoContentResponse(response)
     }
 
