@@ -20,6 +20,7 @@ data class VideoFile(
         @Column(unique = true)
         var fileName: String = "",
         var displayName: String = "",
+        var description: String = "",
 
         @ManyToMany (fetch = FetchType.EAGER)
         @JoinTable(name = "file_categories",

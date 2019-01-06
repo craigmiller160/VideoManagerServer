@@ -14,4 +14,17 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
     @Modifying
     fun mergeVideoFilesByName(fileName: String)
 
+
+    @Query("SELECT vf.file_id, vf.file_name, vf.display_name, vf.description " +
+            "FROM video_files vf " +
+            "LEFT JOIN file_stars fs ON vf.file_id = fs.file_id " +
+            "LEFT JOIN file_categories fc ON vf.file_id = fc.file_id " +
+            "LEFT JOIN file_series fse ON vf.file_id = fse.file_id " +
+            "WHERE (:searchText IS NULL OR " +
+            "(vf.file_name LIKE :searchText OR vf.display_name LIKE :searchText OR vf.description LIKE :searchText)) " +
+            "AND (:seriesId IS NULL OR fse.series_id = :seriesId) " +
+            "AND (:starId IS NULL OR fs.starId = :starId) " +
+            "AND (:categoryId IS NULL OR fc.category_id = :categoryId)")
+    fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): List<VideoFile>
+
 }
