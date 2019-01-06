@@ -23,8 +23,9 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
             "WHERE (:searchText IS NULL OR " +
             "(vf.file_name LIKE :searchText OR vf.display_name LIKE :searchText OR vf.description LIKE :searchText)) " +
             "AND (:seriesId IS NULL OR fse.series_id = :seriesId) " +
-            "AND (:starId IS NULL OR fs.starId = :starId) " +
-            "AND (:categoryId IS NULL OR fc.category_id = :categoryId)")
+            "AND (:starId IS NULL OR fs.star_id = :starId) " +
+            "AND (:categoryId IS NULL OR fc.category_id = :categoryId)",
+            nativeQuery = true)
     fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): List<VideoFile>
 
 }
