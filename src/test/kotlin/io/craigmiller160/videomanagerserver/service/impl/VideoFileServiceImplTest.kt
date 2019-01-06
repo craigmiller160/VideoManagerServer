@@ -162,7 +162,7 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun isVideoFileScanRunning() {
+    fun testIsVideoFileScanRunning() {
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         var status = videoFileService.isVideoFileScanRunning()
         assertThat(status, allOf(
@@ -179,6 +179,11 @@ class VideoFileServiceImplTest {
                 hasProperty("alreadyRunning", equalTo(false)),
                 hasProperty("message", equalTo(SCAN_STATUS_RUNNING))
         ))
+    }
+
+    @Test
+    fun testSearchForVideos() {
+        TODO("Finish this")
     }
 
 }

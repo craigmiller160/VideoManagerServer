@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.service.impl
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
@@ -25,12 +26,15 @@ class VideoFileServiceImpl @Autowired constructor(
 
     private val fileScanRunning = AtomicBoolean(false)
 
-    override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
-        val sort = Sort.by(
-                Sort.Order(Sort.Direction.valueOf(sortDirection), "displayName", Sort.NullHandling.NULLS_LAST),
-                Sort.Order(Sort.Direction.valueOf(sortDirection), "fileName", Sort.NullHandling.NULLS_LAST)
+    private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
+        return Sort.by(
+                Sort.Order(sortDirection, "displayName", Sort.NullHandling.NULLS_LAST),
+                Sort.Order(sortDirection, "fileName", Sort.NullHandling.NULLS_LAST)
         )
+    }
 
+    override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
+        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
         val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
         return videoFileRepo.findAll(pageable).toList()
     }
@@ -78,5 +82,12 @@ class VideoFileServiceImpl @Autowired constructor(
         val fullPath = "${videoConfig.filePathRoot}/${videoFile.fileName}"
         val procBuilder = ProcessBuilder("vlc", fullPath)
         procBuilder.start()
+    }
+
+    override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile> {
+        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
+        val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
+        return videoFileRepo.searchByValues(search.searchText, search.seriesId, search.starId, search.categoryId, pageable)
+
     }
 }

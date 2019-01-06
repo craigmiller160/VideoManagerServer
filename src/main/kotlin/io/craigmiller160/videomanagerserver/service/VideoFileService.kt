@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service
 
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import java.util.Optional
 
 interface VideoFileService {
@@ -21,5 +22,7 @@ interface VideoFileService {
     fun isVideoFileScanRunning(): FileScanStatus
 
     fun playVideo(videoFile: VideoFile)
+
+    fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile>
 
 }

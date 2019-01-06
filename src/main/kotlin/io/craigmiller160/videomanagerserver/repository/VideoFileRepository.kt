@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
@@ -26,6 +27,6 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
             "AND (:starId IS NULL OR fs.star_id = :starId) " +
             "AND (:categoryId IS NULL OR fc.category_id = :categoryId)",
             nativeQuery = true)
-    fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): List<VideoFile>
+    fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?, paging: Pageable): List<VideoFile>
 
 }

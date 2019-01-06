@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -87,6 +88,18 @@ class VideoFileController @Autowired constructor(
         validateVideoFileName(videoFile.fileName)
         videoFileService.playVideo(videoFile)
         return ResponseEntity.ok(videoFile)
+    }
+
+    @PostMapping("/search")
+    fun searchForVideos(@RequestBody search: VideoSearch,
+                        @RequestParam(required = false, defaultValue = "0") page: Int,
+                        @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFile>> {
+        validateSortDirection(sortDirection)
+        val videoFiles = videoFileService.searchForVideos(search, page, sortDirection)
+        if (videoFiles.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(videoFiles)
     }
 
 }

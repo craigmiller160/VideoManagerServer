@@ -163,4 +163,9 @@ class VideoFileControllerTest {
         assertOkResponse(response, jacksonStatus.write(scanRunning).json)
     }
 
+    @Test
+    fun testSearchForVideos() {
+        TODO("Finish this")
+    }
+
 }
