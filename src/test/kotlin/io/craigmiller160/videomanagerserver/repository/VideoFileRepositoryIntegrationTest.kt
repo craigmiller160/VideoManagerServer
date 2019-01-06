@@ -123,7 +123,7 @@ class VideoFileRepositoryIntegrationTest {
     fun testSearchByValues() {
         val results = videoFileRepo.searchByValues("%File%", 1, 1, 1)
         assertEquals(1, results.size)
-        //TODO test the returned value
+        assertEquals(videoFile, results[0])
     }
 
 }
