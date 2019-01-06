@@ -23,6 +23,6 @@ interface VideoFileService {
 
     fun playVideo(videoFile: VideoFile)
 
-    fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile>
+    open fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile>
 
 }

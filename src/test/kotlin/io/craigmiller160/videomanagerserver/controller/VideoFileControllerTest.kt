@@ -10,11 +10,12 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
-import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
@@ -177,5 +178,7 @@ class VideoFileControllerTest {
         response = mockMvcHandler.doGet("/video-files/search")
         assertNoContentResponse(response)
     }
+
+    fun <T> isA(clazz: Class<T>): T = Mockito.isA(clazz)
 
 }
