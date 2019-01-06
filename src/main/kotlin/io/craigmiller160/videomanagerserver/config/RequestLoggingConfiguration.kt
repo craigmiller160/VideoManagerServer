@@ -1,13 +1,11 @@
 package io.craigmiller160.videomanagerserver.config
 
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.CommonsRequestLoggingFilter
 
-@Configuration
+//@Configuration
 class RequestLoggingConfiguration {
 
-    @Bean
+//    @Bean
     fun requestLoggingFilter(): CommonsRequestLoggingFilter {
         val loggingFilter = CommonsRequestLoggingFilter()
         loggingFilter.setIncludeClientInfo(true)
