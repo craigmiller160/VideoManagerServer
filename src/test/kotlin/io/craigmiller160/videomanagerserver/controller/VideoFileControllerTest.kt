@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
@@ -13,6 +14,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyString
+import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
@@ -165,7 +167,15 @@ class VideoFileControllerTest {
 
     @Test
     fun testSearchForVideos() {
-        TODO("Finish this")
+        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java), anyInt(), anyString()))
+                .thenReturn(videoFileList)
+                .thenReturn(listOf())
+
+        var response = mockMvcHandler.doGet("/video-files/search")
+        assertOkResponse(response, jacksonVideoFileList.write(videoFileList).json)
+
+        response = mockMvcHandler.doGet("/video-files/search")
+        assertNoContentResponse(response)
     }
 
 }
