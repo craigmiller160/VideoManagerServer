@@ -1,27 +1,24 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
-import io.craigmiller160.videomanagerserver.dto.VideoFile
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
-        private val fileScanner: FileScanner
+        private val fileScanner: FileScanner,
+        private val videoPlayer: VideoPlayer
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -79,9 +76,11 @@ class VideoFileServiceImpl @Autowired constructor(
     }
 
     override fun playVideo(videoFile: VideoFile) {
-        val fullPath = "${videoConfig.filePathRoot}/${videoFile.fileName}"
-        val procBuilder = ProcessBuilder("vlc", fullPath)
-        procBuilder.start()
+        val dbVideoFileOpt = videoFileRepo.findById(videoFile.fileId)
+        val dbVideoFile = dbVideoFileOpt.orElseThrow { Exception("Could not find video file in DB: ${videoFile.fileName}") }
+        dbVideoFile.viewCount++
+        videoFileRepo.save(dbVideoFile)
+        videoPlayer.playVideo(dbVideoFile)
     }
 
     override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile> {

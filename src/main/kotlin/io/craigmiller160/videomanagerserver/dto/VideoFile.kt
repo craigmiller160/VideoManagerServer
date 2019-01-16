@@ -1,15 +1,7 @@
 package io.craigmiller160.videomanagerserver.dto
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
-import javax.persistence.Table
+import java.time.LocalDateTime
+import javax.persistence.*
 
 @Entity
 @Table(name = "video_files")
@@ -21,6 +13,9 @@ data class VideoFile(
         var fileName: String = "",
         var displayName: String = "",
         var description: String = "",
+        var lastModified: LocalDateTime = LocalDateTime.MIN,
+        @Column(columnDefinition = "int default 0")
+        var viewCount: Int = 0,
 
         @ManyToMany (fetch = FetchType.EAGER)
         @JoinTable(name = "file_categories",

@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
@@ -8,16 +9,13 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.util.getField
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -28,7 +26,7 @@ import org.mockito.MockitoAnnotations
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class VideoFileServiceImplTest {
@@ -56,11 +54,13 @@ class VideoFileServiceImplTest {
     private lateinit var videoConfig: VideoConfiguration
     @Mock
     private lateinit var fileScanner: FileScanner
+    @Mock
+    private lateinit var videoPlayer: VideoPlayer
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner)
+        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, videoPlayer)
     }
 
     @Test
@@ -179,6 +179,24 @@ class VideoFileServiceImplTest {
                 hasProperty("alreadyRunning", equalTo(false)),
                 hasProperty("message", equalTo(SCAN_STATUS_RUNNING))
         ))
+    }
+
+    @Test
+    fun testPlayVideo() {
+        `when`(videoFileRepo.findById(1))
+                .thenReturn(Optional.of(expectedFiles[0]))
+
+        videoFileService.playVideo(expectedFiles[0])
+
+        val argumentCaptor = argumentCaptor<VideoFile>().apply {
+            verify(videoFileRepo, times(1)).save(capture())
+        }
+
+        verify(videoPlayer, times(1)).playVideo(expectedFiles[0])
+
+        val allValues = argumentCaptor.allValues
+        assertEquals(1, allValues.size)
+        assertEquals(expectedFiles[0], allValues[0])
     }
 
 //    @Test

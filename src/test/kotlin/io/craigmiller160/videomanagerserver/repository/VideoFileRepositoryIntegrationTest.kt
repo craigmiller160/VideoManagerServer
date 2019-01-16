@@ -5,14 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.util.getFirst
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.hasItems
-import org.hamcrest.Matchers.hasProperty
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
@@ -34,6 +28,8 @@ class VideoFileRepositoryIntegrationTest {
         private const val FILE_NAME = "MyFile"
         private const val FILE_DISPLAY_NAME = "MyDisplayFile"
         private const val FILE_NAME_2 = "MyFile2"
+        private val DATE = LocalDateTime.of(2018, 1, 1, 1, 1)
+        private val DATE_2 = LocalDateTime.of(2018, 2, 2, 2, 2)
     }
 
     @Autowired
@@ -59,6 +55,7 @@ class VideoFileRepositoryIntegrationTest {
             categories += category
             this.series += series
             stars += star
+            lastModified = DATE_2
         }
 
         categoryRepo.save(category)
@@ -105,19 +102,6 @@ class VideoFileRepositoryIntegrationTest {
 
         val starsCount = starRepo.count()
         assertEquals(1, starsCount)
-    }
-
-    @Test
-    fun testMergeVideoFilesByName() {
-        videoFileRepo.mergeVideoFilesByName(FILE_NAME)
-        videoFileRepo.mergeVideoFilesByName(FILE_NAME_2)
-
-        val videos = videoFileRepo.findAll()
-        assertEquals(2, videos.toList().size)
-        assertThat(videos.toList(), hasItems(
-                hasProperty("fileName", `is`(FILE_NAME)),
-                hasProperty("fileName", `is`(FILE_NAME_2))
-        ))
     }
 
     @Test
