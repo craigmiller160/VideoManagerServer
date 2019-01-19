@@ -1,9 +1,10 @@
 package io.craigmiller160.videomanagerserver.service
 
+import io.craigmiller160.videomanagerserver.dto.Count
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import java.util.Optional
+import java.util.*
 
 interface VideoFileService {
 
@@ -24,5 +25,7 @@ interface VideoFileService {
     fun playVideo(videoFile: VideoFile)
 
     fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile>
+
+    fun getVideoFileCount(): Count
 
 }

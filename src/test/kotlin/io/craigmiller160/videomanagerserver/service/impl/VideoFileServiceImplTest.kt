@@ -4,10 +4,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
@@ -197,6 +194,16 @@ class VideoFileServiceImplTest {
         val allValues = argumentCaptor.allValues
         assertEquals(1, allValues.size)
         assertEquals(expectedFiles[0], allValues[0])
+    }
+
+    @Test
+    fun testGetVideoFileCount() {
+        `when`(videoFileRepo.count())
+                .thenReturn(5)
+
+        val expectedCount = Count(5)
+        val count = videoFileService.getVideoFileCount()
+        assertEquals(expectedCount, count)
     }
 
 //    @Test
