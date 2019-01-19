@@ -7,23 +7,26 @@ import org.springframework.data.repository.PagingAndSortingRepository
 
 interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
 
+    companion object {
+        private const val SEARCH_CONDITIONS =
+                "FROM VideoFile vf " +
+                "LEFT JOIN vf.stars st " +
+                "LEFT JOIN vf.categories c " +
+                "LEFT JOIN vf.series se " +
+                "WHERE (:searchText IS NULL OR (" +
+                "vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText OR vf.description LIKE :searchText)) " +
+                "AND (:seriesId IS NULL OR se.seriesId = :seriesId) " +
+                "AND (:starId IS NULL OR st.starId = :starId) " +
+                "AND (:categoryId IS NULL OR c.categoryId = :categoryId)"
+    }
+
     fun findByFileName(fileName: String): VideoFile?
 
-
-    @Query("SELECT vf.file_id, vf.file_name, vf.display_name, vf.description " +
-            "FROM video_files vf " +
-            "LEFT JOIN file_stars fs ON vf.file_id = fs.file_id " +
-            "LEFT JOIN file_categories fc ON vf.file_id = fc.file_id " +
-            "LEFT JOIN file_series fse ON vf.file_id = fse.file_id " +
-            "WHERE (:searchText IS NULL OR " +
-            "(vf.file_name LIKE :searchText OR vf.display_name LIKE :searchText OR vf.description LIKE :searchText)) " +
-            "AND (:seriesId IS NULL OR fse.series_id = :seriesId) " +
-            "AND (:starId IS NULL OR fs.star_id = :starId) " +
-            "AND (:categoryId IS NULL OR fc.category_id = :categoryId)",
-            nativeQuery = true)
+    @Query("SELECT vf $SEARCH_CONDITIONS")
     fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?, paging: Pageable): List<VideoFile>
 
 
-//    fun countByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): Long
+    @Query("SELECT COUNT(vf) $SEARCH_CONDITIONS")
+    fun countByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): Long
 
 }
