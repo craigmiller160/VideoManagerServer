@@ -87,9 +87,11 @@ class VideoFileServiceImpl @Autowired constructor(
         val pageSize = videoConfig.apiPageSize
         val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
         val pageable = PageRequest.of(page, pageSize, sort)
-        val videoList = videoFileRepo.searchByValues("%${search.searchText}%", search.seriesId, search.starId, search.categoryId, pageable)
+        val searchText = search.searchText?.let { "%${search.searchText}%" }
+        val videoList = videoFileRepo.searchByValues(searchText, search.seriesId, search.starId, search.categoryId, pageable)
+        val totalCount = videoFileRepo.countByValues(searchText, search.seriesId, search.starId, search.categoryId)
         return VideoSearchResults().apply {
-            // TODO need totalFiles here
+            totalFiles = totalCount
             filesPerPage = pageSize
             currentPage = page
             this.videoList = videoList
