@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.Count
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoFileCount
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -96,7 +96,7 @@ class VideoFileController @Autowired constructor(
     }
 
     @GetMapping("/count")
-    fun getVideoFileCount(): ResponseEntity<Count> {
+    fun getVideoFileCount(): ResponseEntity<VideoFileCount> {
         val count = videoFileService.getVideoFileCount()
         return ResponseEntity.ok(count)
     }

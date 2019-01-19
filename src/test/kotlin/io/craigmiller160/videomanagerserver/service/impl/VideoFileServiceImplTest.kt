@@ -200,8 +200,10 @@ class VideoFileServiceImplTest {
     fun testGetVideoFileCount() {
         `when`(videoFileRepo.count())
                 .thenReturn(5)
+        `when`(videoConfig.apiPageSize)
+                .thenReturn(3)
 
-        val expectedCount = Count(5)
+        val expectedCount = VideoFileCount(5, 3)
         val count = videoFileService.getVideoFileCount()
         assertEquals(expectedCount, count)
     }

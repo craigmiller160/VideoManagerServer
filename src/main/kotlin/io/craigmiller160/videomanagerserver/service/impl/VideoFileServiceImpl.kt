@@ -89,8 +89,9 @@ class VideoFileServiceImpl @Autowired constructor(
         return videoFileRepo.searchByValues(search.searchText, search.seriesId, search.starId, search.categoryId, pageable)
     }
 
-    override fun getVideoFileCount(): Count {
+    override fun getVideoFileCount(): VideoFileCount {
+        val pageSize = videoConfig.apiPageSize
         val count = videoFileRepo.count()
-        return Count(count)
+        return VideoFileCount(count, pageSize)
     }
 }

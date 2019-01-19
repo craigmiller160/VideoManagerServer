@@ -32,7 +32,7 @@ class VideoFileControllerTest {
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatus>
     private lateinit var jacksonSearch: JacksonTester<VideoSearch>
-    private lateinit var jacksonCount: JacksonTester<Count>
+    private lateinit var jacksonVideoFileCount: JacksonTester<VideoFileCount>
 
     private lateinit var videoFileNoId: VideoFile
     private lateinit var videoFile1: VideoFile
@@ -180,12 +180,12 @@ class VideoFileControllerTest {
 
     @Test
     fun testGetVideoFileCount() {
-        val expectedCount = Count(5)
+        val expectedCount = VideoFileCount(5, 3)
         `when`(videoFileService.getVideoFileCount())
                 .thenReturn(expectedCount)
 
         val response = mockMvcHandler.doGet("/video-files/count")
-        assertOkResponse(response, jacksonCount.write(expectedCount).json)
+        assertOkResponse(response, jacksonVideoFileCount.write(expectedCount).json)
     }
 
     fun <T> isA(clazz: Class<T>): T = Mockito.isA(clazz)
