@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.service.VideoFileService
+import io.craigmiller160.videomanagerserver.util.isA
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
@@ -184,7 +186,5 @@ class VideoFileControllerTest {
         response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
         assertNoContentResponse(response)
     }
-
-    fun <T> isA(clazz: Class<T>): T = Mockito.isA(clazz)
 
 }

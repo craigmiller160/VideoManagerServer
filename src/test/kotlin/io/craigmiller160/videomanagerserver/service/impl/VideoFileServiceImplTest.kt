@@ -4,24 +4,18 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.util.getField
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
+import io.craigmiller160.videomanagerserver.util.isA
+import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.isA
-import org.mockito.Mockito.times
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -199,9 +193,33 @@ class VideoFileServiceImplTest {
         assertEquals(expectedFiles[0], allValues[0])
     }
 
-//    @Test
-//    fun testSearchForVideos() {
-//        TODO("Finish this")
-//    }
+    @Test
+    fun testSearchForVideos() {
+        val pageSize = 10
+        val searchText = "Hello"
+        val seriesId = 1L
+        val categoryId = 1L
+        val starId = 1L
+        val page = 0
+        val totalValues = 100L
+        `when`(videoConfig.apiPageSize)
+                .thenReturn(pageSize)
+        `when`(videoFileRepo.searchByValues(eq("%$searchText%"), eq(seriesId), eq(starId), eq(categoryId), isA(Pageable::class.java)))
+                .thenReturn(expectedFiles)
+        `when`(videoFileRepo.countByValues(eq("%$searchText%"), eq(seriesId), eq(starId), eq(categoryId)))
+                .thenReturn(totalValues)
+
+        val expectedResults = VideoSearchResults().apply {
+            totalFiles = totalValues
+            filesPerPage = pageSize
+            currentPage = page
+            videoList = expectedFiles
+        }
+
+        val videoSearch = VideoSearch(searchText, seriesId, starId, categoryId)
+
+        val result = videoFileService.searchForVideos(videoSearch, page, Sort.Direction.ASC.toString())
+        assertEquals(expectedResults, result)
+    }
 
 }
