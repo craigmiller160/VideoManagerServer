@@ -87,6 +87,5 @@ class VideoFileServiceImpl @Autowired constructor(
         val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
         val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
         return videoFileRepo.searchByValues(search.searchText, search.seriesId, search.starId, search.categoryId, pageable)
-
     }
 }

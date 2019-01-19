@@ -1,26 +1,20 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
-import io.craigmiller160.videomanagerserver.dto.VideoFile
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyInt
-import org.mockito.Mockito.anyString
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.util.Optional
+import java.util.*
 
 @SpringBootTest
 class VideoFileControllerTest {
@@ -61,7 +55,9 @@ class VideoFileControllerTest {
         scanAlreadyRunning = createScanAlreadyRunningStatus()
 
         MockitoAnnotations.initMocks(this)
-        JacksonTester.initFields(this, ObjectMapper())
+        val objectMapper = ObjectMapper()
+        objectMapper.registerModule(JavaTimeModule())
+        JacksonTester.initFields(this, objectMapper)
 
         videoFileController = VideoFileController(videoFileService)
         videoManagerControllerAdvice = VideoManagerControllerAdvice()
