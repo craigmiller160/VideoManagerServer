@@ -31,6 +31,13 @@ class VideoFileController @Autowired constructor(
         }
     }
 
+    private fun cleanUpSearch(search: VideoSearch) {
+        if (search.searchText?.isEmpty() == true) search.searchText = null
+        if (search.categoryId == 0L) search.categoryId = null
+        if (search.seriesId == 0L) search.seriesId = null
+        if (search.starId == 0L) search.starId = null
+    }
+
     @GetMapping
     fun getAllVideoFiles(@RequestParam(required = false, defaultValue = "0") page: Int,
                          @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFile>> {
@@ -88,6 +95,7 @@ class VideoFileController @Autowired constructor(
                         @RequestParam(required = false, defaultValue = "0") page: Int,
                         @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<VideoSearchResults> {
         validateSortDirection(sortDirection)
+        cleanUpSearch(search)
         val videoFiles = videoFileService.searchForVideos(search, page, sortDirection)
         if (videoFiles.videoList.isEmpty()) {
             return ResponseEntity.noContent().build()
