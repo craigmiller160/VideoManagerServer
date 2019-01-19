@@ -2,8 +2,8 @@ package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
-import io.craigmiller160.videomanagerserver.dto.VideoFileCount
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -86,19 +86,13 @@ class VideoFileController @Autowired constructor(
     @PostMapping("/search")
     fun searchForVideos(@RequestBody search: VideoSearch,
                         @RequestParam(required = false, defaultValue = "0") page: Int,
-                        @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFile>> {
+                        @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<VideoSearchResults> {
         validateSortDirection(sortDirection)
         val videoFiles = videoFileService.searchForVideos(search, page, sortDirection)
-        if (videoFiles.isEmpty()) {
+        if (videoFiles.videoList.isEmpty()) {
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(videoFiles)
-    }
-
-    @GetMapping("/count")
-    fun getVideoFileCount(): ResponseEntity<VideoFileCount> {
-        val count = videoFileService.getVideoFileCount()
-        return ResponseEntity.ok(count)
     }
 
 }

@@ -32,13 +32,14 @@ class VideoFileControllerTest {
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatus>
     private lateinit var jacksonSearch: JacksonTester<VideoSearch>
-    private lateinit var jacksonVideoFileCount: JacksonTester<VideoFileCount>
+    private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResults>
 
     private lateinit var videoFileNoId: VideoFile
     private lateinit var videoFile1: VideoFile
     private lateinit var videoFile2: VideoFile
     private lateinit var videoFile3: VideoFile
     private lateinit var videoFileList: List<VideoFile>
+    private lateinit var videoSearchResults: VideoSearchResults
     private lateinit var scanRunning: FileScanStatus
     private lateinit var scanNotRunning: FileScanStatus
     private lateinit var scanAlreadyRunning: FileScanStatus
@@ -50,6 +51,12 @@ class VideoFileControllerTest {
         videoFile2 = VideoFile(2, "SecondFile")
         videoFile3 = VideoFile(3, "ThirdFile")
         videoFileList = listOf(videoFile1, videoFile2, videoFile3)
+        videoSearchResults = VideoSearchResults().apply {
+            videoList = videoFileList
+            totalFiles = 3
+            filesPerPage = 3
+            currentPage = 0
+        }
 
         scanRunning = createScanRunningStatus()
         scanNotRunning = createScanNotRunningStatus()
@@ -166,26 +173,16 @@ class VideoFileControllerTest {
     @Test
     fun testSearchForVideos() {
         `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java), anyInt(), anyString()))
-                .thenReturn(videoFileList)
-                .thenReturn(listOf())
+                .thenReturn(videoSearchResults)
+                .thenReturn(VideoSearchResults())
 
         val search = VideoSearch("HelloWorld")
 
         var response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
-        assertOkResponse(response, jacksonVideoFileList.write(videoFileList).json)
+        assertOkResponse(response, jacksonVideoSearchResults.write(videoSearchResults).json)
 
         response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
         assertNoContentResponse(response)
-    }
-
-    @Test
-    fun testGetVideoFileCount() {
-        val expectedCount = VideoFileCount(5, 3)
-        `when`(videoFileService.getVideoFileCount())
-                .thenReturn(expectedCount)
-
-        val response = mockMvcHandler.doGet("/video-files/count")
-        assertOkResponse(response, jacksonVideoFileCount.write(expectedCount).json)
     }
 
     fun <T> isA(clazz: Class<T>): T = Mockito.isA(clazz)

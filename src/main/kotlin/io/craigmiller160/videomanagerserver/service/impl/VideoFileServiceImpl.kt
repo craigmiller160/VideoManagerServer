@@ -83,15 +83,16 @@ class VideoFileServiceImpl @Autowired constructor(
         videoPlayer.playVideo(dbVideoFile)
     }
 
-    override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): List<VideoFile> {
-        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
-        val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
-        return videoFileRepo.searchByValues(search.searchText, search.seriesId, search.starId, search.categoryId, pageable)
-    }
-
-    override fun getVideoFileCount(): VideoFileCount {
+    override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
         val pageSize = videoConfig.apiPageSize
-        val count = videoFileRepo.count()
-        return VideoFileCount(count, pageSize)
+        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
+        val pageable = PageRequest.of(page, pageSize, sort)
+        val videoList = videoFileRepo.searchByValues(search.searchText, search.seriesId, search.starId, search.categoryId, pageable)
+        return VideoSearchResults().apply {
+            // TODO need totalFiles here
+            filesPerPage = pageSize
+            currentPage = page
+            this.videoList = videoList
+        }
     }
 }

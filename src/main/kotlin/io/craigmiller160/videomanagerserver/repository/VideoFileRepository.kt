@@ -23,4 +23,7 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
             nativeQuery = true)
     fun searchByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?, paging: Pageable): List<VideoFile>
 
+
+//    fun countByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): Long
+
 }
