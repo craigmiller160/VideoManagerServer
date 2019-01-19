@@ -5,7 +5,6 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.util.getFirst
-import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -50,9 +49,9 @@ class VideoFileRepositoryIntegrationTest {
 
     @Before
     fun setup() {
-        val category = Category(1, CATEGORY_NAME)
-        val series = Series(1, SERIES_NAME)
-        val star = Star(1, STAR_NAME)
+        val category = Category(categoryName = CATEGORY_NAME)
+        val series = Series(seriesName = SERIES_NAME)
+        val star = Star(starName = STAR_NAME)
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
             categories += category
             this.series += series
@@ -68,13 +67,13 @@ class VideoFileRepositoryIntegrationTest {
         videoFile2 = videoFileRepo.save(videoFile2)
     }
 
-    @After
-    fun clean() {
-        categoryRepo.deleteAll()
-        seriesRepo.deleteAll()
-        starRepo.deleteAll()
-        videoFileRepo.deleteAll()
-    }
+//    @After
+//    fun clean() {
+//        categoryRepo.deleteAll()
+//        seriesRepo.deleteAll()
+//        starRepo.deleteAll()
+//        videoFileRepo.deleteAll()
+//    }
 
     @Test
     fun testInsertAll() {
@@ -133,7 +132,12 @@ class VideoFileRepositoryIntegrationTest {
         val initCount = videoFileRepo.count()
         assertEquals(2, initCount) // Making sure that there are two files to begin with
 
-        var result = videoFileRepo.countByValues("%File%", 1, 1, 1)
+        var result = videoFileRepo.countByValues(
+                "%File%",
+                getFirst(videoFile.series).seriesId,
+                getFirst(videoFile.stars).starId,
+                getFirst(videoFile.categories).categoryId
+        )
         assertEquals(1, result)
 
         result = videoFileRepo.countByValues("%File%", null, null, null)
