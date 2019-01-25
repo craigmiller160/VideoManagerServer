@@ -22,6 +22,7 @@ class VideoFileServiceImpl @Autowired constructor(
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
+    private val lastScanSuccess = AtomicBoolean(true)
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
@@ -61,18 +62,26 @@ class VideoFileServiceImpl @Autowired constructor(
             return createScanAlreadyRunningStatus()
         }
         fileScanRunning.set(true)
-        fileScanner.scanForFiles {
+        lastScanSuccess.set(true)
+        fileScanner.scanForFiles { result ->
             fileScanRunning.set(false)
+            lastScanSuccess.set(result)
         }
         return createScanRunningStatus()
     }
 
     override fun isVideoFileScanRunning(): FileScanStatus {
         val scanRunning = fileScanRunning.get()
+        val lastScanSuccess = lastScanSuccess.get()
         if (scanRunning) {
             return createScanRunningStatus()
         }
-        return createScanNotRunningStatus()
+
+        if (lastScanSuccess) {
+            return createScanNotRunningStatus()
+        }
+
+        return createScanErrorStatus()
     }
 
     override fun playVideo(videoFile: VideoFile) {

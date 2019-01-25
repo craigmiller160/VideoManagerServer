@@ -55,6 +55,11 @@ class VideoFileServiceImplTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
         videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, videoPlayer)
+
+        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
+        fileScanRunning.set(false)
+        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+        lastScanSuccess.set(true)
     }
 
     @Test
@@ -137,11 +142,15 @@ class VideoFileServiceImplTest {
     @Test
     fun testStartVideoFileScan() {
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
+        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+        lastScanSuccess.set(false)
+
         var status = videoFileService.startVideoFileScan()
         assertThat(status, allOf(
                 hasProperty("inProgress", equalTo(true)),
                 hasProperty("alreadyRunning", equalTo(false)),
-                hasProperty("message", equalTo(SCAN_STATUS_RUNNING))
+                hasProperty("message", equalTo(SCAN_STATUS_RUNNING)),
+                hasProperty("scanError", equalTo(false))
         ))
 
         fileScanRunning.set(true)
@@ -149,7 +158,8 @@ class VideoFileServiceImplTest {
         assertThat(status, allOf(
                 hasProperty("inProgress", equalTo(true)),
                 hasProperty("alreadyRunning", equalTo(true)),
-                hasProperty("message", equalTo(SCAN_STATUS_ALREADY_RUNNING))
+                hasProperty("message", equalTo(SCAN_STATUS_ALREADY_RUNNING)),
+                hasProperty("scanError", equalTo(false))
         ))
 
         verify(fileScanner, times(1)).scanForFiles(any())
@@ -158,11 +168,13 @@ class VideoFileServiceImplTest {
     @Test
     fun testIsVideoFileScanRunning() {
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
+        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
         var status = videoFileService.isVideoFileScanRunning()
         assertThat(status, allOf(
                 hasProperty("inProgress", equalTo(false)),
                 hasProperty("alreadyRunning", equalTo(false)),
-                hasProperty("message", equalTo(SCAN_STATUS_NOT_RUNNING))
+                hasProperty("message", equalTo(SCAN_STATUS_NOT_RUNNING)),
+                hasProperty("scanError", equalTo(false))
         ))
 
         fileScanRunning.set(true)
@@ -171,7 +183,19 @@ class VideoFileServiceImplTest {
         assertThat(status, allOf(
                 hasProperty("inProgress", equalTo(true)),
                 hasProperty("alreadyRunning", equalTo(false)),
-                hasProperty("message", equalTo(SCAN_STATUS_RUNNING))
+                hasProperty("message", equalTo(SCAN_STATUS_RUNNING)),
+                hasProperty("scanError", equalTo(false))
+        ))
+
+        fileScanRunning.set(false)
+        lastScanSuccess.set(false)
+
+        status = videoFileService.isVideoFileScanRunning()
+        assertThat(status, allOf(
+                hasProperty("inProgress", equalTo(false)),
+                hasProperty("alreadyRunning", equalTo(false)),
+                hasProperty("message", equalTo(SCAN_STATUS_ERROR)),
+                hasProperty("scanError", equalTo(true))
         ))
     }
 
