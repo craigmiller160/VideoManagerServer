@@ -28,6 +28,7 @@ class VideoFileRepositoryIntegrationTest {
         private const val FILE_NAME = "MyFile"
         private const val FILE_DISPLAY_NAME = "MyDisplayFile"
         private const val FILE_NAME_2 = "MyFile2"
+        private const val FILE_NAME_3 = "MyFile3"
         private val DATE = LocalDateTime.of(2018, 1, 1, 1, 1)
         private val DATE_2 = LocalDateTime.of(2018, 2, 2, 2, 2)
     }
@@ -142,6 +143,23 @@ class VideoFileRepositoryIntegrationTest {
 
         result = videoFileRepo.countByValues("%File%", null, null, null)
         assertEquals(2, result)
+    }
+
+    @Test
+    fun testDeleteOldFiles() {
+        val timestamp = LocalDateTime.now()
+        val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp)).fileId
+
+        var count = videoFileRepo.count()
+        assertEquals(3, count)
+
+        videoFileRepo.deleteOldFiles(timestamp)
+        count = videoFileRepo.count()
+        assertEquals(1, count)
+
+        val file = videoFileRepo.findById(id)
+        assertTrue(file.isPresent)
+        assertEquals(FILE_NAME_3, file.get().fileName)
     }
 
 }

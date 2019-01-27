@@ -26,6 +26,7 @@ class FileScanner @Autowired constructor(
     fun scanForFiles(done: (Boolean) -> Unit = {}) {
         val filePathRoot = videoConfig.filePathRoot
         val fileExts = videoConfig.splitFileExts()
+        val scanTimestamp = LocalDateTime.now()
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -41,6 +42,7 @@ class FileScanner @Autowired constructor(
                             val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
                             val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name)
                             videoFile.lastModified = lastModified
+                            videoFile.lastScanTimestamp = scanTimestamp
                             videoFileRepo.save(videoFile)
                         }
                 logger.info("Scan completed successfully")

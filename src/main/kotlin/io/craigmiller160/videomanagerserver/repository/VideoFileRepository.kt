@@ -2,8 +2,10 @@ package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
+import java.time.LocalDateTime
 
 interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
 
@@ -28,5 +30,9 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
 
     @Query("SELECT COUNT(vf) $SEARCH_CONDITIONS")
     fun countByValues(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): Long
+
+    @Query("DELETE FROM VideoFile WHERE lastScanTimestamp < :scanTimestamp")
+    @Modifying
+    fun deleteOldFiles(scanTimestamp: LocalDateTime)
 
 }

@@ -1,5 +1,7 @@
 package io.craigmiller160.videomanagerserver.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -13,7 +15,9 @@ data class VideoFile(
         var fileName: String = "",
         var displayName: String = "",
         var description: String = "",
-        var lastModified: LocalDateTime = LocalDateTime.MIN,
+        var lastModified: LocalDateTime = DEFAULT_TIMESTAMP,
+        @JsonIgnore
+        var lastScanTimestamp: LocalDateTime = DEFAULT_TIMESTAMP,
         @Column(columnDefinition = "int default 0")
         var viewCount: Int = 0,
 
