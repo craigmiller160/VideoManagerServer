@@ -5,6 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.service.VideoFileService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*
 class VideoFileController @Autowired constructor(
         private val videoFileService: VideoFileService
 ) {
+
+    private val logger = LoggerFactory.getLogger(VideoFileController::class.java)
 
     private fun validateSortDirection(sortDirection: String) {
         try {
@@ -73,6 +76,7 @@ class VideoFileController @Autowired constructor(
     fun startVideoFileScan(): ResponseEntity<FileScanStatus> {
         val status = videoFileService.startVideoFileScan()
         if (status.alreadyRunning) {
+            logger.warn("Video scanner already running, cannot start it again")
             return ResponseEntity.badRequest().body(status)
         }
         return ResponseEntity.ok(status)
