@@ -6,9 +6,11 @@ import io.craigmiller160.videomanagerserver.service.StarService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.util.Optional
+import java.util.*
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class StarServiceImpl @Autowired constructor(
         private val starRepo: StarRepository
 ): StarService {

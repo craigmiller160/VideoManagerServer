@@ -6,9 +6,11 @@ import io.craigmiller160.videomanagerserver.service.SeriesService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
-import java.util.Optional
+import java.util.*
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class SeriesServiceImpl @Autowired constructor(
         private val seriesRepo: SeriesRepository
 ) : SeriesService {

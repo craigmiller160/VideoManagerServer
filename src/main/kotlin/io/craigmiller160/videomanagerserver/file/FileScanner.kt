@@ -6,7 +6,6 @@ import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -45,6 +44,7 @@ class FileScanner @Autowired constructor(
                             videoFile.lastScanTimestamp = scanTimestamp
                             videoFileRepo.save(videoFile)
                         }
+                videoFileRepo.deleteOldFiles(scanTimestamp)
                 logger.info("Scan completed successfully")
                 done(true)
             }

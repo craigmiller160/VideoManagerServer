@@ -12,8 +12,10 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
