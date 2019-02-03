@@ -35,13 +35,14 @@ class FileScanner @Autowired constructor(
                         .filter { p -> !p.toFile().isHidden }
                         .filter { p -> fileExts.contains(p.toFile().extension) }
                         .forEach { p ->
-                            val name = p.toString().replace(Regex("^$filePathRoot"), "")
+                            val name = p.toString().replace(Regex("^$filePathRoot/"), "")
                             logger.trace("Scanning file: $name")
                             val lastModifiedTime = Files.getLastModifiedTime(p)
                             val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
                             val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name)
                             videoFile.lastModified = lastModified
                             videoFile.lastScanTimestamp = scanTimestamp
+                            if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
                             videoFileRepo.save(videoFile)
                         }
                 videoFileRepo.deleteOldFiles(scanTimestamp)

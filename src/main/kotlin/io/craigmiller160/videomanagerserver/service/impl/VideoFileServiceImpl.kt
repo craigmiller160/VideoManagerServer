@@ -28,8 +28,8 @@ class VideoFileServiceImpl @Autowired constructor(
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
-                Sort.Order(sortDirection, "displayName", Sort.NullHandling.NULLS_LAST),
-                Sort.Order(sortDirection, "fileName", Sort.NullHandling.NULLS_LAST)
+                Sort.Order(sortDirection, "displayName", Sort.NullHandling.NULLS_FIRST),
+                Sort.Order(sortDirection, "fileName", Sort.NullHandling.NULLS_FIRST)
         )
     }
 
