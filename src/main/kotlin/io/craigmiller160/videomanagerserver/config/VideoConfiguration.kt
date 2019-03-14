@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.validation.annotation.Validated
 import javax.validation.constraints.NotBlank
 
+@Suppress("ConfigurationProperties")
 @Configuration
 @Validated
 @ConfigurationProperties(prefix = "video")
