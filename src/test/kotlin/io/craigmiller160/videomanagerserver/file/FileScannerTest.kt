@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -56,14 +57,12 @@ class FileScannerTest {
 
             val done = AtomicBoolean(false)
 
-            val result = async {
-                fileScanner.scanForFiles {
-                    done.set(true)
-                }
+            val job = fileScanner.scanForFiles {
+                done.set(true)
             }
 
             withTimeout(10_000) {
-                result.await()
+                job.join()
             }
 
             assertTrue(done.get())
