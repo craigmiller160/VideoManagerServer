@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.util
+package io.craigmiller160.videomanagerserver.test_util
 
 fun <T> getFirst(set: Set<T>) = set.stream().findFirst().get()
 

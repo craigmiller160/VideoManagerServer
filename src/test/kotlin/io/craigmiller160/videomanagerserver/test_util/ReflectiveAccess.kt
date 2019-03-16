@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.util
+package io.craigmiller160.videomanagerserver.test_util
 
 import org.springframework.util.ReflectionUtils
 

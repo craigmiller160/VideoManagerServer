@@ -4,8 +4,11 @@ import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
-import io.craigmiller160.videomanagerserver.util.getFirst
-import org.junit.Assert.*
+import io.craigmiller160.videomanagerserver.test_util.getFirst
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
