@@ -12,6 +12,4 @@ VideoManagerDocker - the docker configuration.
 
 ### Environment Variables
 
-VIDEO_MANAGER_DIR - The directory with videos for the dev environment.
-
-VIDEO_MANAGER_DIR_PROD - The directory with the videos for the prod environment.
+VIDEO_MANAGER_DIR - The directory with videos for the dev environment. It should be set on the OS itself for development, and via Docker for production deployment.
