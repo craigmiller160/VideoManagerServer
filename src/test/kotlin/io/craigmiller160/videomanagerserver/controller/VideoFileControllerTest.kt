@@ -2,9 +2,15 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import io.craigmiller160.videomanagerserver.dto.*
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.service.VideoFileService
-import io.craigmiller160.videomanagerserver.util.isA
+import io.craigmiller160.videomanagerserver.test_util.isA
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -16,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.util.*
+import java.util.Optional
 
 @SpringBootTest
 class VideoFileControllerTest {
