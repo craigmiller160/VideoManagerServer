@@ -88,10 +88,9 @@ class VideoFileController @Autowired constructor(
         return ResponseEntity.ok(videoFileService.isVideoFileScanRunning())
     }
 
-    @PostMapping("/play")
-    fun playVideo(@RequestBody videoFile: VideoFile, @RequestHeader headers: HttpHeaders): ResponseEntity<ResourceRegion> {
-        validateVideoFileName(videoFile.fileName)
-        val video = videoFileService.playVideo(videoFile)
+    @GetMapping("/play/{fileId}")
+    fun playVideo(@PathVariable fileId: Long, @RequestHeader headers: HttpHeaders): ResponseEntity<ResourceRegion> {
+        val video = videoFileService.playVideo(fileId)
         val region = resourceRegion(video, headers)
         return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
                 .contentType(MediaTypeFactory

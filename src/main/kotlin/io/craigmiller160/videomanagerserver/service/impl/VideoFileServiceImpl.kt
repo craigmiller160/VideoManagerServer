@@ -86,12 +86,12 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanErrorStatus()
     }
 
-    override fun playVideo(videoFile: VideoFile): UrlResource {
-        val dbVideoFileOpt = videoFileRepo.findById(videoFile.fileId)
-        val dbVideoFile = dbVideoFileOpt.orElseThrow { Exception("Could not find video file in DB: ${videoFile.fileName}") }
+    override fun playVideo(fileId: Long): UrlResource {
+        val dbVideoFile = videoFileRepo.findById(fileId)
+                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
         dbVideoFile.viewCount++
         videoFileRepo.save(dbVideoFile)
-        val fullPath = "${videoConfig.filePathRoot}/${videoFile.fileName}"
+        val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
         return UrlResource(File(fullPath).toURI())
     }
 

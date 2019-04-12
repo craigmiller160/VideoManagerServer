@@ -203,7 +203,7 @@ class VideoFileServiceImplTest {
         `when`(videoFileRepo.findById(1))
                 .thenReturn(Optional.of(expectedFiles[0]))
 
-        val video = videoFileService.playVideo(expectedFiles[0])
+        val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
         val argumentCaptor = argumentCaptor<VideoFile>().apply {
             verify(videoFileRepo, times(1)).save(capture())

@@ -23,7 +23,7 @@ interface VideoFileService {
 
     fun isVideoFileScanRunning(): FileScanStatus
 
-    fun playVideo(videoFile: VideoFile): UrlResource
+    fun playVideo(fileId: Long): UrlResource
 
     fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults
 
