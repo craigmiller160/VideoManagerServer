@@ -7,8 +7,9 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.support.ResourceRegion
 import org.springframework.data.domain.Sort
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -88,10 +89,15 @@ class VideoFileController @Autowired constructor(
     }
 
     @PostMapping("/play")
-    fun playVideo(@RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
+    fun playVideo(@RequestBody videoFile: VideoFile, @RequestHeader headers: HttpHeaders): ResponseEntity<ResourceRegion> {
         validateVideoFileName(videoFile.fileName)
-        videoFileService.playVideo(videoFile)
-        return ResponseEntity.ok(videoFile)
+        val video = videoFileService.playVideo(videoFile)
+        val region = resourceRegion(video, headers)
+        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                .contentType(MediaTypeFactory
+                        .getMediaType(video)
+                        .orElse(MediaType.APPLICATION_OCTET_STREAM))
+                .body(region)
     }
 
     @PostMapping("/search")
