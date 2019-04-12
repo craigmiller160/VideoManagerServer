@@ -3,7 +3,16 @@ package io.craigmiller160.videomanagerserver.dto
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
+import javax.persistence.Table
 
 @Entity
 @Table(name = "video_files")
@@ -21,7 +30,7 @@ data class VideoFile(
         @Column(columnDefinition = "int default 0")
         var viewCount: Int = 0,
 
-        @ManyToMany (fetch = FetchType.EAGER)
+        @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "file_categories",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "category_id")])
