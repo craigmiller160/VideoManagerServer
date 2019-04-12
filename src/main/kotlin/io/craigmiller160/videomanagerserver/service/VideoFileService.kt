@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import org.springframework.core.io.UrlResource
 import java.util.*
 
 interface VideoFileService {
@@ -22,7 +23,7 @@ interface VideoFileService {
 
     fun isVideoFileScanRunning(): FileScanStatus
 
-    fun playVideo(videoFile: VideoFile)
+    fun playVideo(videoFile: VideoFile): UrlResource
 
     fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults
 

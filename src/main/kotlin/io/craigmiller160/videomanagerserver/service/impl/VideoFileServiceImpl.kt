@@ -3,13 +3,14 @@ package io.craigmiller160.videomanagerserver.service.impl
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.file.FileScanner
-import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.transaction.Transactional
@@ -19,8 +20,7 @@ import javax.transaction.Transactional
 class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
-        private val fileScanner: FileScanner,
-        private val videoPlayer: VideoPlayer
+        private val fileScanner: FileScanner
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -86,12 +86,13 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanErrorStatus()
     }
 
-    override fun playVideo(videoFile: VideoFile) {
+    override fun playVideo(videoFile: VideoFile): UrlResource {
         val dbVideoFileOpt = videoFileRepo.findById(videoFile.fileId)
         val dbVideoFile = dbVideoFileOpt.orElseThrow { Exception("Could not find video file in DB: ${videoFile.fileName}") }
         dbVideoFile.viewCount++
         videoFileRepo.save(dbVideoFile)
-        videoPlayer.playVideo(dbVideoFile)
+        val fullPath = "${videoConfig.filePathRoot}/${videoFile.fileName}"
+        return UrlResource(File(fullPath).toURI())
     }
 
     override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
