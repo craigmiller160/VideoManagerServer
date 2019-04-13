@@ -123,6 +123,33 @@ class VideoFileRepositoryIntegrationTest {
     }
 
     @Test
+    fun testSearchByText() {
+        val searchText = "%File2%"
+        val pageable = PageRequest.of(0, 10)
+
+        var results = videoFileRepo.searchByText(searchText, pageable)
+        assertEquals(1, results.size)
+
+        results = videoFileRepo.searchByText(null, pageable)
+        assertEquals(2, results.size)
+    }
+
+    @Test
+    fun testSearchByTextAndEntities() {
+        val searchText = "%File%"
+        val pageable = PageRequest.of(0, 10)
+
+        var results = videoFileRepo.searchByTextAndEntities(searchText, 1, null, null, pageable)
+        assertEquals(1, results.size)
+
+        results = videoFileRepo.searchByTextAndEntities(searchText, null, 1, null, pageable)
+        assertEquals(1, results.size)
+
+        results = videoFileRepo.searchByTextAndEntities(searchText, null, null, 1, pageable)
+        assertEquals(1, results.size)
+    }
+
+    @Test
     fun testSearchByValues() {
         var results = videoFileRepo.searchByValues("%File%", 1, 1, 1, PageRequest.of(0, 10))
         assertEquals(1, results.size)
@@ -196,7 +223,7 @@ class VideoFileRepositoryIntegrationTest {
     fun test_test() {
         // TODO delete this
         println(videoFileRepo.count())
-        val results = videoFileRepo.test("%File%", null, null, null)
+        val results = videoFileRepo.test()
         println(results.size)
     }
 
