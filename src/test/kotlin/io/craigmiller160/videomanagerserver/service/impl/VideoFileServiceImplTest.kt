@@ -343,7 +343,7 @@ class VideoFileServiceImplTest {
         verify(query, times(4))
                 .setParameter(isA(String::class.java), argumentCaptor.capture())
         assertEquals(4, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>("Hello", 1L, 1L, 1L))
+        assertThat(argumentCaptor.allValues, contains<Any>("%Hello%", 1L, 1L, 1L))
     }
 
     @Test
@@ -355,7 +355,7 @@ class VideoFileServiceImplTest {
         verify(query, times(1))
                 .setParameter(isA(String::class.java), argumentCaptor.capture())
         assertEquals(1, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>("Hello"))
+        assertThat(argumentCaptor.allValues, contains<Any>("%Hello%"))
     }
 
     @Test

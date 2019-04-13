@@ -144,7 +144,7 @@ class VideoFileServiceImpl @Autowired constructor(
 
     internal fun addParamsToQuery(search: VideoSearch, query: Query) {
         search.searchText?.let {
-            query.setParameter("searchText", it)
+            query.setParameter("searchText", "%$it%")
         }
         search.categoryId?.let {
             query.setParameter("categoryId", it)
