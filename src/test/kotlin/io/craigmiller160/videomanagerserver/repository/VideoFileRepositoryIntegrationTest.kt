@@ -54,16 +54,19 @@ class VideoFileRepositoryIntegrationTest {
     @Before
     fun setup() {
         val category = Category(categoryName = CATEGORY_NAME)
+        val category2 = Category(categoryName = "${CATEGORY_NAME}2")
         val series = Series(seriesName = SERIES_NAME)
         val star = Star(starName = STAR_NAME)
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
             categories += category
+            categories += category2
             this.series += series
             stars += star
             lastModified = DATE_2
         }
 
         categoryRepo.save(category)
+        categoryRepo.save(category2)
         seriesRepo.save(series)
         starRepo.save(star)
         videoFile = videoFileRepo.save(videoFile)
@@ -91,7 +94,7 @@ class VideoFileRepositoryIntegrationTest {
         assertEquals(FILE_NAME, file.fileName)
         assertEquals(FILE_DISPLAY_NAME, file.displayName)
 
-        assertEquals(1, file.categories.size)
+        assertEquals(2, file.categories.size)
         assertEquals(CATEGORY_NAME, getFirst(file.categories).categoryName)
 
         assertEquals(1, file.series.size)
@@ -110,7 +113,7 @@ class VideoFileRepositoryIntegrationTest {
         assertFalse(fileOptional.isPresent)
 
         val categoryCount = categoryRepo.count()
-        assertEquals(1, categoryCount)
+        assertEquals(2, categoryCount)
 
         val seriesCount = seriesRepo.count()
         assertEquals(1, seriesCount)
