@@ -57,9 +57,9 @@ class VideoFileServiceIntegrationTest {
         val star = Star(starName = "MyStar")
 
         file1 = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
-            categories += category
-            this.series += series
-            stars += star
+            categories.add(category)
+            this.series.add(series)
+            stars.add(star)
         }
         file1 = videoFileService.addVideoFile(file1)
 
@@ -77,6 +77,7 @@ class VideoFileServiceIntegrationTest {
                 stmt.executeUpdate("ALTER TABLE categories ALTER COLUMN category_id RESTART WITH 1")
                 stmt.executeUpdate("ALTER TABLE series ALTER COLUMN series_id RESTART WITH 1")
                 stmt.executeUpdate("ALTER TABLE stars ALTER COLUMN star_id RESTART WITH 1")
+                stmt.executeUpdate("ALTER TABLE video_files ALTER COLUMN file_id RESTART WITH 1")
             }
             conn.commit()
         }
@@ -100,6 +101,30 @@ class VideoFileServiceIntegrationTest {
         assertEquals(file2, files[0])
         assertEquals(file3, files[1])
         assertEquals(file1, files[2])
+    }
+
+    @Test
+    fun test_updateVideoFile_removeJoin() {
+        val file = videoFileService.getVideoFile(1L).get()
+        file.categories.clear()
+        videoFileService.updateVideoFile(1L, file)
+
+        val result = videoFileService.getVideoFile(1L).get()
+        assertEquals(0, result.categories.size)
+        assertEquals(1, result.series.size)
+        assertEquals(1, result.stars.size)
+    }
+
+    @Test
+    fun test_updateVideoFile_addJoin() {
+        val file = videoFileService.getVideoFile(1L).get()
+        file.categories.add(Category(categoryName = "NewCat"))
+        videoFileService.updateVideoFile(1L, file)
+
+        val result = videoFileService.getVideoFile(1L).get()
+        assertEquals(2, result.categories.size)
+        assertEquals(1, result.series.size)
+        assertEquals(1, result.stars.size)
     }
 
     @Test

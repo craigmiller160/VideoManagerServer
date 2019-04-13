@@ -1,11 +1,15 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.*
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
+import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.file.FileScanner
-import io.craigmiller160.videomanagerserver.repository.CategoryRepository
-import io.craigmiller160.videomanagerserver.repository.SeriesRepository
-import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -168,7 +172,6 @@ class VideoFileServiceImpl @Autowired constructor(
 
     override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
         val pageSize = videoConfig.apiPageSize
-//        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection)) // TODO delete this
 
         val searchQueryString = StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
@@ -178,8 +181,6 @@ class VideoFileServiceImpl @Autowired constructor(
                 .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
                 .appendln(buildQueryCriteria(search, null))
                 .toString()
-
-        println(searchQueryString) // TODO delete this
 
         val searchQuery = entityManager.createQuery(searchQueryString)
         val countQuery = entityManager.createQuery(countQueryString)
@@ -192,27 +193,6 @@ class VideoFileServiceImpl @Autowired constructor(
                 .resultList as List<VideoFile>
         val totalCount = countQuery.singleResult as Long
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        val pageable = PageRequest.of(page, pageSize, sort)
-//
-//        val videoList = videoFileRepo.searchByValues(searchText, search.seriesId, search.starId, search.categoryId, pageable)
-//        val totalCount = videoFileRepo.countByValues(searchText, search.seriesId, search.starId, search.categoryId)
         return VideoSearchResults().apply {
             totalFiles = totalCount
             filesPerPage = pageSize

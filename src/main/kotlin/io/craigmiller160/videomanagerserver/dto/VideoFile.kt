@@ -35,17 +35,17 @@ data class VideoFile(
         @JoinTable(name = "file_categories",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "category_id")])
-        var categories: Set<Category> = HashSet(),
+        var categories: MutableSet<Category> = HashSet(),
 
         @ManyToMany (fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
         @JoinTable(name = "file_series",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "series_id")])
-        var series: Set<Series> = HashSet(),
+        var series: MutableSet<Series> = HashSet(),
 
         @ManyToMany (fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
         @JoinTable(name = "file_stars",
                 joinColumns = [JoinColumn(name = "file_id")],
                 inverseJoinColumns = [JoinColumn(name = "star_id")])
-        var stars: Set<Star> = HashSet()
+        var stars: MutableSet<Star> = HashSet()
 )

@@ -58,10 +58,10 @@ class VideoFileRepositoryIntegrationTest {
         val series = Series(seriesName = SERIES_NAME)
         val star = Star(starName = STAR_NAME)
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
-            categories += category
-            categories += category2
-            this.series += series
-            stars += star
+            categories.add(category)
+            categories.add(category2)
+            this.series.add(series)
+            stars.add(star)
             lastModified = DATE_2
         }
 
