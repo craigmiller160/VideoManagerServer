@@ -5,4 +5,7 @@ data class VideoSearch (
         var seriesId: Long? = null,
         var starId: Long? = null,
         var categoryId: Long? = null
-)
+) {
+    fun isJoinedSearch()  =
+            this.seriesId != null || this.starId != null || this.categoryId != null
+}
