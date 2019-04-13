@@ -85,7 +85,6 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
     @Query("""
         SELECT vf
         FROM VideoFile vf
-        WHERE vf.series.seriesId = 1
     """)
     fun test(): List<VideoFile> // TODO delete this
 

@@ -98,16 +98,16 @@ class VideoFileServiceImpl @Autowired constructor(
         return UrlResource(File(fullPath).toURI())
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String): String {
+    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
-            queryBuilder.appendln("LEFT JOIN Category ca")
+            queryBuilder.appendln("LEFT JOIN FETCH Category ca")
         }
         search.seriesId?.let {
-            queryBuilder.appendln("LEFT JOIN Series se")
+            queryBuilder.appendln("LEFT JOIN FETCH Series se")
         }
         search.starId?.let {
-            queryBuilder.appendln("LEFT JOIN Star st")
+            queryBuilder.appendln("LEFT JOIN FETCH Star st")
         }
 
         if (search.hasCriteria()) {
@@ -139,9 +139,12 @@ class VideoFileServiceImpl @Autowired constructor(
             }
             queryBuilder.appendln("st.starId = :starId")
         }
-        return queryBuilder
-                .appendln("ORDER BY vf.displayName, vf.fileName $sortDirection")
-                .toString()
+
+        sortDirection?.let {
+            queryBuilder.appendln("ORDER BY vf.displayName, vf.fileName $it")
+        }
+
+        return queryBuilder.toString()
     }
 
     internal fun addParamsToQuery(search: VideoSearch, query: Query) {
@@ -169,9 +172,11 @@ class VideoFileServiceImpl @Autowired constructor(
                 .appendln(buildQueryCriteria(search, sortDirection))
                 .toString()
         val countQueryString = StringBuilder()
-                .appendln("SELECT COUNT(vf) FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, sortDirection))
+                .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
+                .appendln(buildQueryCriteria(search, null))
                 .toString()
+
+        println(searchQueryString) // TODO delete this
 
         val searchQuery = entityManager.createQuery(searchQueryString)
         val countQuery = entityManager.createQuery(countQueryString)
