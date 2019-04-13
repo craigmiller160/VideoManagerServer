@@ -269,8 +269,8 @@ class VideoFileServiceImplTest {
     @Test
     fun test_buildQueryCriteria_noCriteria() {
         val search = VideoSearch()
-        val query = videoFileService.buildQueryCriteria(search)
-        assertEquals("", query)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        assertEquals("ORDER BY vf.displayName, vf.fileName ASC\n", query)
     }
 
     @Test
@@ -281,45 +281,50 @@ class VideoFileServiceImplTest {
                 "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
                 "AND ca.categoryId = :categoryId\n" +
                 "AND se.seriesId = :seriesId\n" +
-                "AND st.starId = :starId\n"
+                "AND st.starId = :starId\n" +
+                "ORDER BY vf.displayName, vf.fileName ASC\n"
 
         val search = VideoSearch("Hello", 1, 1, 1)
-        val query = videoFileService.buildQueryCriteria(search)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
         assertEquals(expected, query)
     }
 
     @Test
     fun test_buildQueryCriteria_onlySearchText() {
-        val expected = "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n"
+        val expected = "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
+                "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch("Hello")
-        val query = videoFileService.buildQueryCriteria(search)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
         assertEquals(expected, query)
     }
 
     @Test
     fun test_buildQueryCriteria_onlyCategory() {
         val expected = "LEFT JOIN Category ca\n" +
-                "WHERE ca.categoryId = :categoryId\n"
+                "WHERE ca.categoryId = :categoryId\n" +
+                "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(categoryId = 1)
-        val query = videoFileService.buildQueryCriteria(search)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
         assertEquals(expected, query)
     }
 
     @Test
     fun test_buildQueryCriteria_onlyStar() {
         val expected = "LEFT JOIN Star st\n" +
-                "WHERE st.starId = :starId\n"
+                "WHERE st.starId = :starId\n" +
+                "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(starId = 1)
-        val query = videoFileService.buildQueryCriteria(search)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
         assertEquals(expected, query)
     }
 
     @Test
     fun test_buildQueryCriteria_onlySeries() {
         val expected = "LEFT JOIN Series se\n" +
-                "WHERE se.seriesId = :seriesId\n"
+                "WHERE se.seriesId = :seriesId\n" +
+                "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(seriesId = 1)
-        val query = videoFileService.buildQueryCriteria(search)
+        val query = videoFileService.buildQueryCriteria(search, "ASC")
         assertEquals(expected, query)
     }
 

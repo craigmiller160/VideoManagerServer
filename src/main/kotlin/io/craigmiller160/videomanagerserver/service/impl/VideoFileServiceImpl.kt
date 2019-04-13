@@ -98,7 +98,7 @@ class VideoFileServiceImpl @Autowired constructor(
         return UrlResource(File(fullPath).toURI())
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch): String {
+    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
             queryBuilder.appendln("LEFT JOIN Category ca")
@@ -139,7 +139,9 @@ class VideoFileServiceImpl @Autowired constructor(
             }
             queryBuilder.appendln("st.starId = :starId")
         }
-        return queryBuilder.toString()
+        return queryBuilder
+                .appendln("ORDER BY vf.displayName, vf.fileName $sortDirection")
+                .toString()
     }
 
     internal fun addParamsToQuery(search: VideoSearch, query: Query) {
@@ -160,16 +162,15 @@ class VideoFileServiceImpl @Autowired constructor(
 
     override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
         val pageSize = videoConfig.apiPageSize
-        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
-        val searchText = search.searchText?.let { "%${search.searchText}%" }
+//        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection)) // TODO delete this
 
         val searchQueryString = StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search))
+                .appendln(buildQueryCriteria(search, sortDirection))
                 .toString()
         val countQueryString = StringBuilder()
                 .appendln("SELECT COUNT(vf) FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search))
+                .appendln(buildQueryCriteria(search, sortDirection))
                 .toString()
 
         val searchQuery = entityManager.createQuery(searchQueryString)
