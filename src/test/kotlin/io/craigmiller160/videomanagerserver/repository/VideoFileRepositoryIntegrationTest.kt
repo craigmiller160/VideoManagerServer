@@ -128,10 +128,25 @@ class VideoFileRepositoryIntegrationTest {
         assertEquals(1, results.size)
         assertEquals(videoFile, results[0])
 
+        val testResults = { res: List<VideoFile>, count: Int ->
+            assertEquals(count, res.size)
+            assertEquals(videoFile, res[0])
+            if (count == 2) {
+                assertEquals(videoFile2, res[1])
+            }
+        }
+
         results = videoFileRepo.searchByValues("%File%", null, null, null, PageRequest.of(0, 10))
-        assertEquals(2, results.size)
-        assertEquals(videoFile, results[0])
-        assertEquals(videoFile2, results[1])
+        testResults(results, 2)
+
+        results = videoFileRepo.searchByValues("%File%", 1, null, null, PageRequest.of(0, 10))
+        testResults(results, 1)
+
+        results = videoFileRepo.searchByValues("%File%", null, 1, null, PageRequest.of(0, 10))
+        testResults(results, 1)
+
+        results = videoFileRepo.searchByValues("%File%", null, null, 1, PageRequest.of(0, 10))
+        testResults(results, 1)
     }
 
     @Test
@@ -149,6 +164,15 @@ class VideoFileRepositoryIntegrationTest {
 
         result = videoFileRepo.countByValues("%File%", null, null, null)
         assertEquals(2, result)
+
+        result = videoFileRepo.countByValues("%File%", 1, null, null)
+        assertEquals(1, result)
+
+        result = videoFileRepo.countByValues("%File%", null, 1, null)
+        assertEquals(1, result)
+
+        result = videoFileRepo.countByValues("%File%", null, null, 1)
+        assertEquals(1, result)
     }
 
     @Test

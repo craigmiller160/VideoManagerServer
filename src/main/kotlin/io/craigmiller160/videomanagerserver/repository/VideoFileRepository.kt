@@ -21,6 +21,22 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
                 "AND (:seriesId IS NULL OR se.seriesId = :seriesId) " +
                 "AND (:starId IS NULL OR st.starId = :starId) " +
                 "AND (:categoryId IS NULL OR c.categoryId = :categoryId)"
+
+        private const val SEARCH_TEXT_COND = """
+            (:searchText IS NULL OR vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)
+        """
+
+        private const val LEFT_JOIN_ENTITIES = """
+            LEFT JOIN vf.stars st
+            LEFT JOIN vf.categories c
+            LEFT JOIN vf.series se
+        """
+
+        private const val JOINED_CONDITIONS = """
+            AND (:seriesId IS NULL OR se.seriesId = :seriesId)
+            AND (:starId IS NULL OR st.starId = :starId)
+            AND (:categoryId IS NULL OR c.categoryId = :categoryId)
+        """
     }
 
     fun findByFileName(fileName: String): VideoFile?
