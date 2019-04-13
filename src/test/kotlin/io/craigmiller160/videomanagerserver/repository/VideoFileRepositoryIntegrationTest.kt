@@ -54,16 +54,19 @@ class VideoFileRepositoryIntegrationTest {
     @Before
     fun setup() {
         val category = Category(categoryName = CATEGORY_NAME)
+        val category2 = Category(categoryName = "${CATEGORY_NAME}2")
         val series = Series(seriesName = SERIES_NAME)
         val star = Star(starName = STAR_NAME)
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
-            categories += category
-            this.series += series
-            stars += star
+            categories.add(category)
+            categories.add(category2)
+            this.series.add(series)
+            stars.add(star)
             lastModified = DATE_2
         }
 
         categoryRepo.save(category)
+        categoryRepo.save(category2)
         seriesRepo.save(series)
         starRepo.save(star)
         videoFile = videoFileRepo.save(videoFile)
@@ -91,7 +94,7 @@ class VideoFileRepositoryIntegrationTest {
         assertEquals(FILE_NAME, file.fileName)
         assertEquals(FILE_DISPLAY_NAME, file.displayName)
 
-        assertEquals(1, file.categories.size)
+        assertEquals(2, file.categories.size)
         assertEquals(CATEGORY_NAME, getFirst(file.categories).categoryName)
 
         assertEquals(1, file.series.size)
@@ -110,42 +113,13 @@ class VideoFileRepositoryIntegrationTest {
         assertFalse(fileOptional.isPresent)
 
         val categoryCount = categoryRepo.count()
-        assertEquals(1, categoryCount)
+        assertEquals(2, categoryCount)
 
         val seriesCount = seriesRepo.count()
         assertEquals(1, seriesCount)
 
         val starsCount = starRepo.count()
         assertEquals(1, starsCount)
-    }
-
-    @Test
-    fun testSearchByValues() {
-        var results = videoFileRepo.searchByValues("%File%", 1, 1, 1, PageRequest.of(0, 10))
-        assertEquals(1, results.size)
-        assertEquals(videoFile, results[0])
-
-        results = videoFileRepo.searchByValues("%File%", null, null, null, PageRequest.of(0, 10))
-        assertEquals(2, results.size)
-        assertEquals(videoFile, results[0])
-        assertEquals(videoFile2, results[1])
-    }
-
-    @Test
-    fun testCountByValues() {
-        val initCount = videoFileRepo.count()
-        assertEquals(2, initCount) // Making sure that there are two files to begin with
-
-        var result = videoFileRepo.countByValues(
-                "%File%",
-                getFirst(videoFile.series).seriesId,
-                getFirst(videoFile.stars).starId,
-                getFirst(videoFile.categories).categoryId
-        )
-        assertEquals(1, result)
-
-        result = videoFileRepo.countByValues("%File%", null, null, null)
-        assertEquals(2, result)
     }
 
     @Test

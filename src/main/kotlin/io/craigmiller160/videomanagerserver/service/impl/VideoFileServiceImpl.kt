@@ -1,17 +1,27 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.*
+import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
+import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
+import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.file.FileScanner
-import io.craigmiller160.videomanagerserver.player.VideoPlayer
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.persistence.EntityManager
+import javax.persistence.Query
 import javax.transaction.Transactional
 
 @Service
@@ -20,7 +30,7 @@ class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
         private val fileScanner: FileScanner,
-        private val videoPlayer: VideoPlayer
+        private val entityManager: EntityManager
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -86,21 +96,103 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanErrorStatus()
     }
 
-    override fun playVideo(videoFile: VideoFile) {
-        val dbVideoFileOpt = videoFileRepo.findById(videoFile.fileId)
-        val dbVideoFile = dbVideoFileOpt.orElseThrow { Exception("Could not find video file in DB: ${videoFile.fileName}") }
+    override fun playVideo(fileId: Long): UrlResource {
+        val dbVideoFile = videoFileRepo.findById(fileId)
+                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
         dbVideoFile.viewCount++
         videoFileRepo.save(dbVideoFile)
-        videoPlayer.playVideo(dbVideoFile)
+        val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
+        return UrlResource(File(fullPath).toURI())
     }
+
+    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {
+        val queryBuilder = StringBuilder()
+        search.categoryId?.let {
+            queryBuilder.appendln("LEFT JOIN vf.categories ca")
+        }
+        search.seriesId?.let {
+            queryBuilder.appendln("LEFT JOIN vf.series se")
+        }
+        search.starId?.let {
+            queryBuilder.appendln("LEFT JOIN vf.stars st")
+        }
+
+        if (search.hasCriteria()) {
+            queryBuilder.append("WHERE ")
+        }
+
+        var needsAnd = false
+        search.searchText?.let {
+            queryBuilder.appendln("(vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)")
+            needsAnd = true
+        }
+        search.categoryId?.let {
+            if (needsAnd) {
+                queryBuilder.append("AND ")
+            }
+            queryBuilder.appendln("ca.categoryId = :categoryId")
+            needsAnd = true
+        }
+        search.seriesId?.let {
+            if (needsAnd) {
+                queryBuilder.append("AND ")
+            }
+            queryBuilder.appendln("se.seriesId = :seriesId")
+            needsAnd = true
+        }
+        search.starId?.let {
+            if (needsAnd) {
+                queryBuilder.append("AND ")
+            }
+            queryBuilder.appendln("st.starId = :starId")
+        }
+
+        sortDirection?.let {
+            queryBuilder.appendln("ORDER BY vf.displayName, vf.fileName $it")
+        }
+
+        return queryBuilder.toString()
+    }
+
+    internal fun addParamsToQuery(search: VideoSearch, query: Query) {
+        search.searchText?.let {
+            query.setParameter("searchText", "%$it%")
+        }
+        search.categoryId?.let {
+            query.setParameter("categoryId", it)
+        }
+        search.seriesId?.let {
+            query.setParameter("seriesId", it)
+        }
+        search.starId?.let {
+            query.setParameter("starId", it)
+        }
+    }
+
 
     override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
         val pageSize = videoConfig.apiPageSize
-        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
-        val pageable = PageRequest.of(page, pageSize, sort)
-        val searchText = search.searchText?.let { "%${search.searchText}%" }
-        val videoList = videoFileRepo.searchByValues(searchText, search.seriesId, search.starId, search.categoryId, pageable)
-        val totalCount = videoFileRepo.countByValues(searchText, search.seriesId, search.starId, search.categoryId)
+
+        val searchQueryString = StringBuilder()
+                .appendln("SELECT vf FROM VideoFile vf")
+                .appendln(buildQueryCriteria(search, sortDirection))
+                .toString()
+        val countQueryString = StringBuilder()
+                .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
+                .appendln(buildQueryCriteria(search, null))
+                .toString()
+
+        val searchQuery = entityManager.createQuery(searchQueryString)
+        val countQuery = entityManager.createQuery(countQueryString)
+        addParamsToQuery(search, searchQuery)
+        addParamsToQuery(search, countQuery)
+
+        val videoList = searchQuery
+                .setFirstResult(page * pageSize)
+                .setMaxResults(pageSize)
+                .resultList as List<VideoFile>
+        val totalCount = countQuery.singleResult as Long
+
         return VideoSearchResults().apply {
             totalFiles = totalCount
             filesPerPage = pageSize
