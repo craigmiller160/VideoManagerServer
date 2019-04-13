@@ -37,4 +37,17 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
     @Transactional
     fun deleteOldFiles(scanTimestamp: LocalDateTime)
 
+    @Query("""
+        SELECT vf
+        FROM VideoFile vf
+        LEFT JOIN vf.categories c
+        LEFT JOIN vf.stars st
+        LEFT JOIN vf.series se
+        WHERE (:searchText IS NULL OR vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)
+        AND (:categoryId IS NULL OR c.categoryId = :categoryId)
+        AND (:starId IS NULL OR st.starId = :starId)
+        AND (:seriesId IS NULL OR se.seriesId = :seriesId)
+    """)
+    fun test(searchText: String?, seriesId: Long?, starId: Long?, categoryId: Long?): List<VideoFile> // TODO delete this
+
 }

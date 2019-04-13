@@ -168,4 +168,12 @@ class VideoFileRepositoryIntegrationTest {
         assertEquals(FILE_NAME_3, file.get().fileName)
     }
 
+    @Test
+    fun test_test() {
+        // TODO delete this
+        println(videoFileRepo.count())
+        val results = videoFileRepo.test("%File%", null, null, null)
+        println(results.size)
+    }
+
 }
