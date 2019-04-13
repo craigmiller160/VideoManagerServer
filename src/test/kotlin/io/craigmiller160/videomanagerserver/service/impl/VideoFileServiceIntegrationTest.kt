@@ -12,6 +12,7 @@ import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
+import javax.sql.DataSource
 import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
@@ -41,6 +43,8 @@ class VideoFileServiceIntegrationTest {
 
     @Autowired
     private lateinit var videoFileService: VideoFileService
+    @Autowired
+    private lateinit var dataSource: DataSource
 
     private lateinit var file1: VideoFile
     private lateinit var file2: VideoFile
@@ -64,6 +68,18 @@ class VideoFileServiceIntegrationTest {
 
         file3 = VideoFile(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2)
         file3 = videoFileService.addVideoFile(file3)
+    }
+
+    @After
+    fun clean() {
+        dataSource.connection.use { conn ->
+            conn.createStatement().use { stmt ->
+                stmt.executeUpdate("ALTER TABLE categories ALTER COLUMN category_id RESTART WITH 1")
+                stmt.executeUpdate("ALTER TABLE series ALTER COLUMN series_id RESTART WITH 1")
+                stmt.executeUpdate("ALTER TABLE stars ALTER COLUMN star_id RESTART WITH 1")
+            }
+            conn.commit()
+        }
     }
 
     @Test
@@ -115,23 +131,59 @@ class VideoFileServiceIntegrationTest {
     }
 
     @Test
-    fun test_searchForVideos_onlyTest() {
-        TODO("Finish this")
+    fun test_searchForVideos_onlyText() {
+        val search = VideoSearch("File")
+        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        assertThat(result, allOf(
+                hasProperty("totalFiles", equalTo(3L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", containsInAnyOrder(
+                        file1, file2, file3
+                ))
+        ))
     }
 
     @Test
     fun test_searchForVideos_onlyCategory() {
-        TODO("Finish this")
+        val search = VideoSearch(categoryId = 1)
+        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        assertThat(result, allOf(
+                hasProperty("totalFiles", equalTo(1L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", containsInAnyOrder(
+                        file1
+                ))
+        ))
     }
 
     @Test
     fun test_searchForVideos_onlySeries() {
-        TODO("Finish this")
+        val search = VideoSearch(seriesId = 1)
+        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        assertThat(result, allOf(
+                hasProperty("totalFiles", equalTo(1L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", containsInAnyOrder(
+                        file1
+                ))
+        ))
     }
 
     @Test
     fun test_searchForVideos_onlyStar() {
-        TODO("Finish this")
+        val search = VideoSearch(starId = 1)
+        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        assertThat(result, allOf(
+                hasProperty("totalFiles", equalTo(1L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", containsInAnyOrder(
+                        file1
+                ))
+        ))
     }
 
 }

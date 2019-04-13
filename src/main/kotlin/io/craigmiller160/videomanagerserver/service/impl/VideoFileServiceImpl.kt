@@ -3,6 +3,9 @@ package io.craigmiller160.videomanagerserver.service.impl
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.repository.CategoryRepository
+import io.craigmiller160.videomanagerserver.repository.SeriesRepository
+import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.springframework.beans.factory.annotation.Autowired
@@ -101,13 +104,13 @@ class VideoFileServiceImpl @Autowired constructor(
     internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
-            queryBuilder.appendln("LEFT JOIN FETCH Category ca")
+            queryBuilder.appendln("LEFT JOIN vf.categories ca")
         }
         search.seriesId?.let {
-            queryBuilder.appendln("LEFT JOIN FETCH Series se")
+            queryBuilder.appendln("LEFT JOIN vf.series se")
         }
         search.starId?.let {
-            queryBuilder.appendln("LEFT JOIN FETCH Star st")
+            queryBuilder.appendln("LEFT JOIN vf.stars st")
         }
 
         if (search.hasCriteria()) {
