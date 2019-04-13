@@ -246,9 +246,9 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_allCriteria() {
-        val expected = "LEFT JOIN Category ca\n" +
-                "LEFT JOIN Series se\n" +
-                "LEFT JOIN Star st\n" +
+        val expected = "LEFT JOIN vf.categories ca\n" +
+                "LEFT JOIN vf.series se\n" +
+                "LEFT JOIN vf.stars st\n" +
                 "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
                 "AND ca.categoryId = :categoryId\n" +
                 "AND se.seriesId = :seriesId\n" +
@@ -271,7 +271,7 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlyCategory() {
-        val expected = "LEFT JOIN Category ca\n" +
+        val expected = "LEFT JOIN vf.categories ca\n" +
                 "WHERE ca.categoryId = :categoryId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(categoryId = 1)
@@ -281,7 +281,7 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlyStar() {
-        val expected = "LEFT JOIN Star st\n" +
+        val expected = "LEFT JOIN vf.stars st\n" +
                 "WHERE st.starId = :starId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(starId = 1)
@@ -291,7 +291,7 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlySeries() {
-        val expected = "LEFT JOIN Series se\n" +
+        val expected = "LEFT JOIN vf.series se\n" +
                 "WHERE se.seriesId = :seriesId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(seriesId = 1)
