@@ -238,35 +238,6 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun testSearchForVideos() {
-        val pageSize = 10
-        val searchText = "Hello"
-        val seriesId = 1L
-        val categoryId = 1L
-        val starId = 1L
-        val page = 0
-        val totalValues = 100L
-        `when`(videoConfig.apiPageSize)
-                .thenReturn(pageSize)
-        `when`(videoFileRepo.searchByValues(eq("%$searchText%"), eq(seriesId), eq(starId), eq(categoryId), isA(Pageable::class.java)))
-                .thenReturn(expectedFiles)
-        `when`(videoFileRepo.countByValues(eq("%$searchText%"), eq(seriesId), eq(starId), eq(categoryId)))
-                .thenReturn(totalValues)
-
-        val expectedResults = VideoSearchResults().apply {
-            totalFiles = totalValues
-            filesPerPage = pageSize
-            currentPage = page
-            videoList = expectedFiles
-        }
-
-        val videoSearch = VideoSearch(searchText, seriesId, starId, categoryId)
-
-        val result = videoFileService.searchForVideos(videoSearch, page, Sort.Direction.ASC.toString())
-        assertEquals(expectedResults, result)
-    }
-
-    @Test
     fun test_buildQueryCriteria_noCriteria() {
         val search = VideoSearch()
         val query = videoFileService.buildQueryCriteria(search, "ASC")

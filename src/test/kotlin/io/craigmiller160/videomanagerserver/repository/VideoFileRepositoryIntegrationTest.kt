@@ -123,86 +123,6 @@ class VideoFileRepositoryIntegrationTest {
     }
 
     @Test
-    fun testSearchByText() {
-        val searchText = "%File2%"
-        val pageable = PageRequest.of(0, 10)
-
-        var results = videoFileRepo.searchByText(searchText, pageable)
-        assertEquals(1, results.size)
-
-        results = videoFileRepo.searchByText(null, pageable)
-        assertEquals(2, results.size)
-    }
-
-    @Test
-    fun testSearchByTextAndEntities() {
-        val searchText = "%File%"
-        val pageable = PageRequest.of(0, 10)
-
-        var results = videoFileRepo.searchByTextAndEntities(searchText, 1, null, null, pageable)
-        assertEquals(1, results.size)
-
-        results = videoFileRepo.searchByTextAndEntities(searchText, null, 1, null, pageable)
-        assertEquals(1, results.size)
-
-        results = videoFileRepo.searchByTextAndEntities(searchText, null, null, 1, pageable)
-        assertEquals(1, results.size)
-    }
-
-    @Test
-    fun testSearchByValues() {
-        var results = videoFileRepo.searchByValues("%File%", 1, 1, 1, PageRequest.of(0, 10))
-        assertEquals(1, results.size)
-        assertEquals(videoFile, results[0])
-
-        val testResults = { res: List<VideoFile>, count: Int ->
-            assertEquals(count, res.size)
-            assertEquals(videoFile, res[0])
-            if (count == 2) {
-                assertEquals(videoFile2, res[1])
-            }
-        }
-
-        results = videoFileRepo.searchByValues("%File%", null, null, null, PageRequest.of(0, 10))
-        testResults(results, 2)
-
-        results = videoFileRepo.searchByValues("%File%", 1, null, null, PageRequest.of(0, 10))
-        testResults(results, 1)
-
-        results = videoFileRepo.searchByValues("%File%", null, 1, null, PageRequest.of(0, 10))
-        testResults(results, 1)
-
-        results = videoFileRepo.searchByValues("%File%", null, null, 1, PageRequest.of(0, 10))
-        testResults(results, 1)
-    }
-
-    @Test
-    fun testCountByValues() {
-        val initCount = videoFileRepo.count()
-        assertEquals(2, initCount) // Making sure that there are two files to begin with
-
-        var result = videoFileRepo.countByValues(
-                "%File%",
-                getFirst(videoFile.series).seriesId,
-                getFirst(videoFile.stars).starId,
-                getFirst(videoFile.categories).categoryId
-        )
-        assertEquals(1, result)
-
-        result = videoFileRepo.countByValues("%File%", null, null, null)
-        assertEquals(2, result)
-
-        result = videoFileRepo.countByValues("%File%", 1, null, null)
-        assertEquals(1, result)
-
-        result = videoFileRepo.countByValues("%File%", null, 1, null)
-        assertEquals(1, result)
-
-        result = videoFileRepo.countByValues("%File%", null, null, 1)
-        assertEquals(1, result)
-    }
-
-    @Test
     fun testDeleteOldFiles() {
         val timestamp = LocalDateTime.now()
         val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp)).fileId
@@ -217,14 +137,6 @@ class VideoFileRepositoryIntegrationTest {
         val file = videoFileRepo.findById(id)
         assertTrue(file.isPresent)
         assertEquals(FILE_NAME_3, file.get().fileName)
-    }
-
-    @Test
-    fun test_test() {
-        // TODO delete this
-        println(videoFileRepo.count())
-        val results = videoFileRepo.test()
-        println(results.size)
     }
 
 }
