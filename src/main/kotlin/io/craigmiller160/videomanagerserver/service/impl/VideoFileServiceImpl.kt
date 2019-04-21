@@ -112,7 +112,7 @@ class VideoFileServiceImpl @Autowired constructor(
         videoFileRepo.save(dbVideoFile)
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {
+    internal fun buildQueryCriteria(search: VideoSearch, useOrderBy: Boolean): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
             queryBuilder.appendln("LEFT JOIN vf.categories ca")
@@ -154,8 +154,8 @@ class VideoFileServiceImpl @Autowired constructor(
             queryBuilder.appendln("st.starId = :starId")
         }
 
-        sortDirection?.let {
-            queryBuilder.appendln("ORDER BY vf.displayName, vf.fileName $it")
+        if (useOrderBy) {
+            queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir.toString()}")
         }
 
         return queryBuilder.toString()
@@ -182,11 +182,11 @@ class VideoFileServiceImpl @Autowired constructor(
 
         val searchQueryString = StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, sortDirection))
+                .appendln(buildQueryCriteria(search, true))
                 .toString()
         val countQueryString = StringBuilder()
                 .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, null))
+                .appendln(buildQueryCriteria(search, false))
                 .toString()
 
         val searchQuery = entityManager.createQuery(searchQueryString)
