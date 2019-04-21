@@ -15,9 +15,11 @@ import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
+import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -37,6 +39,7 @@ import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.time.LocalDateTime
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -226,20 +229,25 @@ class VideoFileServiceImplTest {
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-        val argumentCaptor = argumentCaptor<VideoFile>().apply {
-            verify(videoFileRepo, times(1)).save(capture())
-        }
-
-        val allValues = argumentCaptor.allValues
-        assertEquals(1, allValues.size)
-        assertEquals(expectedFiles[0], allValues[0])
-
         assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
     }
 
     @Test
     fun test_recordNewVideoPlay() {
-        TODO("Finish this")
+        `when`(videoFileRepo.findById(1L))
+                .thenReturn(Optional.of(expectedFiles[0].copy()))
+
+        videoFileService.recordNewVideoPlay(1L)
+
+        val argumentCaptor = argumentCaptor<VideoFile>().apply {
+            verify(videoFileRepo, times(1)).save(capture())
+        }
+
+        assertEquals(1, argumentCaptor.allValues.size)
+        assertThat(argumentCaptor.firstValue, allOf(
+                hasProperty("viewCount", equalTo(1)),
+                hasProperty("lastViewed", greaterThan(DEFAULT_TIMESTAMP))
+        ))
     }
 
     @Test
