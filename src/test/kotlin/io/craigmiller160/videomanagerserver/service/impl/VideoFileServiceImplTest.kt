@@ -238,6 +238,11 @@ class VideoFileServiceImplTest {
     }
 
     @Test
+    fun test_recordNewVideoPlay() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_buildQueryCriteria_noCriteria() {
         val search = VideoSearch()
         val query = videoFileService.buildQueryCriteria(search, "ASC")

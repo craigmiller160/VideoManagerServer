@@ -99,6 +99,12 @@ class VideoFileController @Autowired constructor(
                 .body(region)
     }
 
+    @GetMapping("/record_play/{fileId}")
+    fun recordNewVideoPlay(@PathVariable fileId: Long): ResponseEntity<Void> {
+        videoFileService.recordNewVideoPlay(fileId)
+        return ResponseEntity.ok().build()
+    }
+
     @PostMapping("/search")
     fun searchForVideos(@RequestBody search: VideoSearch,
                         @RequestParam(required = false, defaultValue = "0") page: Int,

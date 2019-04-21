@@ -18,7 +18,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.io.File
-import java.util.*
+import java.time.LocalDateTime
+import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
 import javax.persistence.Query
@@ -99,11 +100,16 @@ class VideoFileServiceImpl @Autowired constructor(
     override fun playVideo(fileId: Long): UrlResource {
         val dbVideoFile = videoFileRepo.findById(fileId)
                 .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
-        dbVideoFile.viewCount++ // TODO this is wrong, need to only do this when the video first starts playing
-        // TODO also need to update a new last viewed field
-        videoFileRepo.save(dbVideoFile)
         val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
         return UrlResource(File(fullPath).toURI())
+    }
+
+    override fun recordNewVideoPlay(fileId: Long) {
+        val dbVideoFile = videoFileRepo.findById(fileId)
+                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
+        dbVideoFile.viewCount++
+        dbVideoFile.lastViewed = LocalDateTime.now()
+        videoFileRepo.save(dbVideoFile)
     }
 
     internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {

@@ -193,6 +193,14 @@ class VideoFileControllerTest {
         assertNoContentResponse(response)
     }
 
-    // TODO add a test for play video now
+    @Test
+    fun test_playVideo() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_recordNewVideoPlay() {
+        TODO("Finish this")
+    }
 
 }
