@@ -177,7 +177,8 @@ class VideoFileServiceImpl @Autowired constructor(
     }
 
 
-    override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
+    override fun searchForVideos(search: VideoSearch): VideoSearchResults {
+        val page = search.page
         val pageSize = videoConfig.apiPageSize
 
         val searchQueryString = StringBuilder()

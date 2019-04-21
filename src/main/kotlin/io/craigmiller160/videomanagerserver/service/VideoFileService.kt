@@ -27,6 +27,6 @@ interface VideoFileService {
 
     fun recordNewVideoPlay(fileId: Long)
 
-    fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults
+    fun searchForVideos(search: VideoSearch): VideoSearchResults
 
 }

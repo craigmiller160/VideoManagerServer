@@ -130,7 +130,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_noCriteria() {
         val search = VideoSearch()
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(3L)),
                 hasProperty("filesPerPage", equalTo(10)),
@@ -144,7 +144,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_allCriteria() {
         val search = VideoSearch("File", 1, 1, 1)
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(1L)),
                 hasProperty("filesPerPage", equalTo(10)),
@@ -158,7 +158,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_onlyText() {
         val search = VideoSearch("File")
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(3L)),
                 hasProperty("filesPerPage", equalTo(10)),
@@ -172,7 +172,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_onlyCategory() {
         val search = VideoSearch(categoryId = 1)
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(1L)),
                 hasProperty("filesPerPage", equalTo(10)),
@@ -186,7 +186,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_onlySeries() {
         val search = VideoSearch(seriesId = 1)
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(1L)),
                 hasProperty("filesPerPage", equalTo(10)),
@@ -200,7 +200,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_onlyStar() {
         val search = VideoSearch(starId = 1)
-        val result = videoFileService.searchForVideos(search, 0, "ASC")
+        val result = videoFileService.searchForVideos(search)
         assertThat(result, allOf(
                 hasProperty("totalFiles", equalTo(1L)),
                 hasProperty("filesPerPage", equalTo(10)),

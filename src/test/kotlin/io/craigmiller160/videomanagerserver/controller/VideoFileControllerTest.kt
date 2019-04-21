@@ -187,7 +187,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testSearchForVideos() {
-        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java), anyInt(), anyString()))
+        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java)))
                 .thenReturn(videoSearchResults)
                 .thenReturn(VideoSearchResults())
 

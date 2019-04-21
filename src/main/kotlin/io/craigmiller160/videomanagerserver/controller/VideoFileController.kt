@@ -106,12 +106,9 @@ class VideoFileController @Autowired constructor(
     }
 
     @PostMapping("/search")
-    fun searchForVideos(@RequestBody search: VideoSearch,
-                        @RequestParam(required = false, defaultValue = "0") page: Int,
-                        @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<VideoSearchResults> {
-        validateSortDirection(sortDirection)
+    fun searchForVideos(@RequestBody search: VideoSearch): ResponseEntity<VideoSearchResults> {
         cleanUpSearch(search)
-        val videoFiles = videoFileService.searchForVideos(search, page, sortDirection)
+        val videoFiles = videoFileService.searchForVideos(search)
         if (videoFiles.videoList.isEmpty()) {
             return ResponseEntity.noContent().build()
         }

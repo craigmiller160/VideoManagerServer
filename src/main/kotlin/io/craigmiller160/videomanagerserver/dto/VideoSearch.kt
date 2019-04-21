@@ -8,7 +8,8 @@ data class VideoSearch (
         var starId: Long? = null,
         var categoryId: Long? = null,
         var sortBy: SortBy = SortBy.NAME,
-        var sortDir: Sort.Direction = Sort.Direction.ASC
+        var sortDir: Sort.Direction = Sort.Direction.ASC,
+        var page: Int = 0
 ) {
 
     fun hasCriteria() =
