@@ -99,7 +99,8 @@ class VideoFileServiceImpl @Autowired constructor(
     override fun playVideo(fileId: Long): UrlResource {
         val dbVideoFile = videoFileRepo.findById(fileId)
                 .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
-        dbVideoFile.viewCount++
+        dbVideoFile.viewCount++ // TODO this is wrong, need to only do this when the video first starts playing
+        // TODO also need to update a new last viewed field
         videoFileRepo.save(dbVideoFile)
         val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
         return UrlResource(File(fullPath).toURI())
