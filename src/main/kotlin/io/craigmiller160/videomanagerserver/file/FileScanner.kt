@@ -44,6 +44,9 @@ class FileScanner @Autowired constructor(
                             val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
                             videoFile.lastModified = lastModified
                             videoFile.lastScanTimestamp = scanTimestamp
+                            if (videoFile.fileAdded == null) {
+                                videoFile.fileAdded = lastModified
+                            }
                             if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
                             videoFileRepo.save(videoFile)
                         }

@@ -28,7 +28,7 @@ data class VideoFile(
         var displayName: String = "",
         var description: String = "",
         var lastModified: LocalDateTime = DEFAULT_TIMESTAMP,
-        var fileAdded: LocalDateTime = DEFAULT_TIMESTAMP,
+        var fileAdded: LocalDateTime? = null,
         var lastViewed: LocalDateTime? = null,
 
         @JsonIgnore
