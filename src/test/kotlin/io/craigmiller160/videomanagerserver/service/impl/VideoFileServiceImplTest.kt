@@ -255,35 +255,42 @@ class VideoFileServiceImplTest {
     fun test_buildQueryCriteria_noCriteria() {
         val search = VideoSearch()
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.displayName, vf.fileName ASC\n", query)
+        assertEquals("ORDER BY vf.displayName ASC\n", query)
     }
 
     @Test
     fun test_buildQueryCriteria_descOrder() {
         val search = VideoSearch(sortDir = Sort.Direction.DESC)
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.displayName, vf.fileName DESC\n", query)
+        assertEquals("ORDER BY vf.displayName DESC\n", query)
     }
 
     @Test
     fun test_buildQueryCriteria_sortByViewCount() {
         val search = VideoSearch(sortBy = SortBy.VIEW_COUNT)
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.view_count ASC\n", query)
+        assertEquals("ORDER BY vf.viewCount ASC\n", query)
     }
 
     @Test
     fun test_buildQueryCriteria_sortByLastViewed() {
         val search = VideoSearch(sortBy = SortBy.LAST_VIEWED)
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.last_viewed ASC\n", query)
+        assertEquals("ORDER BY vf.lastViewed ASC\n", query)
     }
 
     @Test
     fun test_buildQueryCriteria_sortByLastModified() {
         val search = VideoSearch(sortBy = SortBy.LAST_MODIFIED)
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.last_modified ASC\n", query)
+        assertEquals("ORDER BY vf.lastModified ASC\n", query)
+    }
+
+    @Test
+    fun test_buildQueryCriteria_sortByFileAdded() {
+        val search = VideoSearch(sortBy = SortBy.FILE_ADDED)
+        val query = videoFileService.buildQueryCriteria(search, true)
+        assertEquals("ORDER BY vf.fileAdded ASC\n", query)
     }
 
     @Test
@@ -295,7 +302,7 @@ class VideoFileServiceImplTest {
                 "AND ca.categoryId = :categoryId\n" +
                 "AND se.seriesId = :seriesId\n" +
                 "AND st.starId = :starId\n" +
-                "ORDER BY vf.displayName, vf.fileName ASC\n"
+                "ORDER BY vf.displayName ASC\n"
 
         val search = VideoSearch("Hello", 1, 1, 1)
         val query = videoFileService.buildQueryCriteria(search, true)
@@ -305,7 +312,7 @@ class VideoFileServiceImplTest {
     @Test
     fun test_buildQueryCriteria_onlySearchText() {
         val expected = "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
-                "ORDER BY vf.displayName, vf.fileName ASC\n"
+                "ORDER BY vf.displayName ASC\n"
         val search = VideoSearch("Hello")
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
@@ -315,7 +322,7 @@ class VideoFileServiceImplTest {
     fun test_buildQueryCriteria_onlyCategory() {
         val expected = "LEFT JOIN vf.categories ca\n" +
                 "WHERE ca.categoryId = :categoryId\n" +
-                "ORDER BY vf.displayName, vf.fileName ASC\n"
+                "ORDER BY vf.displayName ASC\n"
         val search = VideoSearch(categoryId = 1)
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
@@ -325,7 +332,7 @@ class VideoFileServiceImplTest {
     fun test_buildQueryCriteria_onlyStar() {
         val expected = "LEFT JOIN vf.stars st\n" +
                 "WHERE st.starId = :starId\n" +
-                "ORDER BY vf.displayName, vf.fileName ASC\n"
+                "ORDER BY vf.displayName ASC\n"
         val search = VideoSearch(starId = 1)
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
@@ -335,7 +342,7 @@ class VideoFileServiceImplTest {
     fun test_buildQueryCriteria_onlySeries() {
         val expected = "LEFT JOIN vf.series se\n" +
                 "WHERE se.seriesId = :seriesId\n" +
-                "ORDER BY vf.displayName, vf.fileName ASC\n"
+                "ORDER BY vf.displayName ASC\n"
         val search = VideoSearch(seriesId = 1)
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
