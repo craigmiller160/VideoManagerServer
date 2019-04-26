@@ -1,0 +1,2 @@
+CREATE DATABASE vm_dev;
+CREATE DATABASE vm_prod;
