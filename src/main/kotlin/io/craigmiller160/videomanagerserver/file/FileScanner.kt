@@ -41,9 +41,12 @@ class FileScanner @Autowired constructor(
                             logger.trace("Scanning file: $name")
                             val lastModifiedTime = Files.getLastModifiedTime(p)
                             val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
-                            val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name)
+                            val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
                             videoFile.lastModified = lastModified
                             videoFile.lastScanTimestamp = scanTimestamp
+                            if (videoFile.fileAdded == null) {
+                                videoFile.fileAdded = lastModified
+                            }
                             if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
                             videoFileRepo.save(videoFile)
                         }

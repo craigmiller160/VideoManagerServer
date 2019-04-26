@@ -21,11 +21,16 @@ data class VideoFile(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var fileId: Long = 0,
+
         @Column(unique = true)
         var fileName: String = "",
+
         var displayName: String = "",
         var description: String = "",
         var lastModified: LocalDateTime = DEFAULT_TIMESTAMP,
+        var fileAdded: LocalDateTime? = null,
+        var lastViewed: LocalDateTime? = null,
+
         @JsonIgnore
         var lastScanTimestamp: LocalDateTime = DEFAULT_TIMESTAMP,
         @Column(columnDefinition = "int default 0")

@@ -17,6 +17,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
 
 class FileScannerTest {
@@ -54,6 +55,7 @@ class FileScannerTest {
     @Test
     fun testScanForFiles() {
         runBlocking {
+            val start = LocalDateTime.now()
 
             val done = AtomicBoolean(false)
 
@@ -73,12 +75,26 @@ class FileScannerTest {
             }
 
             val allValues = argumentCaptor.allValues
-            assertEquals(4, allValues.size)
-            assertThat(allValues, hasItems(
-                    hasProperty("fileName", `is`("subdir/subDirFile.txt")),
-                    hasProperty("fileName", `is`("myFile.txt")),
-                    hasProperty("fileName", `is`("myFile.txt")),
-                    hasProperty("fileName", `is`("otherExt.csv"))
+            assertThat(allValues, allOf(
+                    hasSize(equalTo(4)),
+                    contains(
+                            allOf(
+                                    hasProperty("fileName", `is`("subdir/subDirFile.txt")),
+                                    hasProperty("fileAdded", greaterThan(start))
+                            ),
+                            allOf(
+                                    hasProperty("fileName", `is`("myFile.txt")),
+                                    hasProperty("fileAdded", greaterThan(start))
+                            ),
+                            allOf(
+                                    hasProperty("fileName", `is`("myFile2.txt")),
+                                    hasProperty("fileAdded", greaterThan(start))
+                            ),
+                            allOf(
+                                    hasProperty("fileName", `is`("otherExt.csv")),
+                                    hasProperty("fileAdded", greaterThan(start))
+                            )
+                    )
             ))
         }
     }

@@ -11,17 +11,24 @@ import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.core.io.UrlResource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.io.File
 import java.util.Optional
 
 @SpringBootTest
@@ -180,7 +187,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testSearchForVideos() {
-        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java), anyInt(), anyString()))
+        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java)))
                 .thenReturn(videoSearchResults)
                 .thenReturn(VideoSearchResults())
 
@@ -193,6 +200,23 @@ class VideoFileControllerTest {
         assertNoContentResponse(response)
     }
 
-    // TODO add a test for play video now
+    @Test
+    fun test_playVideo() {
+        val file = File(".")
+        `when`(videoFileService.playVideo(1L))
+                .thenReturn(UrlResource(file.toURI()))
+        val response = mockMvcHandler.doGet("/video-files/play/1")
+        assertEquals(206, response.status)
+        assertTrue(response.contentAsByteArray.isNotEmpty())
+    }
+
+    @Test
+    fun test_recordNewVideoPlay() {
+        val response = mockMvcHandler.doGet("/video-files/record-play/1")
+        assertEquals(200, response.status)
+
+        verify(videoFileService, times(1))
+                .recordNewVideoPlay(1L)
+    }
 
 }

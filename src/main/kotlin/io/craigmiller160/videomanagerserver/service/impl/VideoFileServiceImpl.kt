@@ -18,7 +18,8 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.io.File
-import java.util.*
+import java.time.LocalDateTime
+import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
 import javax.persistence.Query
@@ -99,13 +100,19 @@ class VideoFileServiceImpl @Autowired constructor(
     override fun playVideo(fileId: Long): UrlResource {
         val dbVideoFile = videoFileRepo.findById(fileId)
                 .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
-        dbVideoFile.viewCount++
-        videoFileRepo.save(dbVideoFile)
         val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
         return UrlResource(File(fullPath).toURI())
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch, sortDirection: String?): String {
+    override fun recordNewVideoPlay(fileId: Long) {
+        val dbVideoFile = videoFileRepo.findById(fileId)
+                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
+        dbVideoFile.viewCount++
+        dbVideoFile.lastViewed = LocalDateTime.now()
+        videoFileRepo.save(dbVideoFile)
+    }
+
+    internal fun buildQueryCriteria(search: VideoSearch, useOrderBy: Boolean): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
             queryBuilder.appendln("LEFT JOIN vf.categories ca")
@@ -147,8 +154,8 @@ class VideoFileServiceImpl @Autowired constructor(
             queryBuilder.appendln("st.starId = :starId")
         }
 
-        sortDirection?.let {
-            queryBuilder.appendln("ORDER BY vf.displayName, vf.fileName $it")
+        if (useOrderBy) {
+            queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir.toString()}")
         }
 
         return queryBuilder.toString()
@@ -170,16 +177,17 @@ class VideoFileServiceImpl @Autowired constructor(
     }
 
 
-    override fun searchForVideos(search: VideoSearch, page: Int, sortDirection: String): VideoSearchResults {
+    override fun searchForVideos(search: VideoSearch): VideoSearchResults {
+        val page = search.page
         val pageSize = videoConfig.apiPageSize
 
         val searchQueryString = StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, sortDirection))
+                .appendln(buildQueryCriteria(search, true))
                 .toString()
         val countQueryString = StringBuilder()
                 .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, null))
+                .appendln(buildQueryCriteria(search, false))
                 .toString()
 
         val searchQuery = entityManager.createQuery(searchQueryString)

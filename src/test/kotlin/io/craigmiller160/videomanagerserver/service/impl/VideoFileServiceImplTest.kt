@@ -8,6 +8,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
+import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
@@ -15,9 +16,11 @@ import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
+import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -37,6 +40,7 @@ import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.time.LocalDateTime
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -226,22 +230,60 @@ class VideoFileServiceImplTest {
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
+        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
+    }
+
+    @Test
+    fun test_recordNewVideoPlay() {
+        `when`(videoFileRepo.findById(1L))
+                .thenReturn(Optional.of(expectedFiles[0].copy()))
+
+        videoFileService.recordNewVideoPlay(1L)
+
         val argumentCaptor = argumentCaptor<VideoFile>().apply {
             verify(videoFileRepo, times(1)).save(capture())
         }
 
-        val allValues = argumentCaptor.allValues
-        assertEquals(1, allValues.size)
-        assertEquals(expectedFiles[0], allValues[0])
-
-        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
+        assertEquals(1, argumentCaptor.allValues.size)
+        assertThat(argumentCaptor.firstValue, allOf(
+                hasProperty("viewCount", equalTo(1)),
+                hasProperty("lastViewed", greaterThan(DEFAULT_TIMESTAMP))
+        ))
     }
 
     @Test
     fun test_buildQueryCriteria_noCriteria() {
         val search = VideoSearch()
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals("ORDER BY vf.displayName, vf.fileName ASC\n", query)
+    }
+
+    @Test
+    fun test_buildQueryCriteria_descOrder() {
+        val search = VideoSearch(sortDir = Sort.Direction.DESC)
+        val query = videoFileService.buildQueryCriteria(search, true)
+        assertEquals("ORDER BY vf.displayName, vf.fileName DESC\n", query)
+    }
+
+    @Test
+    fun test_buildQueryCriteria_sortByViewCount() {
+        val search = VideoSearch(sortBy = SortBy.VIEW_COUNT)
+        val query = videoFileService.buildQueryCriteria(search, true)
+        assertEquals("ORDER BY vf.view_count ASC\n", query)
+    }
+
+    @Test
+    fun test_buildQueryCriteria_sortByLastViewed() {
+        val search = VideoSearch(sortBy = SortBy.LAST_VIEWED)
+        val query = videoFileService.buildQueryCriteria(search, true)
+        assertEquals("ORDER BY vf.last_viewed ASC\n", query)
+    }
+
+    @Test
+    fun test_buildQueryCriteria_sortByLastModified() {
+        val search = VideoSearch(sortBy = SortBy.LAST_MODIFIED)
+        val query = videoFileService.buildQueryCriteria(search, true)
+        assertEquals("ORDER BY vf.last_modified ASC\n", query)
     }
 
     @Test
@@ -256,7 +298,7 @@ class VideoFileServiceImplTest {
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
 
         val search = VideoSearch("Hello", 1, 1, 1)
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
     }
 
@@ -265,7 +307,7 @@ class VideoFileServiceImplTest {
         val expected = "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch("Hello")
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
     }
 
@@ -275,7 +317,7 @@ class VideoFileServiceImplTest {
                 "WHERE ca.categoryId = :categoryId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(categoryId = 1)
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
     }
 
@@ -285,7 +327,7 @@ class VideoFileServiceImplTest {
                 "WHERE st.starId = :starId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(starId = 1)
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
     }
 
@@ -295,7 +337,7 @@ class VideoFileServiceImplTest {
                 "WHERE se.seriesId = :seriesId\n" +
                 "ORDER BY vf.displayName, vf.fileName ASC\n"
         val search = VideoSearch(seriesId = 1)
-        val query = videoFileService.buildQueryCriteria(search, "ASC")
+        val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
     }
 
