@@ -6,8 +6,6 @@ import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.hamcrest.Matchers.*
@@ -75,13 +73,10 @@ class FileScannerTest {
             }
 
             val allValues = argumentCaptor.allValues
-            assertThat(allValues, allOf(
+            val allValuesSorted = allValues.sortedBy { it.fileName }
+            assertThat(allValuesSorted, allOf(
                     hasSize(equalTo(4)),
                     contains(
-                            allOf(
-                                    hasProperty("fileName", `is`("subdir/subDirFile.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
-                            ),
                             allOf(
                                     hasProperty("fileName", `is`("myFile.txt")),
                                     hasProperty("fileAdded", greaterThan(start))
@@ -92,6 +87,10 @@ class FileScannerTest {
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("otherExt.csv")),
+                                    hasProperty("fileAdded", greaterThan(start))
+                            ),
+                            allOf(
+                                    hasProperty("fileName", `is`("subdir/subDirFile.txt")),
                                     hasProperty("fileAdded", greaterThan(start))
                             )
                     )
