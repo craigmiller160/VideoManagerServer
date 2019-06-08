@@ -3,8 +3,8 @@ version: '3.5'
 services:
   video-server:
     build:
-      context: ../
-      dockerfile: docker/video-server_Dockerfile
+      context: .
+      dockerfile: video-server_Dockerfile
     container_name: video-server
     networks:
       - videoManagerNetwork

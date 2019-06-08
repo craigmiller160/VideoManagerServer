@@ -4,6 +4,7 @@ function help {
     echo "Options"
     echo "  build = Build the app, don't start it"
     echo "  start = Start the app. Will build it if it has not already been built."
+    echo "  stop = Stop the app."
     echo ""
     echo "Example Command"
     echo "  bash run.sh postgres start"
@@ -13,21 +14,22 @@ function help {
 }
 
 function run_app {
-    # bash setup.sh
     sudo -E docker-compose -f docker/docker-compose.yml up -d
 }
 
+function stop_app {
+    sudo -E docker-compose -f docker/docker-compose.yml stop
+}
+
 function build_app {
-    mvn -P prod clean package
-    if [[ $? -eq 0 ]]; then
-        sudo -E docker-compose -f docker/docker-compose.yml build
-    fi
+    sudo -E docker-compose -f docker/docker-compose.yml build
 }
 
 function build_or_run {
 	case $1 in
 		"build") build_app ;;
 		"start") run_app ;;
+		"stop") stop_app ;;
 		*)
 			echo "Error! Invalid command: $1. Try using the 'help' option for more details"
 		;;
