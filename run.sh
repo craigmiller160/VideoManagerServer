@@ -13,8 +13,8 @@ function help {
 }
 
 function run_app {
-    bash setup.sh
-    sudo -E docker-compose docker/docker-compose.yml up -d
+    # bash setup.sh
+    sudo -E docker-compose -f docker/docker-compose.yml up -d
 }
 
 function build_app {
