@@ -211,4 +211,18 @@ class VideoFileServiceIntegrationTest {
         ))
     }
 
+    @Test
+    fun test_searchForVideos_caseInsensitive() {
+        val search = VideoSearch(searchText = "FILE")
+        val result = videoFileService.searchForVideos(search)
+        assertThat(result, allOf(
+                hasProperty("totalFiles", equalTo(3L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", containsInAnyOrder(
+                        file1, file2, file3
+                ))
+        ))
+    }
+
 }
