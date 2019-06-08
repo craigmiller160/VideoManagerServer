@@ -14,6 +14,7 @@ function help {
 }
 
 function run_app {
+    bash docker/setup.sh
     sudo -E docker-compose -f docker/docker-compose.yml up -d
 }
 
