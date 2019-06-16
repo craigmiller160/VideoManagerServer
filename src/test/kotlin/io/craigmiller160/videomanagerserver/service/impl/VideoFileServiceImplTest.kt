@@ -298,7 +298,8 @@ class VideoFileServiceImplTest {
         val expected = "LEFT JOIN vf.categories ca\n" +
                 "LEFT JOIN vf.series se\n" +
                 "LEFT JOIN vf.stars st\n" +
-                "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
+                "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
+                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
                 "AND ca.categoryId = :categoryId\n" +
                 "AND se.seriesId = :seriesId\n" +
                 "AND st.starId = :starId\n" +
@@ -311,7 +312,8 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlySearchText() {
-        val expected = "WHERE (vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)\n" +
+        val expected = "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
+                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
                 "ORDER BY vf.displayName ASC\n"
         val search = VideoSearch("Hello")
         val query = videoFileService.buildQueryCriteria(search, true)

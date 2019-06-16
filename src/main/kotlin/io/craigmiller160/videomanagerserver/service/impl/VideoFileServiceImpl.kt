@@ -130,7 +130,8 @@ class VideoFileServiceImpl @Autowired constructor(
 
         var needsAnd = false
         search.searchText?.let {
-            queryBuilder.appendln("(vf.fileName LIKE :searchText OR vf.displayName LIKE :searchText)")
+            queryBuilder.appendln("(LOWER(vf.fileName) LIKE LOWER(:searchText)")
+                    .appendln("OR LOWER(vf.displayName) LIKE LOWER(:searchText))")
             needsAnd = true
         }
         search.categoryId?.let {
