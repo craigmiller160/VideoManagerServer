@@ -21,8 +21,6 @@ import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
 import kotlin.collections.HashMap
 
-// TODO needs tests
-
 @Component
 class JwtTokenProvider (
        private val tokenConfig: TokenConfig,
