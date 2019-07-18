@@ -1,13 +1,24 @@
 package io.craigmiller160.videomanagerserver.jwt
 
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.JWSVerifier
+import com.nimbusds.jose.crypto.MACSigner
+import com.nimbusds.jose.crypto.MACVerifier
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
+import io.craigmiller160.videomanagerserver.dto.User
 import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
+import kotlin.collections.HashMap
 
 // TODO needs tests
 
@@ -29,9 +40,27 @@ class JwtTokenProvider (
         secretKey = Base64.getEncoder().encodeToString(tokenConfig.key.toByteArray())
     }
 
-    fun createToken(username: String): String {
-        // TODO actually create JWT here
-        return Base64.getEncoder().encodeToString(username.toByteArray())
+    private fun generateExpiration(): Date {
+        val now = LocalDateTime.now()
+        val exp = now.plusSeconds(tokenConfig.expSecs.toLong())
+        return Date.from(exp.atZone(ZoneId.systemDefault()).toInstant())
+    }
+
+    fun createToken(user: User): String {
+        val claims = JWTClaimsSet.Builder()
+                .subject(user.userName)
+                .issueTime(Date())
+                .issuer("VideoManagerServer")
+                .expirationTime(generateExpiration())
+                .jwtID(UUID.randomUUID().toString())
+                .notBeforeTime(Date())
+                .build()
+        val header = JWSHeader.Builder(JWSAlgorithm.HS256)
+                .build()
+        val jwt = SignedJWT(header, claims)
+        val signer = MACSigner(secretKey)
+        jwt.sign(signer)
+        return jwt.serialize()
     }
 
     fun resolveToken(req: HttpServletRequest): String? {
@@ -43,9 +72,13 @@ class JwtTokenProvider (
     }
 
     fun validateToken(token: String): Boolean {
-        // TODO do actual JWT validation here
-        val username = getUsername(token)
-        return "craig" == username
+        if (token.isEmpty()) {
+            return false
+        }
+
+        val jwt = SignedJWT.parse(token)
+        val verifier = MACVerifier(secretKey)
+        return jwt.verify(verifier)
     }
 
     fun getUsername(token: String): String {
