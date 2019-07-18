@@ -31,8 +31,8 @@ class JwtTokenProvider (
 ) {
 
     companion object {
-        private const val AUTHORIZATION_HEADER = "Authorization"
-        private const val BEARER_PREFIX = "Bearer "
+        const val AUTHORIZATION_HEADER = "Authorization"
+        const val BEARER_PREFIX = "Bearer "
         const val ISSUER = "VideoManagerServer"
     }
 
@@ -81,7 +81,12 @@ class JwtTokenProvider (
 
         val jwt = SignedJWT.parse(token)
         val verifier = MACVerifier(secretKey)
-        return jwt.verify(verifier)
+        if (jwt.verify(verifier)) {
+            val exp = legacyDateConverter.convertDateToLocalDateTime(jwt.jwtClaimsSet.expirationTime)
+            val now = LocalDateTime.now()
+            return exp >= now
+        }
+        return false
     }
 
     fun getUsername(token: String): String {
