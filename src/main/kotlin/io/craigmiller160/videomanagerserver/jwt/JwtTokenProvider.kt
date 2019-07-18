@@ -10,6 +10,7 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.User
 import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsService
+import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
@@ -25,32 +26,34 @@ import kotlin.collections.HashMap
 @Component
 class JwtTokenProvider (
        private val tokenConfig: TokenConfig,
-       private val videoUserDetailsService: VideoUserDetailsService
+       private val videoUserDetailsService: VideoUserDetailsService,
+       private val legacyDateConverter: LegacyDateConverter
 ) {
 
     companion object {
         private const val AUTHORIZATION_HEADER = "Authorization"
         private const val BEARER_PREFIX = "Bearer "
+        const val ISSUER = "VideoManagerServer"
     }
 
     private var secretKey: String = ""
 
     @PostConstruct
-    protected fun init() {
+    internal fun init() {
         secretKey = Base64.getEncoder().encodeToString(tokenConfig.key.toByteArray())
     }
 
     private fun generateExpiration(): Date {
         val now = LocalDateTime.now()
         val exp = now.plusSeconds(tokenConfig.expSecs.toLong())
-        return Date.from(exp.atZone(ZoneId.systemDefault()).toInstant())
+        return legacyDateConverter.convertLocalDateTimeToDate(exp)
     }
 
     fun createToken(user: User): String {
         val claims = JWTClaimsSet.Builder()
                 .subject(user.userName)
                 .issueTime(Date())
-                .issuer("VideoManagerServer")
+                .issuer(ISSUER)
                 .expirationTime(generateExpiration())
                 .jwtID(UUID.randomUUID().toString())
                 .notBeforeTime(Date())
