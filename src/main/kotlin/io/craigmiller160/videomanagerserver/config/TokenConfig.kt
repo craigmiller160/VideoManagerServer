@@ -9,5 +9,6 @@ import org.springframework.validation.annotation.Validated
 @Validated
 @ConfigurationProperties(prefix = "video.security.token")
 data class TokenConfig (
-        var expSecs: Int = 0
+        var expSecs: Int = 0,
+        var key: String = ""
 )
