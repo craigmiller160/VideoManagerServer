@@ -17,6 +17,13 @@ class VideoUserDetailsService : UserDetailsService {
         username.let {
             if ("craig" == username) {
                 return User.withUsername(username)
+                        .password("")
+                        .roles("Admin")
+                        .authorities("Admin")
+                        .accountExpired(false)
+                        .accountLocked(false)
+                        .credentialsExpired(false)
+                        .disabled(false)
                         .build()
             }
         }
