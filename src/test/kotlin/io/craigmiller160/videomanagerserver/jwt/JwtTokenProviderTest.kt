@@ -13,9 +13,11 @@ import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsSer
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -29,6 +31,8 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.util.Base64
 import java.util.Date
@@ -99,6 +103,7 @@ class JwtTokenProviderTest {
         val expDate = legacyDateConverter.convertLocalDateTimeToDate(expTime)
         val claims = JWTClaimsSet.Builder()
                 .expirationTime(expDate)
+                .subject(USER_NAME)
                 .build()
         val header = JWSHeader(JWSAlgorithm.HS256)
         val jwt = SignedJWT(header, claims)
@@ -155,5 +160,18 @@ class JwtTokenProviderTest {
                 .thenReturn("ABCDEFG")
         val result = jwtTokenProvider.resolveToken(req)
         assertNull(result)
+    }
+
+    @Test
+    fun test_getAuthentication() {
+        val token = createToken(KEY, EXP_SECS.toLong())
+        val result = jwtTokenProvider.getAuthentication(token)
+        assertThat(result, allOf(
+                hasProperty("principal", allOf<UserDetails>(
+                        hasProperty("username", equalTo(USER_NAME)),
+                        hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(1))
+                )),
+                hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(1))
+        ))
     }
 }

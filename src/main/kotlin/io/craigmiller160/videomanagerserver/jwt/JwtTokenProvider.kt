@@ -87,19 +87,15 @@ class JwtTokenProvider (
         return false
     }
 
-    fun getUsername(token: String): String {
-        // TODO actually get the username from the JWT
-        val decoded = Base64.getDecoder().decode(token)
-        return String(decoded)
-    }
-
     fun getAuthentication(token: String): Authentication {
-        // TODO actually build authentication here
-        val userDetails = videoUserDetailsService.loadUserByUsername(getUsername(token))
+        val jwt = SignedJWT.parse(token)
+        val claims = jwt.jwtClaimsSet
+        val userDetails = org.springframework.security.core.userdetails.User
+                .withUsername(claims.subject)
+                .password("")
+                .authorities("Admin") // TODO going to want to customize this
+                .build()
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
-
-
-    // TODO finish implementing the parts that I need here
 
 }
