@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository
 interface UserRepository : CrudRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.userName = :userName AND u.password = :password")
-    fun login(userName: String, password: String): User
+    fun login(userName: String, password: String): User?
 
 }

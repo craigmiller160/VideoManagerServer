@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.repository
 import io.craigmiller160.videomanagerserver.dto.User
 import org.junit.After
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,6 +40,12 @@ class UserRepositoryIntegrationTest {
     fun test_login() {
         val user = userRepository.login(USER_NAME, PASSWORD)
         assertNotNull(user)
+    }
+
+    @Test
+    fun test_login_noUser() {
+        val user = userRepository.login("Hello", "World")
+        assertNull(user)
     }
 
 }
