@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RestController
-@RequestMapping("/auth")
+//@RestController
+//@RequestMapping("/auth")
 class AuthController (
         private val authService: AuthService
 ) {
 
-    @PostMapping("/login")
+//    @PostMapping("/login")
     fun login(request: User) {
         authService.login(request)
     }
 
-    @GetMapping("/logout")
+//    @GetMapping("/logout")
     fun logout() {
         TODO("Finish this")
     }

@@ -33,6 +33,6 @@ class JwtTokenFilter (
             }
         }
 
-        throw ApiUnauthorizedException("User is unauthorized")
+        throw ApiUnauthorizedException("User is unauthorized") // TODO instead of this, try continuing the filter chain without authentication
     }
 }
