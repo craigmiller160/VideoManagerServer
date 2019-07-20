@@ -26,7 +26,7 @@ logging:
     org.springframework: INFO
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.hibernate: INFO
-    io.craigmiller160: DEBUG
+    io.craigmiller160: INFO
   file:
     path: video-manager/server-logs/${spring.profiles.active}.log
 
