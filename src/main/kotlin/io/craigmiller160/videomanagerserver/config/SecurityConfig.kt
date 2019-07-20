@@ -1,7 +1,6 @@
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.videomanagerserver.jwt.JwtTokenFilterConfigurer
-import io.craigmiller160.videomanagerserver.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.jwt.JwtTokenFilter
 import io.craigmiller160.videomanagerserver.security.AuthFailureHandler
 import io.craigmiller160.videomanagerserver.security.AuthSuccessHandler
 import org.springframework.context.annotation.Bean
@@ -13,12 +12,13 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 class SecurityConfig (
-        private val jwtTokenProvider: JwtTokenProvider,
         private val authSuccessHandler: AuthSuccessHandler,
-        private val authFailureHandler: AuthFailureHandler
+        private val authFailureHandler: AuthFailureHandler,
+        private val jwtTokenFilter: JwtTokenFilter
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
@@ -39,8 +39,8 @@ class SecurityConfig (
                         .loginPage("/auth/login")
                         .successHandler(authSuccessHandler)
                         .failureHandler(authFailureHandler)
-
-            http.apply(JwtTokenFilterConfigurer(jwtTokenProvider))
+                    .and()
+                    .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 
