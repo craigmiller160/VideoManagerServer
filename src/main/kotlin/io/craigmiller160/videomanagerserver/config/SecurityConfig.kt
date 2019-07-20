@@ -1,15 +1,18 @@
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenFilter
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.AuthFailureHandler
+import io.craigmiller160.videomanagerserver.security.AuthLoginFilter
 import io.craigmiller160.videomanagerserver.security.AuthSuccessHandler
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenFilter
+import io.craigmiller160.videomanagerserver.security.service.AuthUserDetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -19,11 +22,15 @@ class SecurityConfig (
         private val authSuccessHandler: AuthSuccessHandler,
         private val authFailureHandler: AuthFailureHandler,
         private val authEntryPoint: AuthEntryPoint,
-        private val jwtTokenFilter: JwtTokenFilter
+        private val jwtTokenFilter: JwtTokenFilter,
+        private val userDetailsService: AuthUserDetailsService
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
-        TODO("Finish this")
+        auth?.let {
+            auth.userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder())
+        }
     }
 
     override fun configure(http: HttpSecurity?) {
@@ -46,6 +53,7 @@ class SecurityConfig (
                         .failureHandler(authFailureHandler)
                     .and()
                     .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+                    .addFilterAt(AuthLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse
 
 // TODO needs tests
 
+// TODO refactor this based on Auth.0 example that uses the AuthenticationManager
+
 @Component
 class JwtTokenFilter (
         private val jwtTokenProvider: JwtTokenProvider
