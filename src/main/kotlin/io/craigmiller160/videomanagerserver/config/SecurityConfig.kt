@@ -22,6 +22,8 @@ class SecurityConfig (
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
+        // TODO add cors configuration here using spring boot
+        // TODO look into access denied handler
         http?.let {
             http.csrf().disable()
                     .authorizeRequests()
