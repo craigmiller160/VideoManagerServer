@@ -1,0 +1,42 @@
+spring:
+  profiles:
+    active: @spring.profiles.active@
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
+  datasource:
+    url: jdbc:postgresql://${spring.datasource.host}:5432/${spring.datasource.db}
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+    docker: true
+  mvc:
+    dispatch-options-request: true
+
+server:
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    root: ERROR
+    org.springframework: INFO
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.hibernate: INFO
+    io.craigmiller160: DEBUG
+  file:
+    path: video-manager/server-logs/${spring.profiles.active}.log
+
+
+video:
+  vlcCommand: vlc
+  filePathRoot: ${VIDEO_MANAGER_DIR:}
+  apiPageSize: 10
+  fileExts: mp4,mkv,avi,m4v
+  security:
+    token:
+      expSecs: 86400
+      key: ThisIsMySecretKey

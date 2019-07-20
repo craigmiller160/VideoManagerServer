@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    db: vm_prod
+    host: postgres
+
+cors:
+  origin: http://localhost:9000
+
+logging:
+  file: /opt/${logging.file.path}
