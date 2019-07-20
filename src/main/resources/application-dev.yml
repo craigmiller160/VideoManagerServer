@@ -11,4 +11,5 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
     io.craigmiller160: DEBUG

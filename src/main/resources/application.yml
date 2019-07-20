@@ -24,7 +24,6 @@ logging:
   level:
     root: ERROR
     org.springframework: INFO
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.hibernate: INFO
     io.craigmiller160: INFO
   file:
