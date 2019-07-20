@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.videomanagerserver.jwt.JwtTokenFilter
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenFilter
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.AuthFailureHandler
 import io.craigmiller160.videomanagerserver.security.AuthSuccessHandler

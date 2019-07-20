@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.jwt
+package io.craigmiller160.videomanagerserver.security.jwt
 
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import org.springframework.security.core.context.SecurityContextHolder

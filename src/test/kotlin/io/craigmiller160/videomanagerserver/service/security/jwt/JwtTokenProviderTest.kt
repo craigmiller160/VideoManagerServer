@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.jwt
+package io.craigmiller160.videomanagerserver.service.security.jwt
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -7,13 +7,13 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.User
-import io.craigmiller160.videomanagerserver.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
-import io.craigmiller160.videomanagerserver.jwt.JwtTokenProvider.Companion.ISSUER
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
 import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsService
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
