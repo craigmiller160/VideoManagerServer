@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.config
 
 import io.craigmiller160.videomanagerserver.jwt.JwtTokenFilter
+import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.AuthFailureHandler
 import io.craigmiller160.videomanagerserver.security.AuthSuccessHandler
 import org.springframework.context.annotation.Bean
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig (
         private val authSuccessHandler: AuthSuccessHandler,
         private val authFailureHandler: AuthFailureHandler,
+        private val authEntryPoint: AuthEntryPoint,
         private val jwtTokenFilter: JwtTokenFilter
 ) : WebSecurityConfigurerAdapter() {
 
@@ -33,7 +35,7 @@ class SecurityConfig (
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .exceptionHandling()
-                        .authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // TODO create custom entry point
+                        .authenticationEntryPoint(authEntryPoint)
                     .and()
                     .formLogin()
                         .loginPage("/auth/login")
