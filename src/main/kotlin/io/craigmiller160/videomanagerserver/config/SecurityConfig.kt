@@ -17,14 +17,15 @@ class SecurityConfig (
 
     override fun configure(http: HttpSecurity?) {
         http?.let {
-            http.csrf().disable() // TODO look into re-enabling this
+            http.csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated()
+                        .antMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated()
                     .and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .apply(JwtTokenFilterConfigurer(jwtTokenProvider))
+                    .sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+            http.apply(JwtTokenFilterConfigurer(jwtTokenProvider))
         }
     }
 
