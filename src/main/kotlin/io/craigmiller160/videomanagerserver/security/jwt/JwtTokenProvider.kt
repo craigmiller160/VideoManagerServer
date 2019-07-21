@@ -8,6 +8,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -90,9 +91,11 @@ class JwtTokenProvider (
     fun getAuthentication(token: String): Authentication {
         val jwt = SignedJWT.parse(token)
         val claims = jwt.jwtClaimsSet
+        val authorities = claims.getStringListClaim("roles")
+                .map { role -> AuthGrantedAuthority(role) }
         val userDetails = User.withUsername(claims.subject)
                 .password("")
-                .authorities("Admin") // TODO going to want to customize this
+                .authorities(authorities)
                 .build()
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }

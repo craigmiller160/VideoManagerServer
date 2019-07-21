@@ -28,6 +28,7 @@ class SecurityConfig (
 
     override fun configure(http: HttpSecurity?) {
         // TODO add cors configuration here using spring boot
+        // TODO existing CorsFilter doesn't work
         http?.let {
             http.csrf().disable()
                     .authorizeRequests()

@@ -8,12 +8,14 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
@@ -46,6 +48,7 @@ class JwtTokenProviderTest {
         private const val EXP_SECS = 300
         private const val KEY = "ThisIsMySecretKeyThisIsMySecretKey"
         private const val USER_NAME = "userName"
+        private const val ROLE = "MyRole"
     }
 
     @Mock
@@ -68,7 +71,6 @@ class JwtTokenProviderTest {
 
     @Test
     fun test_createToken() {
-        val role = "MyRole"
         val startDate = Date()
         val expTime = legacyDateConverter.convertDateToLocalDateTime(startDate)
                 .plusSeconds(EXP_SECS.toLong())
@@ -76,7 +78,7 @@ class JwtTokenProviderTest {
         Thread.sleep(1000)
         val user = AppUser().apply {
             userName = USER_NAME
-            roles = listOf(Role(name = role))
+            roles = listOf(Role(name = ROLE))
         }
         val token = jwtTokenProvider.createToken(user)
         val jwt = SignedJWT.parse(token)
@@ -90,7 +92,7 @@ class JwtTokenProviderTest {
                 hasProperty("expirationTime", greaterThan(expDate)),
                 hasProperty("notBeforeTime", greaterThan(startDate))
         ))
-        assertEquals(listOf(role), claimSet.getStringListClaim("roles"))
+        assertEquals(listOf(ROLE), claimSet.getStringListClaim("roles"))
     }
 
     @Test
@@ -105,6 +107,7 @@ class JwtTokenProviderTest {
         val claims = JWTClaimsSet.Builder()
                 .expirationTime(expDate)
                 .subject(USER_NAME)
+                .claim("roles", listOf(ROLE))
                 .build()
         val header = JWSHeader(JWSAlgorithm.HS256)
         val jwt = SignedJWT(header, claims)
@@ -172,7 +175,10 @@ class JwtTokenProviderTest {
                         hasProperty("username", equalTo(USER_NAME)),
                         hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(1))
                 )),
-                hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(1))
+                hasProperty("authorities", allOf<Collection<GrantedAuthority>>(
+                        hasSize(1),
+                        contains(AuthGrantedAuthority(ROLE))
+                ))
         ))
     }
 }
