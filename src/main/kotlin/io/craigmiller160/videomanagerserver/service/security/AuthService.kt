@@ -8,8 +8,6 @@ import io.craigmiller160.videomanagerserver.repository.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
-// TODO needs tests
-
 @Service
 class AuthService (
         private val userRepository: UserRepository,
