@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated
 class SecurityConfig (
         private val authEntryPoint: AuthEntryPoint,
         private val jwtTokenProvider: JwtTokenProvider,
-//        private val userDetailsService: AuthUserDetailsService,
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int
 ) : WebSecurityConfigurerAdapter() {
@@ -33,7 +32,7 @@ class SecurityConfig (
             http.csrf().disable()
                     .authorizeRequests()
                         .antMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
