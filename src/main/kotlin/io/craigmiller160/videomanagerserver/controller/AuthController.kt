@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.Token
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +16,7 @@ class AuthController (
 ) {
 
     @PostMapping("/login")
-    fun login(@RequestBody request: User): ResponseEntity<Token> {
+    fun login(@RequestBody request: AppUser): ResponseEntity<Token> {
         val token = authService.login(request)
         return ResponseEntity.ok(token)
     }

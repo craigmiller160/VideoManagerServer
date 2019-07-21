@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.Token
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -23,7 +23,7 @@ class AuthControllerTest {
 
     @Test
     fun test_login() {
-        val request = User().apply {
+        val request = AppUser().apply {
             userName = "userName"
             password = "password"
         }

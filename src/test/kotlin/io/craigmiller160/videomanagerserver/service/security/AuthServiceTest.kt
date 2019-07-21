@@ -1,9 +1,9 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import io.craigmiller160.videomanagerserver.dto.Token
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
-import io.craigmiller160.videomanagerserver.repository.UserRepository
+import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -25,7 +25,7 @@ class AuthServiceTest {
     }
 
     @Mock
-    private lateinit var userRepository: UserRepository
+    private lateinit var appUserRepository: AppUserRepository
 
     @Mock
     private lateinit var passwordEncoder: BCryptPasswordEncoder
@@ -37,11 +37,11 @@ class AuthServiceTest {
     private lateinit var authService: AuthService
 
     private fun mockLogin() {
-        val user = User().apply {
+        val user = AppUser().apply {
             userName = USER_NAME
             password = ENCODED_PASSWORD
         }
-        `when`(userRepository.findByUserName(USER_NAME))
+        `when`(appUserRepository.findByUserName(USER_NAME))
                 .thenReturn(user)
         `when`(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD))
                 .thenReturn(true)
@@ -52,7 +52,7 @@ class AuthServiceTest {
     @Test
     fun test_login() {
         mockLogin()
-        val request = User().apply {
+        val request = AppUser().apply {
             userName = USER_NAME
             password = PASSWORD
         }
@@ -64,7 +64,7 @@ class AuthServiceTest {
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_cantFindUser() {
         mockLogin()
-        val request = User().apply {
+        val request = AppUser().apply {
             userName = "Bob"
             password = PASSWORD
         }
@@ -74,7 +74,7 @@ class AuthServiceTest {
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_wrongPassword() {
         mockLogin()
-        val request = User().apply {
+        val request = AppUser().apply {
             userName = USER_NAME
             password = "FooBar"
         }

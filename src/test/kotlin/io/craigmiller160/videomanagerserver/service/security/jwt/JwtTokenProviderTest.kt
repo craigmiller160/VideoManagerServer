@@ -6,7 +6,7 @@ import com.nimbusds.jose.crypto.MACSigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
@@ -71,7 +71,7 @@ class JwtTokenProviderTest {
                 .plusSeconds(EXP_SECS.toLong())
         val expDate = legacyDateConverter.convertLocalDateTimeToDate(expTime)
         Thread.sleep(1000)
-        val user = User().apply {
+        val user = AppUser().apply {
             userName = USER_NAME
         }
         val token = jwtTokenProvider.createToken(user)

@@ -9,11 +9,11 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-data class User (
+data class AppUser (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var userId: Long = 0,
         @Column(unique = true)
         var userName: String = "",
-        var password: String = "" // TODO make sure this gets hashed
+        var password: String = ""
 )

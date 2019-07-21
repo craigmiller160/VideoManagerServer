@@ -7,7 +7,7 @@ import com.nimbusds.jose.crypto.MACVerifier
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -44,7 +44,7 @@ class JwtTokenProvider (
         return legacyDateConverter.convertLocalDateTimeToDate(exp)
     }
 
-    fun createToken(user: User): String {
+    fun createToken(user: AppUser): String {
         val claims = JWTClaimsSet.Builder()
                 .subject(user.userName)
                 .issueTime(Date())

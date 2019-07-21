@@ -1,11 +1,10 @@
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.After
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -19,7 +18,7 @@ import javax.transaction.Transactional
 @RunWith(SpringRunner::class)
 @SpringBootTest
 @Transactional
-class UserRepositoryIntegrationTest {
+class AppUserRepositoryIntegrationTest {
 
     companion object {
         private const val USER_NAME = "userName"
@@ -27,22 +26,22 @@ class UserRepositoryIntegrationTest {
     }
 
     @Autowired
-    private lateinit var userRepository: UserRepository
+    private lateinit var appUserRepository: AppUserRepository
 
     @Before
     fun setup() {
-        val user = User(userName = USER_NAME, password = PASSWORD)
-        userRepository.save(user)
+        val user = AppUser(userName = USER_NAME, password = PASSWORD)
+        appUserRepository.save(user)
     }
 
     @After
     fun clean() {
-        userRepository.deleteAll()
+        appUserRepository.deleteAll()
     }
 
     @Test
     fun test_findByUserName() {
-        val user = userRepository.findByUserName(USER_NAME)
+        val user = appUserRepository.findByUserName(USER_NAME)
         assertThat(user, allOf(
                 hasProperty("userName", equalTo(USER_NAME)),
                 hasProperty("password", equalTo(PASSWORD))
@@ -51,7 +50,7 @@ class UserRepositoryIntegrationTest {
 
     @Test
     fun test_findByUserName_noUser() {
-        val user = userRepository.findByUserName("Bob")
+        val user = appUserRepository.findByUserName("Bob")
         assertNull(user)
     }
 
