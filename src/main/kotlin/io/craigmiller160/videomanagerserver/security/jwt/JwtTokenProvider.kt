@@ -11,6 +11,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.Base64
@@ -45,6 +46,7 @@ class JwtTokenProvider (
     }
 
     fun createToken(user: AppUser): String {
+        val roles = user.roles.map { role -> role.name }
         val claims = JWTClaimsSet.Builder()
                 .subject(user.userName)
                 .issueTime(Date())
@@ -52,6 +54,7 @@ class JwtTokenProvider (
                 .expirationTime(generateExpiration())
                 .jwtID(UUID.randomUUID().toString())
                 .notBeforeTime(Date())
+                .claim("roles", roles)
                 .build()
         val header = JWSHeader.Builder(JWSAlgorithm.HS256)
                 .build()
@@ -87,8 +90,7 @@ class JwtTokenProvider (
     fun getAuthentication(token: String): Authentication {
         val jwt = SignedJWT.parse(token)
         val claims = jwt.jwtClaimsSet
-        val userDetails = org.springframework.security.core.userdetails.User
-                .withUsername(claims.subject)
+        val userDetails = User.withUsername(claims.subject)
                 .password("")
                 .authorities("Admin") // TODO going to want to customize this
                 .build()

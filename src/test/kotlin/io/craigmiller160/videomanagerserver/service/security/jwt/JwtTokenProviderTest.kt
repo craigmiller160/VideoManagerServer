@@ -7,6 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
@@ -17,6 +18,7 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.notNullValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -66,6 +68,7 @@ class JwtTokenProviderTest {
 
     @Test
     fun test_createToken() {
+        val role = "MyRole"
         val startDate = Date()
         val expTime = legacyDateConverter.convertDateToLocalDateTime(startDate)
                 .plusSeconds(EXP_SECS.toLong())
@@ -73,6 +76,7 @@ class JwtTokenProviderTest {
         Thread.sleep(1000)
         val user = AppUser().apply {
             userName = USER_NAME
+            roles = listOf(Role(name = role))
         }
         val token = jwtTokenProvider.createToken(user)
         val jwt = SignedJWT.parse(token)
@@ -86,6 +90,7 @@ class JwtTokenProviderTest {
                 hasProperty("expirationTime", greaterThan(expDate)),
                 hasProperty("notBeforeTime", greaterThan(startDate))
         ))
+        assertEquals(listOf(role), claimSet.getStringListClaim("roles"))
     }
 
     @Test
