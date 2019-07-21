@@ -23,6 +23,7 @@ class AuthLoginFilter (
     private val objectMapper = ObjectMapper()
 
     override fun attemptAuthentication(req: HttpServletRequest?, resp: HttpServletResponse?): Authentication? {
+        println("Working")
         return req?.let {
             val userRequest = objectMapper.readValue(req.inputStream, User::class.java)
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(

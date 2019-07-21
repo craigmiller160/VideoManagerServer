@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletResponse
 
 // TODO refactor this based on Auth.0 example that uses the AuthenticationManager
 
-@Component
 class JwtTokenFilter (
         private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        println("Filtering") // TODO delete this
         val token = jwtTokenProvider.resolveToken(req)
         token?.let {
             try {
@@ -26,6 +26,7 @@ class JwtTokenFilter (
                 }
                 val auth = jwtTokenProvider.getAuthentication(token)
                 SecurityContextHolder.getContext().authentication = auth
+                println("Authenticated") // TODO delete this
                 chain.doFilter(req, resp)
                 return
             }
@@ -35,6 +36,9 @@ class JwtTokenFilter (
             }
         }
 
-        throw ApiUnauthorizedException("User is unauthorized") // TODO instead of this, try continuing the filter chain without authentication
+        println("Clearing context") // TODO delete this
+        SecurityContextHolder.clearContext()
+        chain.doFilter(req, resp)
+//        throw ApiUnauthorizedException("User is unauthorized") // TODO instead of this, try continuing the filter chain without authentication
     }
 }

@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-//@RestController
-//@RequestMapping("/auth")
+// TODO delete this if not needed
+
+@RestController
+@RequestMapping("/temp")
 class AuthController (
         private val authService: AuthService
 ) {
@@ -21,6 +23,11 @@ class AuthController (
 //    @GetMapping("/logout")
     fun logout() {
         TODO("Finish this")
+    }
+
+    @GetMapping
+    fun test(): String {
+        return "Working"
     }
 
 }
