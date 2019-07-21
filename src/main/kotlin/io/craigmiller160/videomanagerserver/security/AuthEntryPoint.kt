@@ -20,12 +20,13 @@ class AuthEntryPoint : AuthenticationEntryPoint {
     override fun commence(req: HttpServletRequest?, resp: HttpServletResponse?, ex: AuthenticationException?) {
         val status = HttpStatus.UNAUTHORIZED.value()
         resp?.status = status
+        resp?.addHeader("Content-Type", "application/json")
         val error = ErrorMessage().apply {
             timestamp = formatter.format(ZonedDateTime.now())
             this.status = status
             error = HttpStatus.UNAUTHORIZED.name
             message = ex?.message ?: ""
-            path = req?.pathInfo ?: ""
+            path = "${req?.contextPath ?: ""}${req?.servletPath ?: ""}"
         }
         val payload = objectMapper.writeValueAsString(error)
         resp?.writer?.use { it.write(payload) }

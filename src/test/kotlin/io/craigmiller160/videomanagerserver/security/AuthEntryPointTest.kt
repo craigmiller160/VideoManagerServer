@@ -31,7 +31,9 @@ class AuthEntryPointTest {
     @Test
     fun test_commence() {
         val message = "My Error"
-        val path = "/my/path"
+        val contextPath = "/my"
+        val servletPath = "/path"
+        val path = "$contextPath$servletPath"
         val req = mock(HttpServletRequest::class.java)
         val resp = mock(HttpServletResponse::class.java)
         val ex = MyAuthEx(message)
@@ -40,14 +42,21 @@ class AuthEntryPointTest {
 
         `when`(resp.writer)
                 .thenReturn(writer)
-        `when`(req.pathInfo)
-                .thenReturn(path)
+        `when`(req.contextPath)
+                .thenReturn(contextPath)
+        `when`(req.servletPath)
+                .thenReturn(servletPath)
 
         authEntryPoint.commence(req, resp, ex)
 
         val statusCaptor = ArgumentCaptor.forClass(Int::class.java)
         verify(resp).status = statusCaptor.capture()
         assertEquals(HttpStatus.UNAUTHORIZED.value(), statusCaptor.value)
+
+        val headerCaptor = ArgumentCaptor.forClass(String::class.java)
+        verify(resp).addHeader(headerCaptor.capture(), headerCaptor.capture())
+        assertEquals("Content-Type", headerCaptor.allValues[0])
+        assertEquals("application/json", headerCaptor.allValues[1])
 
         val response = stringWriter.toString()
         val error = objectMapper.readValue(response, ErrorMessage::class.java)
