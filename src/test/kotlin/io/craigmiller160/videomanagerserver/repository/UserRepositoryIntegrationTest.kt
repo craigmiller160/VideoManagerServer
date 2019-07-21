@@ -1,9 +1,13 @@
 package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.dto.User
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,14 +41,17 @@ class UserRepositoryIntegrationTest {
     }
 
     @Test
-    fun test_login() {
-        val user = userRepository.login(USER_NAME, PASSWORD)
-        assertNotNull(user)
+    fun test_findByUserName() {
+        val user = userRepository.findByUserName(USER_NAME)
+        assertThat(user, allOf(
+                hasProperty("userName", equalTo(USER_NAME)),
+                hasProperty("password", equalTo(PASSWORD))
+        ))
     }
 
     @Test
-    fun test_login_noUser() {
-        val user = userRepository.login("Hello", "World")
+    fun test_findByUserName_noUser() {
+        val user = userRepository.findByUserName("Bob")
         assertNull(user)
     }
 

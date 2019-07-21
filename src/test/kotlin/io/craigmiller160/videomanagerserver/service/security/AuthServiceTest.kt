@@ -38,35 +38,37 @@ class AuthServiceTest {
 
     @Test
     fun test_login() {
-        val user = User().apply {
-            userName = USER_NAME
-            password = PASSWORD
-        }
-        `when`(passwordEncoder.encode(PASSWORD))
-                .thenReturn(ENCODED_PASSWORD)
-        `when`(userRepository.login(USER_NAME, ENCODED_PASSWORD))
-                .thenReturn(user)
-        `when`(jwtTokenProvider.createToken(user))
-                .thenReturn(TOKEN)
-
-        val result = authService.login(user)
-        assertEquals(Token(TOKEN), result)
+        TODO("Finish this")
+//        val user = User().apply {
+//            userName = USER_NAME
+//            password = PASSWORD
+//        }
+//        `when`(passwordEncoder.encode(PASSWORD))
+//                .thenReturn(ENCODED_PASSWORD)
+//        `when`(userRepository.login(USER_NAME, ENCODED_PASSWORD))
+//                .thenReturn(user)
+//        `when`(jwtTokenProvider.createToken(user))
+//                .thenReturn(TOKEN)
+//
+//        val result = authService.login(user)
+//        assertEquals(Token(TOKEN), result)
     }
 
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_invalid() {
-        val user = User().apply {
-            userName = "Hello"
-            password = "World"
-        }
-        `when`(passwordEncoder.encode("World"))
-                .thenReturn("Wrong_Encoded")
-        `when`(userRepository.login(USER_NAME, ENCODED_PASSWORD))
-                .thenReturn(user)
-        `when`(jwtTokenProvider.createToken(user))
-                .thenReturn(TOKEN)
-
-        authService.login(user)
+        TODO("Finish this")
+//        val user = User().apply {
+//            userName = "Hello"
+//            password = "World"
+//        }
+//        `when`(passwordEncoder.encode("World"))
+//                .thenReturn("Wrong_Encoded")
+//        `when`(userRepository.login(USER_NAME, ENCODED_PASSWORD))
+//                .thenReturn(user)
+//        `when`(jwtTokenProvider.createToken(user))
+//                .thenReturn(TOKEN)
+//
+//        authService.login(user)
     }
 
 }
