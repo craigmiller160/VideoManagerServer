@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.validation.annotation.Validated
 
@@ -28,13 +27,6 @@ class SecurityConfig (
         private val hashRounds: Int
 ) : WebSecurityConfigurerAdapter() {
 
-//    override fun configure(auth: AuthenticationManagerBuilder?) {
-//        auth?.let {
-//            auth.userDetailsService(userDetailsService)
-//                    .passwordEncoder(passwordEncoder())
-//        }
-//    }
-
     override fun configure(http: HttpSecurity?) {
         // TODO add cors configuration here using spring boot
         http?.let {
@@ -49,16 +41,7 @@ class SecurityConfig (
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
                     .and()
-//                    .formLogin()
-//                        .loginProcessingUrl("/auth/login")
-//                        .successHandler(authSuccessHandler)
-//                        .failureHandler(authFailureHandler)
-//                    .and()
-//                    .addFilter(jwtTokenFilter)
                     .addFilterBefore(JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
-//                    .addFilter(AuthLoginFilter(authenticationManager()))
-//                    .addFilterAfter(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
-//                    .addFilterAt(AuthLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter::class.java)
         }
     }
 
