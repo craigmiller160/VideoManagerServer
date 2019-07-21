@@ -10,7 +10,6 @@ import io.craigmiller160.videomanagerserver.dto.User
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
-import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsService
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -49,9 +48,6 @@ class JwtTokenProviderTest {
 
     @Mock
     private lateinit var tokenConfig: TokenConfig
-
-    @Mock
-    private lateinit var videoUserDetailsService: VideoUserDetailsService
 
     @Spy
     private val legacyDateConverter = LegacyDateConverter()

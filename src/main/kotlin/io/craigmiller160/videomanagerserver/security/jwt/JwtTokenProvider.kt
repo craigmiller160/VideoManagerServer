@@ -8,20 +8,20 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.User
-import io.craigmiller160.videomanagerserver.service.security.VideoUserDetailsService
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Base64
+import java.util.Date
+import java.util.UUID
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
 
 @Component
 class JwtTokenProvider (
        private val tokenConfig: TokenConfig,
-       private val videoUserDetailsService: VideoUserDetailsService,
        private val legacyDateConverter: LegacyDateConverter
 ) {
 
