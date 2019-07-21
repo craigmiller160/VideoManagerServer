@@ -26,29 +26,26 @@ import org.springframework.validation.annotation.Validated
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig (
-        private val authSuccessHandler: AuthSuccessHandler,
-        private val authFailureHandler: AuthFailureHandler,
         private val authEntryPoint: AuthEntryPoint,
         private val jwtTokenProvider: JwtTokenProvider,
-        private val userDetailsService: AuthUserDetailsService,
+//        private val userDetailsService: AuthUserDetailsService,
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int
 ) : WebSecurityConfigurerAdapter() {
 
-    override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth?.let {
-            auth.userDetailsService(userDetailsService)
-                    .passwordEncoder(passwordEncoder())
-        }
-    }
+//    override fun configure(auth: AuthenticationManagerBuilder?) {
+//        auth?.let {
+//            auth.userDetailsService(userDetailsService)
+//                    .passwordEncoder(passwordEncoder())
+//        }
+//    }
 
     override fun configure(http: HttpSecurity?) {
         // TODO add cors configuration here using spring boot
-        // TODO look into access denied handler
         http?.let {
             http.csrf().disable()
                     .authorizeRequests()
-                        .antMatchers("/temp").permitAll()
+                        .antMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                     .and()
                     .sessionManagement()
