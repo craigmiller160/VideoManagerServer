@@ -1,25 +1,38 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import org.junit.Before
+import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.dto.User
+import io.craigmiller160.videomanagerserver.service.security.AuthService
+import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class AuthControllerTest {
 
-//    private lateinit var authController: AuthController
-//
-//    @Before
-//    fun setup() {
-//        authController = AuthController()
-//    }
+    @Mock
+    private lateinit var authService: AuthService
+
+    @InjectMocks
+    private lateinit var authController: AuthController
+
 
     @Test
     fun test_login() {
-        TODO("Finish this")
-    }
+        val request = User().apply {
+            userName = "userName"
+            password = "password"
+        }
+        val token = Token("ABCDEFG")
+        `when`(authService.login(request))
+                .thenReturn(token)
 
-    @Test
-    fun test_logout() {
-        TODO("Finish this")
+        val result = authController.login(request)
+        assertEquals(token, result.body)
     }
 
 }
