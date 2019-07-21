@@ -36,6 +36,8 @@ video:
   apiPageSize: 10
   fileExts: mp4,mkv,avi,m4v
   security:
+    password:
+      hashRounds: 12
     token:
       expSecs: 86400
       key: ThisIsMySecretKey
