@@ -1,8 +1,6 @@
 package io.craigmiller160.videomanagerserver.security.jwt
 
-import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest

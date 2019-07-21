@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository
 
 interface UserRepository : CrudRepository<User, Long> {
 
+    // TODO delete this stupid method
     @Query("SELECT u FROM User u WHERE u.userName = :userName AND u.password = :password")
     fun login(userName: String, password: String): User?
 

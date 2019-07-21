@@ -5,20 +5,21 @@ import io.craigmiller160.videomanagerserver.dto.User
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.repository.UserRepository
-import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+
+// TODO needs tests
 
 @Service
 class AuthService (
         private val userRepository: UserRepository,
-        private val passwordEncoder: PasswordEncoder,
+        private val passwordEncoder: BCryptPasswordEncoder,
         private val jwtTokenProvider: JwtTokenProvider
 ) {
 
     fun login(request: User): Token {
-        val password = passwordEncoder.encode(request.password)
-        val user = userRepository.login(request.userName, password)
-        user?.let {
+        val user = userRepository.findByUserName(request.userName)
+        if (user != null && passwordEncoder.matches(request.password, user.password)) {
             val token = jwtTokenProvider.createToken(user)
             return Token(token)
         }

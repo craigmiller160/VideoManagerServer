@@ -40,4 +40,3 @@ video:
       hashRounds: 12
     token:
       expSecs: 86400
-      key: ThisIsMySecretKey
