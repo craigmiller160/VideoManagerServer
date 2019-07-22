@@ -13,6 +13,7 @@ import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -25,6 +26,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.lang.IllegalArgumentException
+import java.util.Optional
 
 @RunWith(MockitoJUnitRunner::class)
 class AuthServiceTest {
@@ -166,22 +168,60 @@ class AuthServiceTest {
 
     @Test
     fun test_updateUser_notFound() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            userName = USER_NAME
+            roles = listOf(Role(name = ROLE))
+        }
+        val expected = user.copy(userId = userId)
+
+        `when`(appUserRepository.save(expected))
+                .thenReturn(expected)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(expected.copy(password = PASSWORD)))
+
+        val result = authService.updateUser(userId, user)
+        assertEquals(expected.copy(password = ""), result)
+        // TODO not working, figure out why
     }
 
     @Test
     fun test_getAllUsers() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = USER_NAME
+            password = PASSWORD
+            roles = listOf(Role(name = ROLE))
+        }
+        val expected = user.copy(password = "")
+        val userList = listOf(user)
+        val expectedList = listOf(expected)
+
+        `when`(appUserRepository.findAll())
+                .thenReturn(userList)
+
+        val result = authService.getAllUsers()
+        assertEquals(expectedList, result)
     }
 
     @Test
     fun test_getUser() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = USER_NAME
+            password = PASSWORD
+            roles = listOf(Role(name = ROLE))
+        }
+        val expected = user.copy(password = "")
+        `when`(appUserRepository.findById(1L))
+                .thenReturn(Optional.of(user))
+
+        val result = authService.getUser(1L)
+        assertEquals(expected, result)
     }
 
     @Test
     fun test_getUser_notFound() {
-        TODO("Finish this")
+        val result = authService.getUser(1L)
+        assertNull(result)
     }
 
 }

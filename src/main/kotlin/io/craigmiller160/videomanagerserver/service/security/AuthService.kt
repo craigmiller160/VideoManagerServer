@@ -38,8 +38,7 @@ class AuthService (
         }
         user.password = passwordEncoder.encode(user.password)
         val savedUser = appUserRepository.save(user)
-        removePassword(savedUser)
-        return savedUser
+        return removePassword(savedUser)
     }
 
     fun updateUser(userId: Long, user: AppUser): AppUser? {
@@ -53,23 +52,29 @@ class AuthService (
             }
             val savedUser = appUserRepository.save(user)
             removePassword(savedUser)
-            savedUser
         }
     }
 
     fun getAllUsers(): List<AppUser> {
-        return appUserRepository.findAll().toList()
+        return appUserRepository.findAll()
+                .map { user -> removePassword(user) }
+                .toList()
     }
 
     fun getUser(userId: Long): AppUser? {
-        return appUserRepository.findById(userId).orElse(null)
+        val user = appUserRepository.findById(userId).orElse(null)
+        return user?.let {
+            removePassword(user)
+            user
+        }
     }
 
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 
-    private fun removePassword(user: AppUser) {
+    private fun removePassword(user: AppUser): AppUser {
         user.password = ""
+        return user
     }
 
 }
