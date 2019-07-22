@@ -20,6 +20,8 @@ class AuthControllerTest {
     @InjectMocks
     private lateinit var authController: AuthController
 
+    // TODO refactor all of this to test the API
+    // TODO figure out how to unit test security with it
 
     @Test
     fun test_login() {
@@ -33,6 +35,51 @@ class AuthControllerTest {
 
         val result = authController.login(request)
         assertEquals(token, result.body)
+    }
+
+    @Test
+    fun test_getRoles() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getRoles_noRoles() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_createUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getAllUsers() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getAllUsers_noUsers() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getUser_notFound() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser_notFound() {
+        TODO("Finish this")
     }
 
 }

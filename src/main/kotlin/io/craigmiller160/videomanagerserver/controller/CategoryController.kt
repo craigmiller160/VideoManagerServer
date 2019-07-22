@@ -33,7 +33,7 @@ class CategoryController @Autowired constructor(
         return okOrNoContent(categoryService.getCategory(categoryId))
     }
 
-    @PostMapping()
+    @PostMapping
     fun addCategory(@RequestBody category: Category): ResponseEntity<Category> {
         return ResponseEntity.ok(categoryService.addCategory(category))
     }
