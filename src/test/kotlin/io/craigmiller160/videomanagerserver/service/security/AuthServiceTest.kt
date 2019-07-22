@@ -154,4 +154,34 @@ class AuthServiceTest {
         assertFalse(result)
     }
 
+    @Test
+    fun test_updateUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser_withPassword() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser_notFound() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getAllUsers() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getUser_notFound() {
+        TODO("Finish this")
+    }
+
 }

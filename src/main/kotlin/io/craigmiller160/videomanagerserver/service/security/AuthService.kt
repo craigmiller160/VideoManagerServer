@@ -33,7 +33,7 @@ class AuthService (
     }
 
     fun createUser(user: AppUser): AppUser {
-        if (user.userName == "" || user.password == "" || user.roles.isEmpty() || !rolesHaveIds(user.roles)) {
+        if (user.userName.isEmpty() || user.password.isEmpty() || user.roles.isEmpty() || !rolesHaveIds(user.roles)) {
             throw IllegalArgumentException("User is missing required fields")
         }
         user.password = passwordEncoder.encode(user.password)
@@ -42,16 +42,27 @@ class AuthService (
         return savedUser
     }
 
-    fun updateUser(userId: Long, user: AppUser): AppUser {
-        TODO("Finish this")
+    fun updateUser(userId: Long, user: AppUser): AppUser? {
+        val existing = appUserRepository.findById(userId).orElse(null)
+        return existing?.let {
+            user.userId = userId
+            if (user.password.isEmpty()) {
+                user.password = existing.password
+            } else {
+                user.password = passwordEncoder.encode(user.password)
+            }
+            val savedUser = appUserRepository.save(user)
+            removePassword(savedUser)
+            savedUser
+        }
     }
 
     fun getAllUsers(): List<AppUser> {
-        TODO("Finish this")
+        return appUserRepository.findAll().toList()
     }
 
-    fun getUser(userId: Long): AppUser {
-        TODO("Finish this")
+    fun getUser(userId: Long): AppUser? {
+        return appUserRepository.findById(userId).orElse(null)
     }
 
     fun rolesHaveIds(roles: List<Role>) =
