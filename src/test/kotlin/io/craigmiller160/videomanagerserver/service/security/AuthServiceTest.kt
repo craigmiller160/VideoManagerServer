@@ -28,7 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.lang.IllegalArgumentException
 import java.util.Optional
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class AuthServiceTest {
 
     companion object {
@@ -158,12 +158,59 @@ class AuthServiceTest {
 
     @Test
     fun test_updateUser() {
-        TODO("Finish this")
+        val userId = 1L
+        val request = AppUser().apply {
+            userName = USER_NAME
+            roles = listOf(Role(name = ROLE))
+        }
+        val response = request.copy(
+                userId = userId,
+                password = PASSWORD
+        )
+        val existing = request.copy(
+                userId = userId,
+                roles = listOf(),
+                password = PASSWORD
+        )
+
+        `when`(appUserRepository.save(response))
+                .thenReturn(response)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(existing))
+
+        val result = authService.updateUser(userId, request)
+        assertEquals(response, result)
     }
 
     @Test
     fun test_updateUser_withPassword() {
-        TODO("Finish this")
+        val userId = 1L
+        val request = AppUser().apply {
+            userName = USER_NAME
+            roles = listOf(Role(name = ROLE))
+            password = PASSWORD
+        }
+        val response = request.copy(
+                userId = userId
+        )
+        val existing = request.copy(
+                userId = userId,
+                roles = listOf(),
+                password = "${PASSWORD}2"
+        )
+        val expected = response.copy(
+                password = ENCODED_PASSWORD
+        )
+
+        `when`(appUserRepository.save(expected))
+                .thenReturn(expected)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(existing))
+        `when`(passwordEncoder.encode(PASSWORD))
+                .thenReturn(ENCODED_PASSWORD)
+
+        val result = authService.updateUser(userId, request)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -177,12 +224,9 @@ class AuthServiceTest {
 
         `when`(appUserRepository.save(expected))
                 .thenReturn(expected)
-        `when`(appUserRepository.findById(userId))
-                .thenReturn(Optional.of(expected.copy(password = PASSWORD)))
 
         val result = authService.updateUser(userId, user)
-        assertEquals(expected.copy(password = ""), result)
-        // TODO not working, figure out why
+        assertNull(result)
     }
 
     @Test
