@@ -10,7 +10,6 @@ import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -172,6 +171,7 @@ class AuthServiceTest {
                 roles = listOf(),
                 password = PASSWORD
         )
+        val expected = response.copy(password = "")
 
         `when`(appUserRepository.save(response))
                 .thenReturn(response)
@@ -179,7 +179,7 @@ class AuthServiceTest {
                 .thenReturn(Optional.of(existing))
 
         val result = authService.updateUser(userId, request)
-        assertEquals(response, result)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -198,12 +198,13 @@ class AuthServiceTest {
                 roles = listOf(),
                 password = "${PASSWORD}2"
         )
-        val expected = response.copy(
+        val toSave = response.copy(
                 password = ENCODED_PASSWORD
         )
+        val expected = toSave.copy(password = "")
 
-        `when`(appUserRepository.save(expected))
-                .thenReturn(expected)
+        `when`(appUserRepository.save(toSave))
+                .thenReturn(toSave)
         `when`(appUserRepository.findById(userId))
                 .thenReturn(Optional.of(existing))
         `when`(passwordEncoder.encode(PASSWORD))
