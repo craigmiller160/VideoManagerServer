@@ -18,7 +18,10 @@ import org.springframework.validation.annotation.Validated
 @Configuration
 @Validated
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true
+)
 class SecurityConfig (
         private val authEntryPoint: AuthEntryPoint,
         private val jwtTokenProvider: JwtTokenProvider,

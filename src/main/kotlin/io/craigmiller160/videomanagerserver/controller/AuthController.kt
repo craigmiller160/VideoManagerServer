@@ -1,10 +1,12 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,6 +49,7 @@ class AuthController (
         TODO("Finish this")
     }
 
+    @Secured(ROLE_ADMIN)
     @GetMapping("/roles")
     fun getRoles(): ResponseEntity<List<Role>> {
         val roles = authService.getRoles()

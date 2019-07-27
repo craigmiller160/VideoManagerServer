@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
-import org.hamcrest.FeatureMatcher
-import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
@@ -23,7 +22,6 @@ import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
-import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -34,11 +32,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import javax.servlet.http.HttpServletResponse
 
 
 @RunWith(SpringJUnit4ClassRunner::class)
-//@WebMvcTest(AuthController::class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
@@ -47,8 +43,6 @@ import javax.servlet.http.HttpServletResponse
 class AuthControllerTest {
 
     // TODO replicate the security for other controllers
-
-    // TODO figure out how to unit test security with it
 
     companion object {
         private const val ROLE = "MyRole"
@@ -59,8 +53,6 @@ class AuthControllerTest {
 
     @Autowired
     private lateinit var authController: AuthController
-
-    private lateinit var videoManagerControllerAdvice: VideoManagerControllerAdvice
 
     private lateinit var jacksonUser: JacksonTester<AppUser>
     private lateinit var jacksonToken: JacksonTester<Token>
@@ -77,11 +69,8 @@ class AuthControllerTest {
 
     @Before
     fun setup() {
-        videoManagerControllerAdvice = VideoManagerControllerAdvice() // TODO remove this if not needed
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webAppContext)
-//                .standaloneSetup(authController)
-//                .setControllerAdvice(videoManagerControllerAdvice)
                 .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
                 .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
                 .build()
@@ -107,19 +96,46 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_getRoles_unauthorized() {
+    fun test_login_badLogin() {
         TODO("Finish this")
     }
 
     @Test
+    fun test_getRoles_unauthorized() {
+        val roles = listOf(Role(name = ROLE))
+        `when`(authService.getRoles())
+                .thenReturn(roles)
+
+        val response = mockMvcHandler.doGet("/auth/roles")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(401))
+        ))
+    }
+
+    @Test
     fun test_getRoles_lacksRole() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val roles = listOf(Role(name = ROLE))
+        `when`(authService.getRoles())
+                .thenReturn(roles)
+
+        val response = mockMvcHandler.doGet("/auth/roles")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(403))
+        ))
     }
 
     @Test
     fun test_getRoles() {
         val user = AppUser().apply {
             userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
@@ -139,6 +155,7 @@ class AuthControllerTest {
     fun test_getRoles_noRoles() {
         val user = AppUser().apply {
             userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
