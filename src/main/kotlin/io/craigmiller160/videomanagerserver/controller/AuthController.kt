@@ -49,7 +49,11 @@ class AuthController (
 
     @GetMapping("/roles")
     fun getRoles(): ResponseEntity<List<Role>> {
-        TODO("Finish this")
+        val roles = authService.getRoles()
+        if (roles.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(roles)
     }
 
 }

@@ -2,9 +2,18 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
+import io.craigmiller160.videomanagerserver.test_util.responseBody
+import org.hamcrest.FeatureMatcher
+import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.isEmptyString
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,6 +23,7 @@ import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -24,6 +34,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import javax.servlet.http.HttpServletResponse
 
 
 @RunWith(SpringJUnit4ClassRunner::class)
@@ -39,6 +50,10 @@ class AuthControllerTest {
 
     // TODO figure out how to unit test security with it
 
+    companion object {
+        private const val ROLE = "MyRole"
+    }
+
     @Mock
     private lateinit var authService: AuthService
 
@@ -49,6 +64,7 @@ class AuthControllerTest {
 
     private lateinit var jacksonUser: JacksonTester<AppUser>
     private lateinit var jacksonToken: JacksonTester<Token>
+    private lateinit var jacksonRoles: JacksonTester<List<Role>>
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -91,26 +107,61 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_getRoles() {
-        val user = AppUser().apply {
-            userName = "userName"
-        }
-        val token = jwtTokenProvider.createToken(user)
-        println(token) // TODO delete this
-        mockMvcHandler.token = token
-
-        // TODO make this actually work
-        val response = mockMvcHandler.doGet("/auth/roles")
-        println("Status: ${response.status}")
-    }
-
-    @Test
-    fun test_getRoles_noRoles() {
+    fun test_getRoles_unauthorized() {
         TODO("Finish this")
     }
 
     @Test
+    fun test_getRoles_lacksRole() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getRoles() {
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val roles = listOf(Role(name = ROLE))
+        `when`(authService.getRoles())
+                .thenReturn(roles)
+
+        val response = mockMvcHandler.doGet("/auth/roles")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonRoles.write(roles).json))
+        ))
+    }
+
+    @Test
+    fun test_getRoles_noRoles() {
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doGet("/auth/roles")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204)),
+                responseBody(isEmptyString())
+        ))
+    }
+
+    @Test
     fun test_createUser() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_createUser_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_createUser_lacksRole() {
         TODO("Finish this")
     }
 
@@ -125,6 +176,16 @@ class AuthControllerTest {
     }
 
     @Test
+    fun test_getAllUsers_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getAllUsers_lacksRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_getUser() {
         TODO("Finish this")
     }
@@ -135,12 +196,32 @@ class AuthControllerTest {
     }
 
     @Test
+    fun test_getUser_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getUser_lacksRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_updateUser() {
         TODO("Finish this")
     }
 
     @Test
     fun test_updateUser_notFound() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUser_lacksRole() {
         TODO("Finish this")
     }
 
