@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
@@ -97,7 +98,15 @@ class AuthControllerTest {
 
     @Test
     fun test_login_badLogin() {
-        TODO("Finish this")
+        val badRequest = AppUser().apply {
+            userName = "userName"
+            password = "bad_password"
+        }
+        `when`(authService.login(badRequest))
+                .thenThrow(ApiUnauthorizedException("Invalid login"))
+
+        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(badRequest).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
