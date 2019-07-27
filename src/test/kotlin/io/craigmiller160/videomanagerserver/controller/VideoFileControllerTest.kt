@@ -146,7 +146,7 @@ class VideoFileControllerTest {
     }
 
     @Test
-    fun testAddStar() {
+    fun testAddVideoFile() {
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
