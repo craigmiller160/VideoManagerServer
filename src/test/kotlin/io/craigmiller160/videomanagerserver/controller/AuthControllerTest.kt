@@ -86,7 +86,9 @@ class AuthControllerTest {
 
     @Test
     fun test_getRoles() {
-        TODO("Finish this")
+        // TODO make this actually work
+        val response = mockMvcHandler.doGet("/auth/roles")
+        println("Status: ${response.status}")
     }
 
     @Test
