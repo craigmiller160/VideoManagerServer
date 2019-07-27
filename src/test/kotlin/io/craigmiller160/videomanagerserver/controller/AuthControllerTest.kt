@@ -36,14 +36,10 @@ import org.springframework.web.context.WebApplicationContext
 
 
 @RunWith(SpringJUnit4ClassRunner::class)
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.MOCK
-)
+@SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
 class AuthControllerTest {
-
-    // TODO replicate the security for other controllers
 
     companion object {
         private const val ROLE = "MyRole"

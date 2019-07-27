@@ -1,19 +1,38 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.StarService
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 import java.util.Optional
 
+@RunWith(SpringJUnit4ClassRunner::class)
+@SpringBootTest
+@WebAppConfiguration
+@ContextConfiguration
 class StarControllerTest {
+
+    // TODO add tests for unauthorized access for all methods
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -21,6 +40,7 @@ class StarControllerTest {
     @Mock
     private lateinit var starService: StarService
 
+    @Autowired
     private lateinit var starController: StarController
 
     private lateinit var jacksonStarList: JacksonTester<List<Star>>
@@ -32,6 +52,12 @@ class StarControllerTest {
     private lateinit var star3: Star
     private lateinit var starList: List<Star>
 
+    @Autowired
+    private lateinit var webAppContext: WebApplicationContext
+
+    @Autowired
+    private lateinit var jwtTokenProvider: JwtTokenProvider
+
     @Before
     fun setup() {
         starNoId = Star(starName = "NoId")
@@ -40,12 +66,17 @@ class StarControllerTest {
         star3 = Star(3, "ThirdStar")
         starList = listOf(star1, star2, star3)
 
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webAppContext)
+                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
+                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
+                .build()
+        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+
         MockitoAnnotations.initMocks(this)
         JacksonTester.initFields(this, ObjectMapper())
-
-        starController = StarController(starService)
-        mockMvc = MockMvcBuilders.standaloneSetup(starController).build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        ReflectionTestUtils.setField(starController, "starService", starService)
     }
 
     @Test
