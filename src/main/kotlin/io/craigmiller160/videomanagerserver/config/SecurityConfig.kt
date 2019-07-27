@@ -32,7 +32,7 @@ class SecurityConfig (
         http?.let {
             http.csrf().disable()
                     .authorizeRequests()
-                        .antMatchers("/auth/**").permitAll()
+                        .antMatchers("/auth/login").permitAll()
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
