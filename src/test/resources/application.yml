@@ -25,5 +25,6 @@ video:
   security:
     token:
       key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
+      expSecs: 86400
     password:
       hashRounds: 12

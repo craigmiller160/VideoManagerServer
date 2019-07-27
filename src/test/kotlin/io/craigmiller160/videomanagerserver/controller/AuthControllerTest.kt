@@ -95,7 +95,9 @@ class AuthControllerTest {
         val user = AppUser().apply {
             userName = "userName"
         }
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val token = jwtTokenProvider.createToken(user)
+        println(token) // TODO delete this
+        mockMvcHandler.token = token
 
         // TODO make this actually work
         val response = mockMvcHandler.doGet("/auth/roles")
