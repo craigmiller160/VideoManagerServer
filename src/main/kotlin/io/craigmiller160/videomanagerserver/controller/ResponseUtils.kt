@@ -6,3 +6,6 @@ import java.util.Optional
 fun <T> okOrNoContent(result: Optional<T>): ResponseEntity<T> =
         result.map { ResponseEntity.ok(it) }
                 .orElseGet { ResponseEntity.noContent().build() }
+
+fun <T> okOrNoContent(result: T?): ResponseEntity<T> =
+        result?.let { ResponseEntity.ok(result) } ?: ResponseEntity.noContent().build()
