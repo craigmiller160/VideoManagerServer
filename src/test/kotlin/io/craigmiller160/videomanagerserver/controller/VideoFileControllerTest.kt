@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
@@ -9,12 +10,14 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
@@ -23,16 +26,30 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.core.io.UrlResource
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
 import java.io.File
 import java.util.Optional
 
+@RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
+@WebAppConfiguration
+@ContextConfiguration
 class VideoFileControllerTest {
+
+    // TODO add tests for unauthorized access for all methods
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -40,8 +57,8 @@ class VideoFileControllerTest {
     @Mock
     private lateinit var videoFileService: VideoFileService
 
+    @Autowired
     private lateinit var videoFileController: VideoFileController
-    private lateinit var videoManagerControllerAdvice: VideoManagerControllerAdvice
 
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
@@ -58,6 +75,12 @@ class VideoFileControllerTest {
     private lateinit var scanRunning: FileScanStatus
     private lateinit var scanNotRunning: FileScanStatus
     private lateinit var scanAlreadyRunning: FileScanStatus
+
+    @Autowired
+    private lateinit var webAppContext: WebApplicationContext
+
+    @Autowired
+    private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
     fun setup() {
@@ -77,18 +100,19 @@ class VideoFileControllerTest {
         scanNotRunning = createScanNotRunningStatus()
         scanAlreadyRunning = createScanAlreadyRunningStatus()
 
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webAppContext)
+                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
+                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
+                .build()
+        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+
         MockitoAnnotations.initMocks(this)
         val objectMapper = ObjectMapper()
         objectMapper.registerModule(JavaTimeModule())
         JacksonTester.initFields(this, objectMapper)
-
-        videoFileController = VideoFileController(videoFileService)
-        videoManagerControllerAdvice = VideoManagerControllerAdvice()
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(videoFileController)
-                .setControllerAdvice(videoManagerControllerAdvice)
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        ReflectionTestUtils.setField(videoFileController, "videoFileService", videoFileService)
     }
 
     @Test
