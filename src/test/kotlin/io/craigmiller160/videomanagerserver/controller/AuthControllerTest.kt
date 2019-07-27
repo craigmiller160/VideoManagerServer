@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.junit.Before
 import org.junit.Test
@@ -34,6 +35,8 @@ import org.springframework.web.context.WebApplicationContext
 @ContextConfiguration
 class AuthControllerTest {
 
+    // TODO replicate the security for other controllers
+
     // TODO figure out how to unit test security with it
 
     @Mock
@@ -52,6 +55,9 @@ class AuthControllerTest {
 
     @Autowired
     private lateinit var webAppContext: WebApplicationContext
+
+    @Autowired
+    private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
     fun setup() {
@@ -86,6 +92,11 @@ class AuthControllerTest {
 
     @Test
     fun test_getRoles() {
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
         // TODO make this actually work
         val response = mockMvcHandler.doGet("/auth/roles")
         println("Status: ${response.status}")

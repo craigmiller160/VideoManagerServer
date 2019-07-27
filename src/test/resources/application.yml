@@ -23,5 +23,7 @@ video:
   apiPageSize: 10
   fileExts: FILE_EXTS
   security:
+    token:
+      key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
     password:
       hashRounds: 12
