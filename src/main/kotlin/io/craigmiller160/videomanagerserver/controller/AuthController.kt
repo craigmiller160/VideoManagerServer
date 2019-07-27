@@ -27,26 +27,32 @@ class AuthController (
         return ResponseEntity.ok(token)
     }
 
-    // TODO need to ensure that the following are restricted to admin access
-
+    @Secured(ROLE_ADMIN)
     @PostMapping("/user")
     fun createUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
-        TODO("Finish this")
+        return ResponseEntity.ok(authService.createUser(user))
     }
 
+    @Secured(ROLE_ADMIN)
     @PutMapping("/user/{userId}")
     fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: AppUser): ResponseEntity<AppUser> {
-        TODO("Finish this")
+        return okOrNoContent(authService.updateUser(userId, user))
     }
 
+    @Secured(ROLE_ADMIN)
     @GetMapping("/user")
     fun getAllUsers(): ResponseEntity<List<AppUser>> {
-        TODO("Finish this")
+        val users = authService.getAllUsers()
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(users)
     }
 
+    @Secured(ROLE_ADMIN)
     @GetMapping("/user/{userId}")
     fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
-        TODO("Finish this")
+        return okOrNoContent(authService.getUser(userId))
     }
 
     @Secured(ROLE_ADMIN)
