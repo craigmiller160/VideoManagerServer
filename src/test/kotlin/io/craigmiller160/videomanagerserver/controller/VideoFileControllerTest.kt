@@ -1,7 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
@@ -47,8 +46,6 @@ import java.util.Optional
 @WebAppConfiguration
 @ContextConfiguration
 class VideoFileControllerTest {
-
-    // TODO add tests for unauthorized access for all methods
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -132,6 +129,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_getAllVideoFiles_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testGetVideoFile() {
         `when`(videoFileService.getVideoFile(1))
                 .thenReturn(Optional.of(videoFile1))
@@ -146,6 +148,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_getVideoFile_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testAddVideoFile() {
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
@@ -153,6 +160,11 @@ class VideoFileControllerTest {
 
         val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
         assertOkResponse(response, jacksonVideoFile.write(videoFileWithId).json)
+    }
+
+    @Test
+    fun test_addVideoFile_unauthorized() {
+        TODO("Finish this")
     }
 
     @Test
@@ -171,6 +183,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_updateVideoFile_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testDeleteVideoFile() {
         `when`(videoFileService.deleteVideoFile(1))
                 .thenReturn(Optional.of(videoFile1))
@@ -181,6 +198,11 @@ class VideoFileControllerTest {
 
         response = mockMvcHandler.doDelete("/video-files/5")
         assertNoContentResponse(response)
+    }
+
+    @Test
+    fun test_deleteVideoFile_unauthorized() {
+        TODO("Finish this")
     }
 
     @Test
@@ -197,6 +219,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_startVideoScan_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testIsVideoScanRunning() {
         `when`(videoFileService.isVideoFileScanRunning())
                 .thenReturn(scanNotRunning)
@@ -207,6 +234,11 @@ class VideoFileControllerTest {
 
         response = mockMvcHandler.doGet("/video-files/scanner")
         assertOkResponse(response, jacksonStatus.write(scanRunning).json)
+    }
+
+    @Test
+    fun test_isVideoScanRunning_unauthorized() {
+        TODO("Finish this")
     }
 
     @Test
@@ -225,6 +257,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_searchForVideos_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_playVideo() {
         val file = File(".")
         `when`(videoFileService.playVideo(1L))
@@ -235,12 +272,22 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_playVideo_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_recordNewVideoPlay() {
         val response = mockMvcHandler.doGet("/video-files/record-play/1")
         assertEquals(200, response.status)
 
         verify(videoFileService, times(1))
                 .recordNewVideoPlay(1L)
+    }
+
+    @Test
+    fun test_recordNewVideoPlay_unauthorized() {
+        TODO("Finish this")
     }
 
 }
