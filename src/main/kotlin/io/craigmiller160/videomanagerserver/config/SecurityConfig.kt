@@ -14,6 +14,9 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
@@ -28,12 +31,16 @@ class SecurityConfig (
         private val jwtTokenProvider: JwtTokenProvider,
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int,
-        private val corsConfig: CorsConfig
+        @Value("\${cors.origins}")
+        private val corsOrigins: String
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
         http?.let {
             http.csrf().disable()
+                    .cors()
+                        .configurationSource(corsConfigurationSource())
+                    .and()
                     .authorizeRequests()
                         .antMatchers("/auth/login").permitAll()
                         .anyRequest().fullyAuthenticated()
@@ -54,7 +61,13 @@ class SecurityConfig (
     }
 
     @Bean
-    fun corsConfigurer(): WebMvcConfigurer {
-        return corsConfig
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val config = CorsConfiguration()
+        config.allowedOrigins = listOf("https://spring.io") // TODO configure this better
+        config.allowedMethods = listOf("GET", "OPTIONS", "POST")
+        config.allowedHeaders = listOf("Authorization")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", config)
+        return source
     }
 }
