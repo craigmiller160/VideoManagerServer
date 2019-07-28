@@ -17,7 +17,7 @@ class DbConfigIntegrationTest {
         private const val USERNAME = "user"
         private const val PASSWORD = "password"
         private const val DRIVER_CLASS_NAME = "org.h2.Driver"
-        private const val DB = "db_test"
+        private const val DB = "test"
     }
 
     @Autowired
