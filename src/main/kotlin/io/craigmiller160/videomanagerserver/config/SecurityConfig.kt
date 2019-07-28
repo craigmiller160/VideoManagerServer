@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @Validated
@@ -26,12 +27,11 @@ class SecurityConfig (
         private val authEntryPoint: AuthEntryPoint,
         private val jwtTokenProvider: JwtTokenProvider,
         @Value("\${video.security.password.hashRounds}")
-        private val hashRounds: Int
+        private val hashRounds: Int,
+        private val corsConfig: CorsConfig
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
-        // TODO add cors configuration here using spring boot
-        // TODO existing CorsFilter doesn't work
         http?.let {
             http.csrf().disable()
                     .authorizeRequests()
@@ -51,5 +51,10 @@ class SecurityConfig (
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder(hashRounds)
+    }
+
+    @Bean
+    fun corsConfigurer(): WebMvcConfigurer {
+        return corsConfig
     }
 }
