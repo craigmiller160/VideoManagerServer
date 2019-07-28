@@ -81,6 +81,9 @@ class VideoFileControllerTest {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
     @Before
     fun setup() {
         videoFileNoId = VideoFile(fileName = "NoId")
@@ -108,8 +111,6 @@ class VideoFileControllerTest {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
 
         MockitoAnnotations.initMocks(this)
-        val objectMapper = ObjectMapper()
-        objectMapper.registerModule(JavaTimeModule())
         JacksonTester.initFields(this, objectMapper)
         ReflectionTestUtils.setField(videoFileController, "videoFileService", videoFileService)
     }
@@ -149,8 +150,6 @@ class VideoFileControllerTest {
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
-
-        // TODO jackson video file is handling the date/time worse
 
         val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
         assertOkResponse(response, jacksonVideoFile.write(videoFileWithId).json)
