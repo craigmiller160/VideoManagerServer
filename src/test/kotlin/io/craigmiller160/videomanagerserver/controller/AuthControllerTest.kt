@@ -267,52 +267,129 @@ class AuthControllerTest {
 
     @Test
     fun test_getAllUsers_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/auth/users")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_getAllUsers_lacksRole() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doGet("/auth/users")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun test_getUser() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            this.userId = userId
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.getUser(userId))
+                .thenReturn(user)
+
+        val response = mockMvcHandler.doGet("/auth/users/$userId")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(user).json))
+        ))
     }
 
     @Test
     fun test_getUser_notFound() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doGet("/auth/users")
+        assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
     fun test_getUser_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/auth/users")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_getUser_lacksRole() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doGet("/auth/users")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun test_updateUser() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val userResponse = user.copy(userId = userId)
+
+        `when`(authService.updateUser(userId, user))
+                .thenReturn(userResponse)
+
+        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(userResponse).json))
+        ))
     }
 
     @Test
     fun test_updateUser_notFound() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204))
+        ))
     }
 
     @Test
     fun test_updateUser_unauthorized() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_updateUser_lacksRole() {
-        TODO("Finish this")
+        val userId = 1L
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
 }
