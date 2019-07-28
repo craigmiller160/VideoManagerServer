@@ -6,6 +6,8 @@ import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -63,9 +65,10 @@ class SecurityConfig (
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
-        config.allowedOrigins = listOf("https://spring.io") // TODO configure this better
-        config.allowedMethods = listOf("GET", "OPTIONS", "POST")
-        config.allowedHeaders = listOf("Authorization")
+        config.allowedOrigins = listOf(corsOrigins)
+        config.allowedMethods = listOf(HttpMethod.GET.name, HttpMethod.DELETE.name, HttpMethod.PUT.name, HttpMethod.POST.name, HttpMethod.OPTIONS.name)
+        config.allowedHeaders = listOf(HttpHeaders.AUTHORIZATION)
+        config.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
         return source
