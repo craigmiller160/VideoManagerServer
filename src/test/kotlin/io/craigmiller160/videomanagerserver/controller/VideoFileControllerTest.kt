@@ -12,7 +12,10 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -130,7 +133,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_getAllVideoFiles_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/video-files?page=0&sortDirection=FooBar")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -150,7 +154,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_getVideoFile_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/video-files/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -166,7 +171,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_addVideoFile_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -187,7 +193,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_updateVideoFile_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doPut("/video-files/1", jacksonVideoFile.write(videoFile2).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -206,7 +213,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_deleteVideoFile_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doDelete("/video-files/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -225,7 +233,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_startVideoScan_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doPost("/video-files/scanner")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -244,7 +253,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_isVideoScanRunning_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/video-files/scanner")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -265,7 +275,9 @@ class VideoFileControllerTest {
 
     @Test
     fun test_searchForVideos_unauthorized() {
-        TODO("Finish this")
+        val search = VideoSearch("HelloWorld")
+        val response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -281,7 +293,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_playVideo_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/video-files/play/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
@@ -296,7 +309,8 @@ class VideoFileControllerTest {
 
     @Test
     fun test_recordNewVideoPlay_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/video-files/record-play/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
 }
