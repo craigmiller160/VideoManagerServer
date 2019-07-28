@@ -56,6 +56,7 @@ class AuthControllerTest {
     private lateinit var jacksonUser: JacksonTester<AppUser>
     private lateinit var jacksonToken: JacksonTester<Token>
     private lateinit var jacksonRoles: JacksonTester<List<Role>>
+    private lateinit var jacksonUserList: JacksonTester<List<AppUser>>
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -190,7 +191,7 @@ class AuthControllerTest {
         `when`(authService.createUser(userRequest))
                 .thenReturn(userResponse)
 
-        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -205,7 +206,7 @@ class AuthControllerTest {
             password = PASSWORD
         }
 
-        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, hasProperty("status", equalTo(401)))
     }
@@ -221,19 +222,47 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun test_getAllUsers() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val users = listOf(user)
+        `when`(authService.getAllUsers())
+                .thenReturn(users)
+
+        val response = mockMvcHandler.doGet("/auth/users")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUserList.write(users).json))
+        ))
     }
 
     @Test
     fun test_getAllUsers_noUsers() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.getAllUsers())
+                .thenReturn(listOf())
+
+        val response = mockMvcHandler.doGet("/auth/users")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204))
+        ))
     }
 
     @Test

@@ -28,19 +28,19 @@ class AuthController (
     }
 
     @Secured(ROLE_ADMIN)
-    @PostMapping("/user")
+    @PostMapping("/users")
     fun createUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
         return ResponseEntity.ok(authService.createUser(user))
     }
 
     @Secured(ROLE_ADMIN)
-    @PutMapping("/user/{userId}")
+    @PutMapping("/users/{userId}")
     fun updateUser(@PathVariable("userId") userId: Long, @RequestBody user: AppUser): ResponseEntity<AppUser> {
         return okOrNoContent(authService.updateUser(userId, user))
     }
 
     @Secured(ROLE_ADMIN)
-    @GetMapping("/user")
+    @GetMapping("/users")
     fun getAllUsers(): ResponseEntity<List<AppUser>> {
         val users = authService.getAllUsers()
         if (users.isEmpty()) {
@@ -50,7 +50,7 @@ class AuthController (
     }
 
     @Secured(ROLE_ADMIN)
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
         return okOrNoContent(authService.getUser(userId))
     }
