@@ -392,4 +392,59 @@ class AuthControllerTest {
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
+    @Test
+    fun test_deleteUser() {
+        val userId = 1L
+        val user = AppUser().apply {
+            this.userId = userId
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.deleteUser(userId))
+                .thenReturn(user)
+
+        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(user).json))
+        ))
+    }
+
+    @Test
+    fun test_deleteUser_notFound() {
+        val userId = 1L
+        val user = AppUser().apply {
+            this.userId = userId
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        assertThat(response, hasProperty("status", equalTo(204)))
+    }
+
+    @Test
+    fun test_deleteUser_unauthorized() {
+        val userId = 1L
+        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_deleteUser_lacksRole() {
+        val userId = 1L
+        val user = AppUser().apply {
+            this.userId = userId
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        assertThat(response, hasProperty("status", equalTo(403)))
+    }
+
 }

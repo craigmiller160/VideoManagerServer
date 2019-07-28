@@ -69,6 +69,12 @@ class AuthService (
         }
     }
 
+    fun deleteUser(userId: Long): AppUser? {
+        val user = appUserRepository.findById(userId).orElse(null)
+        appUserRepository.deleteById(userId)
+        return user
+    }
+
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 

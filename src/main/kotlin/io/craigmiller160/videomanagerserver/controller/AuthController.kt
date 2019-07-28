@@ -7,6 +7,7 @@ import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -63,6 +64,12 @@ class AuthController (
             return ResponseEntity.noContent().build()
         }
         return ResponseEntity.ok(roles)
+    }
+
+    @Secured(ROLE_ADMIN)
+    @DeleteMapping("/users/{userId}")
+    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
+        return okOrNoContent(authService.deleteUser(userId))
     }
 
 }

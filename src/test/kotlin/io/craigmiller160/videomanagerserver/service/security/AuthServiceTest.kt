@@ -269,4 +269,33 @@ class AuthServiceTest {
         assertNull(result)
     }
 
+    @Test
+    fun test_deleteUser() {
+        val userId = 1L
+        val user = AppUser(userId, USER_NAME)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(user))
+
+        val result = authService.deleteUser(userId)
+        assertEquals(user, result)
+
+        val userIdCaptor = ArgumentCaptor.forClass(Long::class.java)
+        verify(appUserRepository, times(1))
+                .deleteById(userIdCaptor.capture())
+        assertEquals(userId, userIdCaptor.value)
+    }
+
+    @Test
+    fun test_deleteUser_notFound() {
+        val userId = 1L
+
+        val result = authService.deleteUser(userId)
+        assertNull(result)
+
+        val userIdCaptor = ArgumentCaptor.forClass(Long::class.java)
+        verify(appUserRepository, times(1))
+                .deleteById(userIdCaptor.capture())
+        assertEquals(userId, userIdCaptor.value)
+    }
+
 }
