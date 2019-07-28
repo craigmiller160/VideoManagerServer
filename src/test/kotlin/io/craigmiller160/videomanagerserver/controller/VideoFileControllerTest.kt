@@ -105,7 +105,6 @@ class VideoFileControllerTest {
                 .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
                 .build()
         mockMvcHandler = MockMvcHandler(mockMvc)
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
 
         MockitoAnnotations.initMocks(this)
         JacksonTester.initFields(this, objectMapper)
@@ -114,6 +113,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testGetAllVideoFiles() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.getAllVideoFiles(anyInt(), anyString()))
                 .thenReturn(videoFileList)
                 .thenReturn(listOf())
@@ -135,6 +135,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testGetVideoFile() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.getVideoFile(1))
                 .thenReturn(Optional.of(videoFile1))
         `when`(videoFileService.getVideoFile(5))
@@ -154,6 +155,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testAddVideoFile() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
@@ -169,6 +171,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testUpdateVideoFile() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedVideoFile = videoFile2.copy(fileId = 1)
         `when`(videoFileService.updateVideoFile(1, videoFile2))
                 .thenReturn(Optional.of(updatedVideoFile))
@@ -189,6 +192,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testDeleteVideoFile() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.deleteVideoFile(1))
                 .thenReturn(Optional.of(videoFile1))
                 .thenReturn(Optional.empty())
@@ -207,6 +211,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testStartVideoScan() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
@@ -225,6 +230,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testIsVideoScanRunning() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.isVideoFileScanRunning())
                 .thenReturn(scanNotRunning)
                 .thenReturn(scanRunning)
@@ -243,6 +249,7 @@ class VideoFileControllerTest {
 
     @Test
     fun testSearchForVideos() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java)))
                 .thenReturn(videoSearchResults)
                 .thenReturn(VideoSearchResults())
@@ -263,6 +270,7 @@ class VideoFileControllerTest {
 
     @Test
     fun test_playVideo() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val file = File(".")
         `when`(videoFileService.playVideo(1L))
                 .thenReturn(UrlResource(file.toURI()))
@@ -278,6 +286,7 @@ class VideoFileControllerTest {
 
     @Test
     fun test_recordNewVideoPlay() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val response = mockMvcHandler.doGet("/video-files/record-play/1")
         assertEquals(200, response.status)
 
