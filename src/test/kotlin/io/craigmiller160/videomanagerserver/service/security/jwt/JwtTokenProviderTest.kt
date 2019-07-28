@@ -48,6 +48,7 @@ class JwtTokenProviderTest {
         private const val KEY = "ThisIsMySecretKeyThisIsMySecretKey"
         private const val USER_NAME = "userName"
         private const val ROLE = "MyRole"
+        private const val SLEEP_MILLIS = 1000L
     }
 
     @Mock
@@ -74,7 +75,7 @@ class JwtTokenProviderTest {
         val expTime = legacyDateConverter.convertDateToLocalDateTime(startDate)
                 .plusSeconds(EXP_SECS.toLong())
         val expDate = legacyDateConverter.convertLocalDateTimeToDate(expTime)
-        Thread.sleep(1000)
+        Thread.sleep(SLEEP_MILLIS)
         val user = AppUser().apply {
             userName = USER_NAME
             roles = listOf(Role(name = ROLE))
@@ -126,7 +127,7 @@ class JwtTokenProviderTest {
     fun test_validateToken_expired() {
         val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
         val token = createToken(secretKey, 0L)
-        Thread.sleep(1000)
+        Thread.sleep(SLEEP_MILLIS)
         val result = jwtTokenProvider.validateToken(token)
         assertFalse(result)
     }
