@@ -5,6 +5,9 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.CategoryService
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,8 +34,6 @@ import java.util.Optional
 @WebAppConfiguration
 @ContextConfiguration
 class CategoryControllerTest {
-
-    // TODO add tests for unauthorized access for all methods
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -72,7 +73,6 @@ class CategoryControllerTest {
                 .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
                 .build()
         mockMvcHandler = MockMvcHandler(mockMvc)
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
 
         JacksonTester.initFields(this, ObjectMapper())
         MockitoAnnotations.initMocks(this)
@@ -82,6 +82,7 @@ class CategoryControllerTest {
 
     @Test
     fun testGetAllCategories() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(categoryService.getAllCategories())
                 .thenReturn(categoryList)
                 .thenReturn(listOf())
@@ -94,7 +95,14 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_getAllCategories_unauthorized() {
+        val response = mockMvcHandler.doGet("/categories")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testGetCategory() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(categoryService.getCategory(1))
                 .thenReturn(Optional.of(category1))
         `when`(categoryService.getCategory(5))
@@ -108,7 +116,14 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_getAllCategory_unauthorized() {
+        val response = mockMvcHandler.doGet("/categories/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testAddCategory() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val categoryWithId = categoryNoId.copy(categoryId = 1)
         `when`(categoryService.addCategory(categoryNoId))
                 .thenReturn(categoryWithId)
@@ -118,7 +133,14 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_addCategory_unauthorized() {
+        val response = mockMvcHandler.doPost("/categories", jacksonCategory.write(categoryNoId).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testUpdateCategory() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedCategory = category2.copy(categoryId = 1)
         `when`(categoryService.updateCategory(1, category2))
                 .thenReturn(Optional.of(updatedCategory))
@@ -133,7 +155,14 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_updateCategory_unauthorized() {
+        val response = mockMvcHandler.doPut("/categories/1", jacksonCategory.write(categoryNoId).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testDeleteCategory() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(categoryService.deleteCategory(1))
                 .thenReturn(Optional.of(category1))
                 .thenReturn(Optional.empty())
@@ -143,6 +172,12 @@ class CategoryControllerTest {
 
         response = mockMvcHandler.doDelete("/categories/5")
         assertNoContentResponse(response)
+    }
+
+    @Test
+    fun test_deleteCategory_unauthorized() {
+        val response = mockMvcHandler.doDelete("/categories/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
 }
