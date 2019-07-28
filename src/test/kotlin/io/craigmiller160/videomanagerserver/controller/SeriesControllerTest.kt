@@ -5,6 +5,11 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.SeriesService
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,8 +36,6 @@ import java.util.Optional
 @WebAppConfiguration
 @ContextConfiguration
 class SeriesControllerTest {
-
-    // TODO add tests for unauthorized access for all methods
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -72,7 +75,6 @@ class SeriesControllerTest {
                 .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
                 .build()
         mockMvcHandler = MockMvcHandler(mockMvc)
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
 
         MockitoAnnotations.initMocks(this)
         JacksonTester.initFields(this, ObjectMapper())
@@ -81,6 +83,7 @@ class SeriesControllerTest {
 
     @Test
     fun testGetAllSeries() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(seriesService.getAllSeries())
                 .thenReturn(seriesList)
                 .thenReturn(listOf())
@@ -93,7 +96,14 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_getAllSeries_unauthorized() {
+        val response = mockMvcHandler.doGet("/series")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testGetSeries() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(seriesService.getSeries(1))
                 .thenReturn(Optional.of(series1))
         `when`(seriesService.getSeries(5))
@@ -107,7 +117,14 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_getSeries_unauthorized() {
+        val response = mockMvcHandler.doGet("/series/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testAddSeries() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val seriesWithId = seriesNoId.copy(seriesId = 1)
         `when`(seriesService.addSeries(seriesNoId))
                 .thenReturn(seriesWithId)
@@ -117,7 +134,14 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_addSeries_unauthorized() {
+        val response = mockMvcHandler.doPost("/series", jacksonSeries.write(seriesNoId).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testUpdateSeries() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedSeries = series2.copy(seriesId = 1)
         `when`(seriesService.updateSeries(1, series2))
                 .thenReturn(Optional.of(updatedSeries))
@@ -132,7 +156,14 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_updateSeries_unauthorized() {
+        val response = mockMvcHandler.doPut("/series/1", jacksonSeries.write(series2).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun testDeleteSeries() {
+        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(seriesService.deleteSeries(1))
                 .thenReturn(Optional.of(series1))
                 .thenReturn(Optional.empty())
@@ -142,6 +173,12 @@ class SeriesControllerTest {
 
         response = mockMvcHandler.doDelete("/series/5")
         assertNoContentResponse(response)
+    }
+
+    @Test
+    fun test_deleteSeries_unauthorized() {
+        val response = mockMvcHandler.doDelete("/series/1")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
 }

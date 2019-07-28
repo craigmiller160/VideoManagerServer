@@ -116,7 +116,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    fun test_getAllCategory_unauthorized() {
+    fun test_getCategory_unauthorized() {
         val response = mockMvcHandler.doGet("/categories/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
