@@ -43,6 +43,8 @@ class AuthControllerTest {
 
     companion object {
         private const val ROLE = "MyRole"
+        private const val USER_NAME = "UserName"
+        private const val PASSWORD = "password"
     }
 
     @Mock
@@ -174,17 +176,54 @@ class AuthControllerTest {
 
     @Test
     fun test_createUser() {
-        TODO("Finish this")
+        val userRequest = AppUser().apply {
+            userName = USER_NAME
+            password = PASSWORD
+        }
+        val user = AppUser().apply {
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        val userResponse = userRequest.copy(userId = 1L)
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.createUser(userRequest))
+                .thenReturn(userResponse)
+
+        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(userResponse).json))
+        ))
     }
 
     @Test
     fun test_createUser_unauthorized() {
-        TODO("Finish this")
+        val userRequest = AppUser().apply {
+            userName = USER_NAME
+            password = PASSWORD
+        }
+
+        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_createUser_lacksRole() {
-        TODO("Finish this")
+        val userRequest = AppUser().apply {
+            userName = USER_NAME
+            password = PASSWORD
+        }
+        val user = AppUser().apply {
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPost("/auth/user", jacksonUser.write(userRequest).json)
+
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
