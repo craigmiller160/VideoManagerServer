@@ -24,7 +24,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.lang.IllegalArgumentException
 import java.util.Optional
 
 @RunWith(MockitoJUnitRunner.Silent::class)

@@ -3,7 +3,6 @@ package io.craigmiller160.videomanagerserver
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import java.io.File
 
 @SpringBootApplication
 class VideoManagerServerApplication
