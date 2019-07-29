@@ -13,7 +13,6 @@ import org.springframework.web.filter.CorsFilter
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @Configuration
-@EnableWebMvc
 class WebMvcConfiguration {
 
     @Bean
