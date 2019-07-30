@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.dto
 
+import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -20,6 +21,7 @@ data class AppUser (
         @Column(unique = true)
         var userName: String = "",
         var password: String = "",
+        var lastAuthenticated: LocalDateTime = LocalDateTime.now(),
 
         @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "user_roles",
