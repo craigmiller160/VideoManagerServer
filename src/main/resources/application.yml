@@ -24,9 +24,8 @@ logging:
   level:
     root: ERROR
     org.springframework: INFO
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
     org.hibernate: INFO
-    io.craigmiller160: DEBUG
+    io.craigmiller160: INFO
   file:
     path: video-manager/server-logs/${spring.profiles.active}.log
 
@@ -36,3 +35,8 @@ video:
   filePathRoot: ${VIDEO_MANAGER_DIR:}
   apiPageSize: 10
   fileExts: mp4,mkv,avi,m4v
+  security:
+    password:
+      hashRounds: 12
+    token:
+      expSecs: 86400

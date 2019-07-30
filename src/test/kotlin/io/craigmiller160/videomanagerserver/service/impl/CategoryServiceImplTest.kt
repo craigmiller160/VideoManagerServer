@@ -12,7 +12,6 @@ import org.mockito.ArgumentMatchers.isA
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Sort
 import java.util.Optional
 

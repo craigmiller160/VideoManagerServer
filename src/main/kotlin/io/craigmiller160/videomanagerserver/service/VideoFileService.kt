@@ -5,7 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import org.springframework.core.io.UrlResource
-import java.util.*
+import java.util.Optional
 
 interface VideoFileService {
 

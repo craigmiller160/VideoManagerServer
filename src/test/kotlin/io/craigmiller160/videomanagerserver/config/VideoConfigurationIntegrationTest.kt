@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner
 class VideoConfigurationIntegrationTest {
 
     companion object {
-        private const val VLC_COMMAND = "VLC_COMMAND"
         private const val FILE_PATH_ROOT = "FILE_PATH_ROOT"
         private const val PAGE_SIZE = 10
         private const val FILE_EXTS = "FILE_EXTS"
@@ -20,11 +19,6 @@ class VideoConfigurationIntegrationTest {
 
     @Autowired
     private lateinit var videoConfig: VideoConfiguration
-
-    @Test
-    fun testVlcCommand() {
-        assertEquals(VLC_COMMAND, videoConfig.vlcCommand)
-    }
 
     @Test
     fun testFilePathRoot() {

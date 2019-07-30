@@ -10,3 +10,11 @@ logging:
   file: ${HOME}/${logging.file.path}
   level:
     org.hibernate.SQL: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    io.craigmiller160: DEBUG
+
+video:
+  security:
+    token:
+      key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey

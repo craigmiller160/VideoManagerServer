@@ -1,0 +1,30 @@
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: user
+    password: password
+    driver-class-name: org.h2.Driver
+    db: test
+    docker: true
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+cors:
+  origins: abc
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+
+video:
+  filePathRoot: FILE_PATH_ROOT
+  apiPageSize: 10
+  fileExts: FILE_EXTS
+  security:
+    token:
+      key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
+      expSecs: 86400
+    password:
+      hashRounds: 12
