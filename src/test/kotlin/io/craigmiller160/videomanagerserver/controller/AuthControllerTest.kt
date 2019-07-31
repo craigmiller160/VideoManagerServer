@@ -67,6 +67,9 @@ class AuthControllerTest {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
     @Before
     fun setup() {
         mockMvc = MockMvcBuilders
@@ -76,7 +79,7 @@ class AuthControllerTest {
                 .build()
         mockMvcHandler = MockMvcHandler(mockMvc)
 
-        JacksonTester.initFields(this, ObjectMapper())
+        JacksonTester.initFields(this, objectMapper)
         MockitoAnnotations.initMocks(this)
         ReflectionTestUtils.setField(authController, "authService", authService)
     }
