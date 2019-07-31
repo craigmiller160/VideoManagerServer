@@ -73,9 +73,9 @@ class JwtTokenProvider (
         return null
     }
 
-    fun validateToken(token: String): Boolean {
+    fun validateToken(token: String): JwtValidationStatus {
         if (token.isEmpty()) {
-            return false
+            return JwtValidationStatus.NO_TOKEN
         }
 
         val jwt = SignedJWT.parse(token)
@@ -83,9 +83,12 @@ class JwtTokenProvider (
         if (jwt.verify(verifier)) {
             val exp = legacyDateConverter.convertDateToLocalDateTime(jwt.jwtClaimsSet.expirationTime)
             val now = LocalDateTime.now()
-            return exp >= now
+            if (exp >= now) {
+                return JwtValidationStatus.VALID
+            }
+            return JwtValidationStatus.EXPIRED
         }
-        return false
+        return JwtValidationStatus.BAD_SIGNATURE
     }
 
     fun getAuthentication(token: String): Authentication {

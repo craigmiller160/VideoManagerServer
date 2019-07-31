@@ -12,6 +12,7 @@ import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
+import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -21,9 +22,7 @@ import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -98,7 +97,7 @@ class JwtTokenProviderTest {
     @Test
     fun test_validateToken_empty() {
         val result = jwtTokenProvider.validateToken("")
-        assertFalse(result)
+        assertEquals(JwtValidationStatus.NO_TOKEN, result)
     }
 
     private fun createToken(key: String, exp: Long): String {
@@ -120,7 +119,7 @@ class JwtTokenProviderTest {
     fun test_validateToken_invalidSignature() {
         val token = createToken("BadSecretKeyBadSecretKeyBadSecretKey", EXP_SECS.toLong())
         val result = jwtTokenProvider.validateToken(token)
-        assertFalse(result)
+        assertEquals(JwtValidationStatus.BAD_SIGNATURE, result)
     }
 
     @Test
@@ -129,7 +128,7 @@ class JwtTokenProviderTest {
         val token = createToken(secretKey, 0L)
         Thread.sleep(SLEEP_MILLIS)
         val result = jwtTokenProvider.validateToken(token)
-        assertFalse(result)
+        assertEquals(JwtValidationStatus.EXPIRED, result)
     }
 
     @Test
@@ -137,7 +136,7 @@ class JwtTokenProviderTest {
         val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
         val token = createToken(secretKey, EXP_SECS.toLong())
         val result = jwtTokenProvider.validateToken(token)
-        assertTrue(result)
+        assertEquals(JwtValidationStatus.VALID, result)
     }
 
     @Test

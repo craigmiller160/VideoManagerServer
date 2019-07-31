@@ -53,7 +53,7 @@ class JwtTokenFilterTest {
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
-                .thenReturn(true)
+                .thenReturn(JwtValidationStatus.VALID)
         `when`(jwtTokenProvider.getAuthentication(token))
                 .thenReturn(authentication)
 
@@ -82,13 +82,23 @@ class JwtTokenFilterTest {
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
-                .thenReturn(false)
+                .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
 
         jwtTokenFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
                 .doFilter(request, response)
+    }
+
+    @Test
+    fun test_doFilterInternal_expiredToken_noRefresh() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_expiredToken_refresh() {
+        TODO("Finish this")
     }
 
     @Test

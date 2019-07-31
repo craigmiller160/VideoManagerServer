@@ -14,20 +14,32 @@ class JwtTokenFilter (
         val token = jwtTokenProvider.resolveToken(req)
         token?.let {
             try {
-                if (jwtTokenProvider.validateToken(token)) {
-                    val auth = jwtTokenProvider.getAuthentication(token)
-                    SecurityContextHolder.getContext().authentication = auth
-                    chain.doFilter(req, resp)
-                    return
+                when (jwtTokenProvider.validateToken(token)) {
+                    JwtValidationStatus.VALID -> validToken(token, req, resp, chain)
+                    JwtValidationStatus.EXPIRED -> expired(token, req, resp, chain)
+                    JwtValidationStatus.BAD_SIGNATURE,
+                    JwtValidationStatus.NO_TOKEN -> unauthenticated(req, resp, chain)
                 }
             }
             catch (ex: Exception) {
                 SecurityContextHolder.clearContext()
                 throw ex
             }
-        }
+        } ?: unauthenticated(req, resp, chain)
+    }
 
+    private fun validToken(token: String, req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        val auth = jwtTokenProvider.getAuthentication(token)
+        SecurityContextHolder.getContext().authentication = auth
+        chain.doFilter(req, resp)
+    }
+
+    private fun unauthenticated(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
         SecurityContextHolder.clearContext()
         chain.doFilter(req, resp)
+    }
+
+    private fun expired(token: String, req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        TODO("Finish this")
     }
 }
