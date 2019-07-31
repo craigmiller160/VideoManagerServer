@@ -24,7 +24,8 @@ video:
   fileExts: FILE_EXTS
   security:
     token:
-      key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
-      expSecs: 86400
+      expSecs: 300
+      refreshExpSecs: 1200
+      keySizeBits: 256
     password:
       hashRounds: 12

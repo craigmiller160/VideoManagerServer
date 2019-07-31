@@ -41,3 +41,4 @@ video:
     token:
       expSecs: 300
       refreshExpSecs: 1200
+      keySizeBits: 256
