@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.security
 
+import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
@@ -7,8 +8,10 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class AuthService (
@@ -75,7 +78,19 @@ class AuthService (
     }
 
     fun refreshToken(token: Token): Token {
-        TODO("Finish this")
+        val validStatus = jwtTokenProvider.validateToken(token.token)
+        if (JwtValidationStatus.BAD_SIGNATURE == validStatus) {
+            throw ApiUnauthorizedException("Invalid token")
+        }
+
+        val claims = jwtTokenProvider.getClaims(token.token)
+        val user = appUserRepository.findByUserName(claims.subject) ?: throw ApiUnauthorizedException("No user exists for token")
+        if (!jwtTokenProvider.isRefreshAllowed(user)) {
+            throw ApiUnauthorizedException("Token not allowed")
+        }
+
+        val newToken = jwtTokenProvider.createToken(user)
+        return Token(newToken)
     }
 
     fun rolesHaveIds(roles: List<Role>) =

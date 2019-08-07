@@ -25,6 +25,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.Optional
+import kotlin.math.exp
 
 @RunWith(MockitoJUnitRunner.Silent::class)
 class AuthServiceTest {
@@ -309,11 +310,26 @@ class AuthServiceTest {
     }
 
     @Test(expected = ApiUnauthorizedException::class)
-    fun test_refreshToken_invalid() {
+    fun test_refreshToken_invalidSignature() {
         val token1 = "token1"
         val tokenRequest = Token(token1)
 
         authService.refreshToken(tokenRequest)
+        TODO("Finish this")
+    }
+
+    @Test(expected = ApiUnauthorizedException::class)
+    fun test_refreshToken_cannotRefresh() {
+        val token1 = "token1"
+        val tokenRequest = Token(token1)
+
+        authService.refreshToken(tokenRequest)
+        TODO("Finish this")
+    }
+
+    @Test(expected = ApiUnauthorizedException::class)
+    fun test_refreshToken_noUser() {
+        TODO("Finish this")
     }
 
 }

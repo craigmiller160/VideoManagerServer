@@ -107,4 +107,10 @@ class JwtTokenProvider (
         return jwt.jwtClaimsSet
     }
 
+    fun isRefreshAllowed(user: AppUser): Boolean {
+        val lastAuthenticated = user.lastAuthenticated ?: LocalDateTime.MIN
+        val now = LocalDateTime.now()
+        return now <= (lastAuthenticated.plusSeconds(tokenConfig.refreshExpSecs.toLong()))
+    }
+
 }

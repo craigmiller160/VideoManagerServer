@@ -187,4 +187,19 @@ class JwtTokenProviderTest {
         val claims = jwtTokenProvider.getClaims(token)
         assertEquals(USER_NAME, claims.subject)
     }
+
+    @Test
+    fun test_isRefreshAllowed_refreshAllowed() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_isRefreshAllowed_refreshNotAllowed() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_isRefreshAllowed_nullLastAuthenticated() {
+        TODO("Finish this")
+    }
 }
