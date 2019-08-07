@@ -28,6 +28,11 @@ class AuthController (
         return ResponseEntity.ok(token)
     }
 
+    @PostMapping("/refresh")
+    fun refreshToken(@RequestBody token: Token): ResponseEntity<Token> {
+        TODO("Finish this")
+    }
+
     @Secured(ROLE_ADMIN)
     @PostMapping("/users")
     fun createUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {

@@ -112,6 +112,20 @@ class AuthControllerTest {
     }
 
     @Test
+    fun test_refreshToken() {
+        val token1 = "token1"
+        val token2 = "token2"
+        val tokenRequest = Token(token1)
+        val tokenResponse = Token(token2)
+
+        `when`(authService.refreshToken(tokenResponse))
+                .thenReturn(tokenResponse)
+
+        val response = mockMvcHandler.doPost("/auth/refresh", jacksonToken.write(tokenRequest).json)
+        assertOkResponse(response, jacksonToken.write(tokenResponse).json)
+    }
+
+    @Test
     fun test_getRoles_unauthorized() {
         val roles = listOf(Role(name = ROLE))
         `when`(authService.getRoles())

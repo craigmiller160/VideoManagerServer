@@ -297,4 +297,23 @@ class AuthServiceTest {
         assertEquals(userId, userIdCaptor.value)
     }
 
+    @Test
+    fun test_refreshToken() {
+        val token1 = "token1"
+        val token2 = "token2"
+        val tokenRequest = Token(token1)
+        val tokenResponse = Token(token2)
+
+        val result = authService.refreshToken(tokenRequest)
+        assertEquals(tokenResponse, result)
+    }
+
+    @Test(expected = ApiUnauthorizedException::class)
+    fun test_refreshToken_invalid() {
+        val token1 = "token1"
+        val tokenRequest = Token(token1)
+
+        authService.refreshToken(tokenRequest)
+    }
+
 }

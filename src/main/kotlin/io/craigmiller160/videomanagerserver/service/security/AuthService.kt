@@ -74,6 +74,10 @@ class AuthService (
         return user
     }
 
+    fun refreshToken(token: Token): Token {
+        TODO("Finish this")
+    }
+
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 

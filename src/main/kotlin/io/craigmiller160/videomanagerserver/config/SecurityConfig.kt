@@ -44,7 +44,7 @@ class SecurityConfig (
                         .configurationSource(corsConfigurationSource())
                     .and()
                     .authorizeRequests()
-                        .antMatchers("/auth/login").permitAll()
+                        .antMatchers("/auth/login", "/auth/refresh").permitAll()
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
