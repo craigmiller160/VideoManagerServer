@@ -92,8 +92,7 @@ class JwtTokenProvider (
     }
 
     fun getAuthentication(token: String): Authentication {
-        val jwt = SignedJWT.parse(token)
-        val claims = jwt.jwtClaimsSet
+        val claims = getClaims(token)
         val authorities = claims.getStringListClaim("roles")
                 .map { role -> AuthGrantedAuthority(role) }
         val userDetails = User.withUsername(claims.subject)
@@ -101,6 +100,11 @@ class JwtTokenProvider (
                 .authorities(authorities)
                 .build()
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+    }
+
+    fun getClaims(token: String): JWTClaimsSet {
+        val jwt = SignedJWT.parse(token)
+        return jwt.jwtClaimsSet
     }
 
 }

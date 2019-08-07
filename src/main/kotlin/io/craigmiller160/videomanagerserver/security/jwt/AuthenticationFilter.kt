@@ -6,7 +6,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class JwtTokenFilter (
+class AuthenticationFilter (
         private val jwtTokenProvider: JwtTokenProvider
 ) : OncePerRequestFilter() {
 
@@ -16,7 +16,7 @@ class JwtTokenFilter (
             try {
                 when (jwtTokenProvider.validateToken(token)) {
                     JwtValidationStatus.VALID -> validToken(token, req, resp, chain)
-                    JwtValidationStatus.EXPIRED -> expired(token, req, resp, chain)
+                    JwtValidationStatus.EXPIRED,
                     JwtValidationStatus.BAD_SIGNATURE,
                     JwtValidationStatus.NO_TOKEN -> unauthenticated(req, resp, chain)
                 }
@@ -37,9 +37,5 @@ class JwtTokenFilter (
     private fun unauthenticated(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
         SecurityContextHolder.clearContext()
         chain.doFilter(req, resp)
-    }
-
-    private fun expired(token: String, req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        TODO("Finish this")
     }
 }

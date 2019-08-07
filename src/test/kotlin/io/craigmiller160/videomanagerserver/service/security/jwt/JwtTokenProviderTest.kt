@@ -180,4 +180,11 @@ class JwtTokenProviderTest {
                 ))
         ))
     }
+
+    @Test
+    fun test_getClaims() {
+        val token = createToken(KEY, EXP_SECS.toLong())
+        val claims = jwtTokenProvider.getClaims(token)
+        assertEquals(USER_NAME, claims.subject)
+    }
 }

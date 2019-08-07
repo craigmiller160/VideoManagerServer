@@ -2,10 +2,10 @@ package io.craigmiller160.videomanagerserver.security.jwt
 
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
-import junit.framework.Assert.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,13 +22,13 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RunWith(MockitoJUnitRunner::class)
-class JwtTokenFilterTest {
+class AuthenticationFilterTest {
 
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @InjectMocks
-    private lateinit var jwtTokenFilter: JwtTokenFilter
+    private lateinit var authenticationFilter: AuthenticationFilter
 
     @Mock
     private lateinit var request: HttpServletRequest
@@ -57,7 +57,7 @@ class JwtTokenFilterTest {
         `when`(jwtTokenProvider.getAuthentication(token))
                 .thenReturn(authentication)
 
-        jwtTokenFilter.doFilterInternal(request, response, chain)
+        authenticationFilter.doFilterInternal(request, response, chain)
 
         val authArgCaptor = ArgumentCaptor.forClass(Authentication::class.java)
         verify(securityContext, times(1)).authentication = authArgCaptor.capture()
@@ -69,7 +69,7 @@ class JwtTokenFilterTest {
 
     @Test
     fun test_doFilterInternal_noToken() {
-        jwtTokenFilter.doFilterInternal(request, response, chain)
+        authenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
                 .doFilter(request, response)
@@ -84,7 +84,7 @@ class JwtTokenFilterTest {
         `when`(jwtTokenProvider.validateToken(token))
                 .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
 
-        jwtTokenFilter.doFilterInternal(request, response, chain)
+        authenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
@@ -111,7 +111,7 @@ class JwtTokenFilterTest {
                 .thenThrow(RuntimeException("Hello World"))
 
         try {
-            jwtTokenFilter.doFilterInternal(request, response, chain)
+            authenticationFilter.doFilterInternal(request, response, chain)
         }
         catch (ex: Exception) {
             assertEquals(RuntimeException::class.java, ex.javaClass)
