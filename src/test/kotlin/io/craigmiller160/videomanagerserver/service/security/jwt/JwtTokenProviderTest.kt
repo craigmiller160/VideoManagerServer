@@ -22,7 +22,9 @@ import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -125,8 +127,7 @@ class JwtTokenProviderTest {
     @Test
     fun test_validateToken_expired() {
         val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
-        val token = createToken(secretKey, 0L)
-        Thread.sleep(SLEEP_MILLIS)
+        val token = createToken(secretKey, -100L)
         val result = jwtTokenProvider.validateToken(token)
         assertEquals(JwtValidationStatus.EXPIRED, result)
     }
@@ -190,16 +191,29 @@ class JwtTokenProviderTest {
 
     @Test
     fun test_isRefreshAllowed_refreshAllowed() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            lastAuthenticated = LocalDateTime.now().minusMinutes(1)
+        }
+        `when`(tokenConfig.refreshExpSecs)
+                .thenReturn(1_200)
+
+        assertTrue(jwtTokenProvider.isRefreshAllowed(user))
     }
 
     @Test
     fun test_isRefreshAllowed_refreshNotAllowed() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            lastAuthenticated = LocalDateTime.now().minusMinutes(1)
+        }
+        `when`(tokenConfig.refreshExpSecs)
+                .thenReturn(10)
+
+        assertFalse(jwtTokenProvider.isRefreshAllowed(user))
     }
 
     @Test
     fun test_isRefreshAllowed_nullLastAuthenticated() {
-        TODO("Finish this")
+        val user = AppUser()
+        assertFalse(jwtTokenProvider.isRefreshAllowed(user))
     }
 }
