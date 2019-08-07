@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RunWith(MockitoJUnitRunner::class)
-class AuthenticationFilterTest {
+class JwtTokenFilterTest {
 
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -92,13 +92,19 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_expiredToken_noRefresh() {
-        TODO("Finish this")
-    }
+    fun test_doFilterInternal_expiredToken() {
+        val token = "TOKEN"
 
-    @Test
-    fun test_doFilterInternal_expiredToken_refresh() {
-        TODO("Finish this")
+        `when`(jwtTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(jwtTokenProvider.validateToken(token))
+                .thenReturn(JwtValidationStatus.EXPIRED)
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test
