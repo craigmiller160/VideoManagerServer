@@ -90,7 +90,8 @@ class AuthService (
         }
 
         val newToken = jwtTokenProvider.createToken(user)
-        // TODO need to update user in repository after new token is created for a new lastAuthenticated timestamp
+        user.lastAuthenticated = LocalDateTime.now()
+        appUserRepository.save(user)
         return Token(newToken)
     }
 

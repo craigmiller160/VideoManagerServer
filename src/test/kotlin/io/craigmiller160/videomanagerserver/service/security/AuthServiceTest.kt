@@ -21,9 +21,11 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.isA
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -327,6 +329,9 @@ class AuthServiceTest {
 
         val result = authService.refreshToken(tokenRequest)
         assertEquals(tokenResponse, result)
+
+        verify(appUserRepository, times(1))
+                .save(ArgumentMatchers.isA(AppUser::class.java))
     }
 
     @Test
