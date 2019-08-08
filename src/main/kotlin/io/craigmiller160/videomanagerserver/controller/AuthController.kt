@@ -30,7 +30,8 @@ class AuthController (
 
     @PostMapping("/refresh")
     fun refreshToken(@RequestBody token: Token): ResponseEntity<Token> {
-        TODO("Finish this")
+        val token = authService.refreshToken(token)
+        return ResponseEntity.ok(token)
     }
 
     @Secured(ROLE_ADMIN)

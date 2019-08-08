@@ -118,7 +118,7 @@ class AuthControllerTest {
         val tokenRequest = Token(token1)
         val tokenResponse = Token(token2)
 
-        `when`(authService.refreshToken(tokenResponse))
+        `when`(authService.refreshToken(tokenRequest))
                 .thenReturn(tokenResponse)
 
         val response = mockMvcHandler.doPost("/auth/refresh", jacksonToken.write(tokenRequest).json)
