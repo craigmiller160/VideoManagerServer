@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.util
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
