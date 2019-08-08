@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import com.nhaarman.mockito_kotlin.times
+import com.nimbusds.jwt.JWTClaimsSet
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
@@ -304,8 +305,25 @@ class AuthServiceTest {
     fun test_refreshToken() {
         val token1 = "token1"
         val token2 = "token2"
+        val userName = "userName"
         val tokenRequest = Token(token1)
         val tokenResponse = Token(token2)
+
+        val user = AppUser(userName = userName)
+        val claims = JWTClaimsSet.Builder()
+                .subject(userName)
+                .build()
+
+        `when`(jwtTokenProvider.validateToken(token1))
+                .thenReturn(JwtValidationStatus.EXPIRED)
+        `when`(jwtTokenProvider.isRefreshAllowed(user))
+                .thenReturn(true)
+        `when`(jwtTokenProvider.getClaims(token1))
+                .thenReturn(claims)
+        `when`(appUserRepository.findByUserName(userName))
+                .thenReturn(user)
+        `when`(jwtTokenProvider.createToken(user))
+                .thenReturn(token2)
 
         val result = authService.refreshToken(tokenRequest)
         assertEquals(tokenResponse, result)
@@ -328,14 +346,22 @@ class AuthServiceTest {
     @Test
     fun test_refreshToken_cannotRefresh() {
         val token1 = "token1"
+        val userName = "userName"
         val tokenRequest = Token(token1)
 
-        val user = AppUser(userName = "userName")
+        val user = AppUser(userName = userName)
+        val claims = JWTClaimsSet.Builder()
+                .subject(userName)
+                .build()
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(JwtValidationStatus.EXPIRED)
         `when`(jwtTokenProvider.isRefreshAllowed(user))
                 .thenReturn(false)
+        `when`(jwtTokenProvider.getClaims(token1))
+                .thenReturn(claims)
+        `when`(appUserRepository.findByUserName(userName))
+                .thenReturn(user)
 
         val ex = assertFailsWith<ApiUnauthorizedException> {
             authService.refreshToken(tokenRequest)
@@ -343,9 +369,25 @@ class AuthServiceTest {
         assertThat(ex, hasProperty("message", containsString("Token refresh not allowed")))
     }
 
-    @Test(expected = ApiUnauthorizedException::class)
+    @Test
     fun test_refreshToken_noUser() {
-        TODO("Finish this")
+        val token1 = "token1"
+        val userName = "userName"
+        val tokenRequest = Token(token1)
+
+        val claims = JWTClaimsSet.Builder()
+                .subject(userName)
+                .build()
+
+        `when`(jwtTokenProvider.validateToken(token1))
+                .thenReturn(JwtValidationStatus.EXPIRED)
+        `when`(jwtTokenProvider.getClaims(token1))
+                .thenReturn(claims)
+
+        val ex = assertFailsWith<ApiUnauthorizedException> {
+            authService.refreshToken(tokenRequest)
+        }
+        assertThat(ex, hasProperty("message", containsString("No user exists for token")))
     }
 
 }
