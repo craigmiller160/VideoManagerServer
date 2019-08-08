@@ -8,6 +8,8 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertEquals
@@ -25,7 +27,8 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.Optional
-import kotlin.math.exp
+import kotlin.test.assertFailsWith
+
 
 @RunWith(MockitoJUnitRunner.Silent::class)
 class AuthServiceTest {
@@ -37,7 +40,6 @@ class AuthServiceTest {
         private const val TOKEN = "token"
         private const val ROLE = "role"
     }
-
     @Mock
     private lateinit var appUserRepository: AppUserRepository
 
@@ -309,22 +311,36 @@ class AuthServiceTest {
         assertEquals(tokenResponse, result)
     }
 
-    @Test(expected = ApiUnauthorizedException::class)
+    @Test
     fun test_refreshToken_invalidSignature() {
         val token1 = "token1"
         val tokenRequest = Token(token1)
 
-        authService.refreshToken(tokenRequest)
-        TODO("Finish this")
+        `when`(jwtTokenProvider.validateToken(token1))
+                .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
+
+        val ex = assertFailsWith<ApiUnauthorizedException> {
+            authService.refreshToken(tokenRequest)
+        }
+        assertThat(ex, hasProperty("message", containsString("Invalid token")))
     }
 
-    @Test(expected = ApiUnauthorizedException::class)
+    @Test
     fun test_refreshToken_cannotRefresh() {
         val token1 = "token1"
         val tokenRequest = Token(token1)
 
-        authService.refreshToken(tokenRequest)
-        TODO("Finish this")
+        val user = AppUser(userName = "userName")
+
+        `when`(jwtTokenProvider.validateToken(token1))
+                .thenReturn(JwtValidationStatus.EXPIRED)
+        `when`(jwtTokenProvider.isRefreshAllowed(user))
+                .thenReturn(false)
+
+        val ex = assertFailsWith<ApiUnauthorizedException> {
+            authService.refreshToken(tokenRequest)
+        }
+        assertThat(ex, hasProperty("message", containsString("Token refresh not allowed")))
     }
 
     @Test(expected = ApiUnauthorizedException::class)

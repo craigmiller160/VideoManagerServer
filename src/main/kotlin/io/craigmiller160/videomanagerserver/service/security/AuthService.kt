@@ -86,10 +86,11 @@ class AuthService (
         val claims = jwtTokenProvider.getClaims(token.token)
         val user = appUserRepository.findByUserName(claims.subject) ?: throw ApiUnauthorizedException("No user exists for token")
         if (!jwtTokenProvider.isRefreshAllowed(user)) {
-            throw ApiUnauthorizedException("Token not allowed")
+            throw ApiUnauthorizedException("Token refresh not allowed")
         }
 
         val newToken = jwtTokenProvider.createToken(user)
+        // TODO need to update user in repository after new token is created for a new lastAuthenticated timestamp
         return Token(newToken)
     }
 
