@@ -94,6 +94,10 @@ class AuthService (
         return Token(newToken)
     }
 
+    fun revokeUser(user: AppUser): AppUser {
+        TODO("Finish this")
+    }
+
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 

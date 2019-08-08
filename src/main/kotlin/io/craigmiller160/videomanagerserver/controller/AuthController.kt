@@ -35,6 +35,12 @@ class AuthController (
     }
 
     @Secured(ROLE_ADMIN)
+    @PostMapping("/users/revoke")
+    fun revokeUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
+        TODO("Finish this")
+    }
+
+    @Secured(ROLE_ADMIN)
     @PostMapping("/users")
     fun createUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
         return ResponseEntity.ok(authService.createUser(user))
