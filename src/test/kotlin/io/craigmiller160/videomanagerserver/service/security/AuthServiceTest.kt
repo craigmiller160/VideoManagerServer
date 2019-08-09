@@ -6,6 +6,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
+import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
@@ -404,9 +405,10 @@ class AuthServiceTest {
             lastAuthenticated = LocalDateTime.now()
             userName = "userName"
             password = "password"
+            userId = 1L
         }
-        `when`(appUserRepository.findByUserName(user.userName))
-                .thenReturn(user)
+        `when`(appUserRepository.findById(user.userId))
+                .thenReturn(Optional.of(user))
         `when`(appUserRepository.save(ArgumentMatchers.isA(AppUser::class.java)))
                 .thenReturn(user)
         val result = authService.revokeAccess(user)
@@ -422,7 +424,20 @@ class AuthServiceTest {
 
     @Test
     fun test_revokeAccess_noUser() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            lastAuthenticated = LocalDateTime.now()
+            userName = "userName"
+            password = "password"
+            userId = 1L
+        }
+        `when`(appUserRepository.findById(user.userId))
+                .thenReturn(Optional.empty())
+
+        val ex = assertFailsWith<NoUserException> {
+            authService.revokeAccess(user)
+        }
+
+        assertThat(ex, hasProperty("message", containsString("Cannot find user")))
     }
 
 }
