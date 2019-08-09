@@ -464,4 +464,19 @@ class AuthControllerTest {
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
+    @Test
+    fun test_revokeAccess() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_revokeAccess_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_revokeAccess_lacksRole() {
+        TODO("Finish this")
+    }
+
 }
