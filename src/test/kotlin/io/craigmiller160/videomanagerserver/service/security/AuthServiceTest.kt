@@ -13,6 +13,7 @@ import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.isEmptyString
 import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -401,13 +402,15 @@ class AuthServiceTest {
     fun test_revokeAccess() {
         val user = AppUser().apply {
             lastAuthenticated = LocalDateTime.now()
+            userName = "userName"
+            password = "password"
         }
-        val request = user.copy()
+        `when`(appUserRepository.findByUserName(user.userName))
+                .thenReturn(user)
         `when`(appUserRepository.save(ArgumentMatchers.isA(AppUser::class.java)))
                 .thenReturn(user)
-
-        val result = authService.revokeAccess(request)
-        assertEquals(user, result)
+        val result = authService.revokeAccess(user)
+        assertThat(result, hasProperty("password", isEmptyString()))
 
         val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
 
@@ -415,6 +418,11 @@ class AuthServiceTest {
                 .save(userCaptor.capture())
 
         assertThat(userCaptor.value, hasProperty("lastAuthenticated", nullValue()))
+    }
+
+    @Test
+    fun test_revokeAccess_noUser() {
+        TODO("Finish this")
     }
 
 }

@@ -36,7 +36,7 @@ class AuthController (
 
     @Secured(ROLE_ADMIN)
     @PostMapping("/users/revoke")
-    fun revokeUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
+    fun revokeAccess(@RequestBody user: AppUser): ResponseEntity<AppUser> {
         TODO("Finish this")
     }
 

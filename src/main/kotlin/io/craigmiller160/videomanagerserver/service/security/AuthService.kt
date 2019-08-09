@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
+import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
@@ -95,8 +96,9 @@ class AuthService (
     }
 
     fun revokeAccess(user: AppUser): AppUser {
-        user.lastAuthenticated = null
-        return appUserRepository.save(user)
+        val existingUser = appUserRepository.findByUserName(user.userName) ?: throw NoUserException("Cannot find user")
+        existingUser.lastAuthenticated = null
+        return removePassword(appUserRepository.save(existingUser))
     }
 
     fun rolesHaveIds(roles: List<Role>) =
