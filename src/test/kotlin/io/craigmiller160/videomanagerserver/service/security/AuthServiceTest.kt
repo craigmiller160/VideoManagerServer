@@ -13,6 +13,7 @@ import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -29,6 +30,7 @@ import org.mockito.Mockito.isA
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import java.time.LocalDateTime
 import java.util.Optional
 import kotlin.test.assertFailsWith
 
@@ -393,6 +395,26 @@ class AuthServiceTest {
             authService.refreshToken(tokenRequest)
         }
         assertThat(ex, hasProperty("message", containsString("No user exists for token")))
+    }
+
+    @Test
+    fun test_revokeAccess() {
+        val user = AppUser().apply {
+            lastAuthenticated = LocalDateTime.now()
+        }
+        val request = user.copy()
+        `when`(appUserRepository.save(ArgumentMatchers.isA(AppUser::class.java)))
+                .thenReturn(user)
+
+        val result = authService.revokeAccess(request)
+        assertEquals(user, result)
+
+        val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
+
+        verify(appUserRepository, times(1))
+                .save(userCaptor.capture())
+
+        assertThat(userCaptor.value, hasProperty("lastAuthenticated", nullValue()))
     }
 
 }

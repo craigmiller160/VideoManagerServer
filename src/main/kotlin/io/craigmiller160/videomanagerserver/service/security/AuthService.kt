@@ -94,8 +94,9 @@ class AuthService (
         return Token(newToken)
     }
 
-    fun revokeUser(user: AppUser): AppUser {
-        TODO("Finish this")
+    fun revokeAccess(user: AppUser): AppUser {
+        user.lastAuthenticated = null
+        return appUserRepository.save(user)
     }
 
     fun rolesHaveIds(roles: List<Role>) =
