@@ -466,17 +466,42 @@ class AuthControllerTest {
 
     @Test
     fun test_revokeAccess() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userId = 1L
+            userName = "userName"
+            roles = listOf(Role(name = ROLE_ADMIN))
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.revokeAccess(user))
+                .thenReturn(user)
+
+        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(user).json))
+        ))
     }
 
     @Test
     fun test_revokeAccess_unauthorized() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userId = 1L
+            userName = "userName"
+        }
+        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_revokeAccess_lacksRole() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userId = 1L
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
 }
