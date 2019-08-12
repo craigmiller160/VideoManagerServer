@@ -22,6 +22,11 @@ class AuthController (
         private val authService: AuthService
 ) {
 
+    @GetMapping("/check")
+    fun checkAuth(): ResponseEntity<Void> {
+        return ResponseEntity.noContent().build()
+    }
+
     @PostMapping("/login")
     fun login(@RequestBody request: AppUser): ResponseEntity<Token> {
         val token = authService.login(request)
