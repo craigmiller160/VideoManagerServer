@@ -504,4 +504,14 @@ class AuthControllerTest {
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
+    @Test
+    fun test_checkAuth() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_checkAuth_unauthorized() {
+        TODO("Finish this")
+    }
+
 }
