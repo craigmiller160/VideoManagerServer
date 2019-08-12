@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.config
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.jwt.AuthenticationFilter
+import io.craigmiller160.videomanagerserver.security.jwt.AuthenticationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -30,7 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 )
 class SecurityConfig (
         private val authEntryPoint: AuthEntryPoint,
-        private val jwtTokenProvider: JwtTokenProvider,
+        private val authenticationFilterConfigurer: AuthenticationFilterConfigurer,
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int,
         @Value("\${cors.origins}")
@@ -53,8 +54,7 @@ class SecurityConfig (
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
                     .and()
-                    // TODO move this to the separate filter configurer so that dependencies can be injected there, reducing clutter here
-                    .addFilterBefore(AuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
+                    .apply(authenticationFilterConfigurer)
         }
     }
 
