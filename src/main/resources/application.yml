@@ -24,6 +24,7 @@ server:
       cookie:
         http-only: true
         secure: true
+      tracking-modes: cookie
   port: 8443
   ssl:
     key-store-type: PKCS12
