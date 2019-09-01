@@ -84,7 +84,7 @@ class AuthServiceTest {
         }
 
         val result = authService.login(request)
-        assertEquals(Token(TOKEN), result)
+        assertEquals(TOKEN, result)
     }
 
     @Test(expected = ApiUnauthorizedException::class)
