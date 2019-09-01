@@ -55,6 +55,8 @@ class SecurityConfig (
                         .authenticationEntryPoint(authEntryPoint)
                     .and()
                     .apply(authenticationFilterConfigurer)
+                    .and()
+                    .requiresChannel().anyRequest().requiresSecure()
         }
     }
 

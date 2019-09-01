@@ -19,6 +19,12 @@ spring:
 server:
   servlet:
     context-path: /api
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:cert/video-server.p12
+    key-store-password: d?ba5#?&WA#dSy}LQ(51
+
 
 logging:
   level:
