@@ -532,6 +532,7 @@ class AuthControllerTest {
                 hasProperty("value", equalTo(token)),
                 hasProperty("secure", equalTo(true)),
                 hasProperty("httpOnly", equalTo(true)),
+                hasProperty("maxAge", equalTo(1_000_000)),
                 hasProperty("domain", equalTo("https://localhost:8443"))
         ))
     }
