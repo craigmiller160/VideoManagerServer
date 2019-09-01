@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import kotlin.math.exp
 
@@ -56,9 +57,12 @@ class AuthController (
     }
 
     @PostMapping("/refresh")
-    fun refreshToken(@RequestBody token: Token): ResponseEntity<Token> {
-        val token = authService.refreshToken(token)
-        return ResponseEntity.ok(token)
+    fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Void> {
+        val token = request.cookies?.find { cookie -> cookie.name == COOKIE_NAME }?.value ?: return ResponseEntity.status(401).build()
+        val newToken = authService.refreshToken(token)
+        val cookie = createCookie(newToken, DEFAULT_MAX_AGE)
+        response.addCookie(cookie)
+        return ResponseEntity.noContent().build()
     }
 
     @Secured(ROLE_ADMIN)

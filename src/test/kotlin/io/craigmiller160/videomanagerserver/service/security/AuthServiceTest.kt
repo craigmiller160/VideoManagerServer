@@ -309,94 +309,98 @@ class AuthServiceTest {
 
     @Test
     fun test_refreshToken() {
-        val token1 = "token1"
-        val token2 = "token2"
-        val userName = "userName"
-        val tokenRequest = Token(token1)
-        val tokenResponse = Token(token2)
-
-        val user = AppUser(userName = userName)
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
-
-        `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
-        `when`(jwtTokenProvider.isRefreshAllowed(user))
-                .thenReturn(true)
-        `when`(jwtTokenProvider.getClaims(token1))
-                .thenReturn(claims)
-        `when`(appUserRepository.findByUserName(userName))
-                .thenReturn(user)
-        `when`(jwtTokenProvider.createToken(user))
-                .thenReturn(token2)
-
-        val result = authService.refreshToken(tokenRequest)
-        assertEquals(tokenResponse, result)
-
-        verify(appUserRepository, times(1))
-                .save(ArgumentMatchers.isA(AppUser::class.java))
+//        val token1 = "token1"
+//        val token2 = "token2"
+//        val userName = "userName"
+//        val tokenRequest = Token(token1)
+//        val tokenResponse = Token(token2)
+//
+//        val user = AppUser(userName = userName)
+//        val claims = JWTClaimsSet.Builder()
+//                .subject(userName)
+//                .build()
+//
+//        `when`(jwtTokenProvider.validateToken(token1))
+//                .thenReturn(JwtValidationStatus.EXPIRED)
+//        `when`(jwtTokenProvider.isRefreshAllowed(user))
+//                .thenReturn(true)
+//        `when`(jwtTokenProvider.getClaims(token1))
+//                .thenReturn(claims)
+//        `when`(appUserRepository.findByUserName(userName))
+//                .thenReturn(user)
+//        `when`(jwtTokenProvider.createToken(user))
+//                .thenReturn(token2)
+//
+//        val result = authService.refreshToken(tokenRequest)
+//        assertEquals(tokenResponse, result)
+//
+//        verify(appUserRepository, times(1))
+//                .save(ArgumentMatchers.isA(AppUser::class.java))
+        TODO("Finish this")
     }
 
     @Test
     fun test_refreshToken_invalidSignature() {
-        val token1 = "token1"
-        val tokenRequest = Token(token1)
-
-        `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
-
-        val ex = assertFailsWith<ApiUnauthorizedException> {
-            authService.refreshToken(tokenRequest)
-        }
-        assertThat(ex, hasProperty("message", containsString("Invalid token")))
+//        val token1 = "token1"
+//        val tokenRequest = Token(token1)
+//
+//        `when`(jwtTokenProvider.validateToken(token1))
+//                .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
+//
+//        val ex = assertFailsWith<ApiUnauthorizedException> {
+//            authService.refreshToken(tokenRequest)
+//        }
+//        assertThat(ex, hasProperty("message", containsString("Invalid token")))
+        TODO("Finish this")
     }
 
     @Test
     fun test_refreshToken_cannotRefresh() {
-        val token1 = "token1"
-        val userName = "userName"
-        val tokenRequest = Token(token1)
-
-        val user = AppUser(userName = userName)
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
-
-        `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
-        `when`(jwtTokenProvider.isRefreshAllowed(user))
-                .thenReturn(false)
-        `when`(jwtTokenProvider.getClaims(token1))
-                .thenReturn(claims)
-        `when`(appUserRepository.findByUserName(userName))
-                .thenReturn(user)
-
-        val ex = assertFailsWith<ApiUnauthorizedException> {
-            authService.refreshToken(tokenRequest)
-        }
-        assertThat(ex, hasProperty("message", containsString("Token refresh not allowed")))
+//        val token1 = "token1"
+//        val userName = "userName"
+//        val tokenRequest = Token(token1)
+//
+//        val user = AppUser(userName = userName)
+//        val claims = JWTClaimsSet.Builder()
+//                .subject(userName)
+//                .build()
+//
+//        `when`(jwtTokenProvider.validateToken(token1))
+//                .thenReturn(JwtValidationStatus.EXPIRED)
+//        `when`(jwtTokenProvider.isRefreshAllowed(user))
+//                .thenReturn(false)
+//        `when`(jwtTokenProvider.getClaims(token1))
+//                .thenReturn(claims)
+//        `when`(appUserRepository.findByUserName(userName))
+//                .thenReturn(user)
+//
+//        val ex = assertFailsWith<ApiUnauthorizedException> {
+//            authService.refreshToken(tokenRequest)
+//        }
+//        assertThat(ex, hasProperty("message", containsString("Token refresh not allowed")))
+        TODO("Finish this")
     }
 
     @Test
     fun test_refreshToken_noUser() {
-        val token1 = "token1"
-        val userName = "userName"
-        val tokenRequest = Token(token1)
-
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
-
-        `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
-        `when`(jwtTokenProvider.getClaims(token1))
-                .thenReturn(claims)
-
-        val ex = assertFailsWith<ApiUnauthorizedException> {
-            authService.refreshToken(tokenRequest)
-        }
-        assertThat(ex, hasProperty("message", containsString("No user exists for token")))
+//        val token1 = "token1"
+//        val userName = "userName"
+//        val tokenRequest = Token(token1)
+//
+//        val claims = JWTClaimsSet.Builder()
+//                .subject(userName)
+//                .build()
+//
+//        `when`(jwtTokenProvider.validateToken(token1))
+//                .thenReturn(JwtValidationStatus.EXPIRED)
+//        `when`(jwtTokenProvider.getClaims(token1))
+//                .thenReturn(claims)
+//
+//        val ex = assertFailsWith<ApiUnauthorizedException> {
+//            authService.refreshToken(tokenRequest)
+//        }
+//        assertThat(ex, hasProperty("message", containsString("No user exists for token")))
+        TODO("Finish this")
     }
 
     @Test

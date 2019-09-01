@@ -126,16 +126,17 @@ class AuthControllerTest {
 
     @Test
     fun test_refreshToken() {
-        val token1 = "token1"
-        val token2 = "token2"
-        val tokenRequest = Token(token1)
-        val tokenResponse = Token(token2)
-
-        `when`(authService.refreshToken(tokenRequest))
-                .thenReturn(tokenResponse)
-
-        val response = mockMvcHandler.doPost("/auth/refresh", jacksonToken.write(tokenRequest).json)
-        assertOkResponse(response, jacksonToken.write(tokenResponse).json)
+//        val token1 = "token1"
+//        val token2 = "token2"
+//        val tokenRequest = Token(token1)
+//        val tokenResponse = Token(token2)
+//
+//        `when`(authService.refreshToken(tokenRequest))
+//                .thenReturn(tokenResponse)
+//
+//        val response = mockMvcHandler.doPost("/auth/refresh", jacksonToken.write(tokenRequest).json)
+//        assertOkResponse(response, jacksonToken.write(tokenResponse).json)
+        TODO("Finish this")
     }
 
     @Test

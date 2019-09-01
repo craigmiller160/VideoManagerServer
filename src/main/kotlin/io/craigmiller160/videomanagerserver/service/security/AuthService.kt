@@ -76,13 +76,13 @@ class AuthService (
         return user
     }
 
-    fun refreshToken(token: Token): Token {
-        val validStatus = jwtTokenProvider.validateToken(token.token)
+    fun refreshToken(token: String): String {
+        val validStatus = jwtTokenProvider.validateToken(token)
         if (JwtValidationStatus.BAD_SIGNATURE == validStatus) {
             throw ApiUnauthorizedException("Invalid token")
         }
 
-        val claims = jwtTokenProvider.getClaims(token.token)
+        val claims = jwtTokenProvider.getClaims(token)
         val user = appUserRepository.findByUserName(claims.subject) ?: throw ApiUnauthorizedException("No user exists for token")
         if (!jwtTokenProvider.isRefreshAllowed(user)) {
             throw ApiUnauthorizedException("Token refresh not allowed")
@@ -91,7 +91,7 @@ class AuthService (
         val newToken = jwtTokenProvider.createToken(user)
         user.lastAuthenticated = LocalDateTime.now()
         appUserRepository.save(user)
-        return Token(newToken)
+        return newToken
     }
 
     fun revokeAccess(user: AppUser): AppUser {
