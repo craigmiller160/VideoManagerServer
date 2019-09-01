@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.craigmiller160.videomanagerserver.controller.AuthController.Companion.DEFAULT_MAX_AGE
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
@@ -534,15 +535,29 @@ class AuthControllerTest {
     }
 
     @Test
+    fun test_logout() {
+        val response = mockMvcHandler.doGet("/auth/logout")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204)),
+                hasProperty("cookies", arrayContaining<Cookie>(
+                        allOf(
+                                hasProperty("name", equalTo(COOKIE_NAME)),
+                                hasProperty("maxAge", equalTo(0))
+                        )
+                ))
+        ))
+    }
+
+    @Test
     fun test_createCookie() {
         val token = "ABCDEFG"
-        val cookie = authController.createCookie(token)
+        val cookie = authController.createCookie(token, DEFAULT_MAX_AGE)
         assertThat(cookie, allOf(
                 hasProperty("name", equalTo(COOKIE_NAME)),
                 hasProperty("value", equalTo(token)),
                 hasProperty("secure", equalTo(true)),
                 hasProperty("httpOnly", equalTo(true)),
-                hasProperty("maxAge", equalTo(1_000_000))
+                hasProperty("maxAge", equalTo(DEFAULT_MAX_AGE))
         ))
     }
 

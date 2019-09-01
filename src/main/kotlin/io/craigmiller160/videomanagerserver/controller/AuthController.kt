@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import kotlin.math.exp
@@ -26,12 +27,16 @@ class AuthController (
         private val authService: AuthService
 ) {
 
-    fun createCookie(token: String): Cookie {
+    companion object {
+        const val DEFAULT_MAX_AGE = 1_000_000
+    }
+
+    fun createCookie(token: String, maxAge: Int): Cookie {
         return Cookie(COOKIE_NAME, token).apply {
             path = "/"
             secure = true
             isHttpOnly = true
-            maxAge = 1_000_000
+            this.maxAge = maxAge
             // TODO test out same-site, see if it works
             // Todo test out domain, see if it works
         }
@@ -45,7 +50,7 @@ class AuthController (
     @PostMapping("/login")
     fun login(@RequestBody request: AppUser, response: HttpServletResponse): ResponseEntity<Void> {
         val token = authService.login(request)
-        val cookie = createCookie(token)
+        val cookie = createCookie(token, DEFAULT_MAX_AGE)
         response.addCookie(cookie)
         return ResponseEntity.noContent().build()
     }
@@ -105,6 +110,13 @@ class AuthController (
     @DeleteMapping("/users/{userId}")
     fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
         return okOrNoContent(authService.deleteUser(userId))
+    }
+
+    @GetMapping("/logout")
+    fun logout(response: HttpServletResponse): ResponseEntity<Void> {
+        val cookie = createCookie("", 0)
+        response.addCookie(cookie)
+        return ResponseEntity.noContent().build()
     }
 
 }
