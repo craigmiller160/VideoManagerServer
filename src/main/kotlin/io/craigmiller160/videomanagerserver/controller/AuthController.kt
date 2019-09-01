@@ -32,7 +32,6 @@ class AuthController (
             secure = true
             isHttpOnly = true
             maxAge = 1_000_000
-            domain = "https://localhost:8443" // TODO probably need to change that for prod
             // TODO test out same-site, see if it works
             // Todo test out domain, see if it works
         }
