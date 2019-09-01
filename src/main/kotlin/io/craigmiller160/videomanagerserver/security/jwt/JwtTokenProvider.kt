@@ -9,6 +9,7 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -66,6 +67,11 @@ class JwtTokenProvider (
     }
 
     fun resolveToken(req: HttpServletRequest): String? {
+        val cookie = req.cookies.find { cookie -> cookie.name == COOKIE_NAME }
+        return cookie?.value
+    }
+
+    private fun legacyAuthHeaderResolveToken(req: HttpServletRequest): String? {
         val bearerToken = req.getHeader(AUTHORIZATION_HEADER)
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.replace(Regex("^$BEARER_PREFIX"), "")

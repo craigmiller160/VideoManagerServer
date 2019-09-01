@@ -9,6 +9,7 @@ import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.AUTHORIZATION_HEADER
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider.Companion.ISSUER
@@ -39,6 +40,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.util.Base64
 import java.util.Date
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 
 @RunWith(MockitoJUnitRunner::class)
@@ -144,8 +146,8 @@ class JwtTokenProviderTest {
     fun test_resolveToken_tokenExists() {
         val token = "ABCDEFG"
         val req = mock(HttpServletRequest::class.java)
-        `when`(req.getHeader(AUTHORIZATION_HEADER))
-                .thenReturn("Bearer $token")
+        `when`(req.cookies)
+                .thenReturn(arrayOf(Cookie(COOKIE_NAME, token)))
         val result = jwtTokenProvider.resolveToken(req)
         assertEquals(token, result)
     }
@@ -153,15 +155,6 @@ class JwtTokenProviderTest {
     @Test
     fun test_resolveToken_tokenMissing() {
         val req = mock(HttpServletRequest::class.java)
-        val result = jwtTokenProvider.resolveToken(req)
-        assertNull(result)
-    }
-
-    @Test
-    fun test_resolveToken_noBearer() {
-        val req = mock(HttpServletRequest::class.java)
-        `when`(req.getHeader(AUTHORIZATION_HEADER))
-                .thenReturn("ABCDEFG")
         val result = jwtTokenProvider.resolveToken(req)
         assertNull(result)
     }
