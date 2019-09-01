@@ -6,8 +6,6 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-// TODO add unit tests for this
-
 class CsrfResponseHeaderBindingFilter : OncePerRequestFilter() {
 
     companion object {
