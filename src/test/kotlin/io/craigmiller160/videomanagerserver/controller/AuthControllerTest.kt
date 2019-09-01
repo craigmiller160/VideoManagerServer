@@ -11,7 +11,9 @@ import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.arrayContaining
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.isEmptyString
@@ -34,6 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import javax.servlet.http.Cookie
 
 
 @RunWith(SpringJUnit4ClassRunner::class)
@@ -87,17 +90,24 @@ class AuthControllerTest {
 
     @Test
     fun test_login() {
-//        val request = AppUser().apply {
-//            userName = "userName"
-//            password = "password"
-//        }
-//        val token = Token("ABCDEFG")
-//        `when`(authService.login(request))
-//                .thenReturn(token)
-//
-//        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
-//        assertOkResponse(response, jacksonToken.write(token).json)
-        TODO("Finish this")
+        val request = AppUser().apply {
+            userName = "userName"
+            password = "password"
+        }
+        val token = "ABCDEFG"
+        `when`(authService.login(request))
+                .thenReturn(token)
+
+        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204)),
+                hasProperty("cookies", arrayContaining<Cookie>(
+                        allOf(
+                                hasProperty("name", equalTo(COOKIE_NAME)),
+                                hasProperty("value", equalTo(token))
+                        )
+                ))
+        ))
     }
 
     @Test
