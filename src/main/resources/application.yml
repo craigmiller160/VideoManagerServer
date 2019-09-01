@@ -24,6 +24,7 @@ server:
       cookie:
         http-only: true
         secure: true
+        name: VMSESSIONID
       tracking-modes: cookie
   port: 8443
   ssl:
