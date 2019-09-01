@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
@@ -9,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delet
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import javax.servlet.http.Cookie
 
 class MockMvcHandler (private val mockMvc: MockMvc) {
 
@@ -16,7 +18,7 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
 
     private fun applyAuth(builder: MockHttpServletRequestBuilder) {
         if (token.isNotBlank()) {
-            builder.header(HttpHeaders.AUTHORIZATION, "Bearer $token")
+            builder.cookie(Cookie(COOKIE_NAME, token))
         }
     }
 

@@ -67,8 +67,7 @@ class JwtTokenProvider (
     }
 
     fun resolveToken(req: HttpServletRequest): String? {
-        val cookie = req.cookies.find { cookie -> cookie.name == COOKIE_NAME }
-        return cookie?.value
+        return req.cookies?.find { cookie -> cookie.name == COOKIE_NAME }?.value
     }
 
     private fun legacyAuthHeaderResolveToken(req: HttpServletRequest): String? {

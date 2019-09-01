@@ -155,6 +155,8 @@ class JwtTokenProviderTest {
     @Test
     fun test_resolveToken_tokenMissing() {
         val req = mock(HttpServletRequest::class.java)
+        `when`(req.cookies)
+                .thenReturn(arrayOf())
         val result = jwtTokenProvider.resolveToken(req)
         assertNull(result)
     }
