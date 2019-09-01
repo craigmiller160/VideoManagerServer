@@ -22,8 +22,8 @@ class AuthenticationFilter (
                 }
             }
             catch (ex: Exception) {
-                SecurityContextHolder.clearContext()
-                throw ex
+                logger.error("Error handling token", ex)
+                unauthenticated(req, resp, chain)
             }
         } ?: unauthenticated(req, resp, chain)
     }

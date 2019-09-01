@@ -56,7 +56,7 @@ class AuthController (
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     fun refreshToken(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Void> {
         val token = request.cookies?.find { cookie -> cookie.name == COOKIE_NAME }?.value ?: return ResponseEntity.status(401).build()
         val newToken = authService.refreshToken(token)

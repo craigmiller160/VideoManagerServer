@@ -126,17 +126,30 @@ class AuthControllerTest {
 
     @Test
     fun test_refreshToken() {
-//        val token1 = "token1"
-//        val token2 = "token2"
-//        val tokenRequest = Token(token1)
-//        val tokenResponse = Token(token2)
-//
-//        `when`(authService.refreshToken(tokenRequest))
-//                .thenReturn(tokenResponse)
-//
-//        val response = mockMvcHandler.doPost("/auth/refresh", jacksonToken.write(tokenRequest).json)
-//        assertOkResponse(response, jacksonToken.write(tokenResponse).json)
-        TODO("Finish this")
+        val token1 = "token1"
+        val token2 = "token2"
+
+        `when`(authService.refreshToken(token1))
+                .thenReturn(token2)
+
+        mockMvcHandler.token = token1
+
+        val response = mockMvcHandler.doGet("/auth/refresh")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204)),
+                hasProperty("cookies", arrayContaining<Cookie>(
+                        allOf(
+                                hasProperty("name", equalTo(COOKIE_NAME)),
+                                hasProperty("value", equalTo(token2))
+                        )
+                ))
+        ))
+    }
+
+    @Test
+    fun test_refreshToken_noToken() {
+        val response = mockMvcHandler.doGet("/auth/refresh")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
