@@ -23,13 +23,16 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
     fun doGet(uri: String): MockHttpServletResponse {
         val builder = get(uri)
                 .accept(MediaType.APPLICATION_JSON)
+                .secure(true)
         applyAuth(builder)
 
         return mockMvc.perform(builder).andReturn().response
     }
 
     fun doPost(uri: String, json: String? = null): MockHttpServletResponse {
-        val builder = post(uri).accept(MediaType.APPLICATION_JSON)
+        val builder = post(uri)
+                .accept(MediaType.APPLICATION_JSON)
+                .secure(true)
         applyAuth(builder)
         json?.let {
             builder.contentType(MediaType.APPLICATION_JSON)
@@ -44,6 +47,7 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON)
+                .secure(true)
         applyAuth(builder)
 
         return mockMvc.perform(builder).andReturn().response
@@ -52,6 +56,7 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
     fun doDelete(uri: String): MockHttpServletResponse {
         val builder = delete(uri)
                 .accept(MediaType.APPLICATION_JSON)
+                .secure(true)
         applyAuth(builder)
 
         return mockMvc.perform(builder).andReturn().response
