@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import org.springframework.http.ResponseEntity
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/auth")
@@ -22,15 +25,28 @@ class AuthController (
         private val authService: AuthService
 ) {
 
+    fun createCookie(token: String): Cookie {
+        return Cookie(COOKIE_NAME, token).apply {
+            path = "/"
+            secure = true
+            isHttpOnly = true
+            domain = "https://localhost:8443" // TODO probably need to change that for prod
+            // TODO test out same-site, see if it works
+            // Todo test out domain, see if it works
+        }
+    }
+
     @GetMapping("/check")
     fun checkAuth(): ResponseEntity<Void> {
         return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: AppUser): ResponseEntity<Token> {
+    fun login(@RequestBody request: AppUser, response: HttpServletResponse): ResponseEntity<Void> {
         val token = authService.login(request)
-        return ResponseEntity.ok(token)
+        val cookie = createCookie(token)
+        response.addCookie(cookie)
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/refresh")

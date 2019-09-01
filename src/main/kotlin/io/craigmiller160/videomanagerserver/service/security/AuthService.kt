@@ -21,11 +21,10 @@ class AuthService (
         private val jwtTokenProvider: JwtTokenProvider
 ) {
 
-    fun login(request: AppUser): Token {
+    fun login(request: AppUser): String {
         val user = appUserRepository.findByUserName(request.userName)
         if (user != null && passwordEncoder.matches(request.password, user.password)) {
-            val token = jwtTokenProvider.createToken(user)
-            return Token(token)
+            return jwtTokenProvider.createToken(user)
         }
         throw ApiUnauthorizedException("Invalid login")
     }

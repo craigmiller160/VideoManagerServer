@@ -5,6 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
@@ -86,16 +87,17 @@ class AuthControllerTest {
 
     @Test
     fun test_login() {
-        val request = AppUser().apply {
-            userName = "userName"
-            password = "password"
-        }
-        val token = Token("ABCDEFG")
-        `when`(authService.login(request))
-                .thenReturn(token)
-
-        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
-        assertOkResponse(response, jacksonToken.write(token).json)
+//        val request = AppUser().apply {
+//            userName = "userName"
+//            password = "password"
+//        }
+//        val token = Token("ABCDEFG")
+//        `when`(authService.login(request))
+//                .thenReturn(token)
+//
+//        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
+//        assertOkResponse(response, jacksonToken.write(token).json)
+        TODO("Finish this")
     }
 
     @Test
@@ -506,12 +508,32 @@ class AuthControllerTest {
 
     @Test
     fun test_checkAuth() {
-        TODO("Finish this")
+        val user = AppUser().apply {
+            userId = 1L
+            userName = "userName"
+        }
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val response = mockMvcHandler.doGet("/auth/check")
+        assertThat(response, hasProperty("status", equalTo(200)))
     }
 
     @Test
     fun test_checkAuth_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/auth/check")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_createCookie() {
+        val token = "ABCDEFG"
+        val cookie = authController.createCookie(token)
+        assertThat(cookie, allOf(
+                hasProperty("name", equalTo(COOKIE_NAME)),
+                hasProperty("value", equalTo(token)),
+                hasProperty("secure", equalTo(true)),
+                hasProperty("httpOnly", equalTo(true)),
+                hasProperty("domain", equalTo("https://localhost:8443"))
+        ))
     }
 
 }
