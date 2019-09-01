@@ -116,16 +116,11 @@ class AuthenticationFilterTest {
         `when`(jwtTokenProvider.validateToken(token))
                 .thenThrow(RuntimeException("Hello World"))
 
-        try {
-            authenticationFilter.doFilterInternal(request, response, chain)
-        }
-        catch (ex: Exception) {
-            assertEquals(RuntimeException::class.java, ex.javaClass)
-            assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-            return
-        }
+        authenticationFilter.doFilterInternal(request, response, chain)
 
-        throw Exception("Test should have thrown exception")
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
 }
