@@ -19,6 +19,8 @@ spring:
 server:
   servlet:
     context-path: /api
+    session:
+      timeout: 48h
   port: 8443
   ssl:
     key-store-type: PKCS12
