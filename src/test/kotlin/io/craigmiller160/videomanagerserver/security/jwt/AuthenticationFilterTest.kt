@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RunWith(MockitoJUnitRunner::class)
-class JwtTokenFilterTest {
+class AuthenticationFilterTest {
 
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
