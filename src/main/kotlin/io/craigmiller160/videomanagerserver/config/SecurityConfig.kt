@@ -40,7 +40,7 @@ class SecurityConfig (
 
     override fun configure(http: HttpSecurity?) {
         http?.let {
-            http.csrf().disable()
+            http
                     .cors()
                         .configurationSource(corsConfigurationSource())
                     .and()
