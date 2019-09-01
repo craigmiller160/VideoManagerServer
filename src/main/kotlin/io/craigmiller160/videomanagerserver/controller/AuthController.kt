@@ -39,7 +39,6 @@ class AuthController (
             isHttpOnly = true
             this.maxAge = maxAge
             // TODO test out same-site, see if it works
-            // Todo test out domain, see if it works
         }
     }
 
