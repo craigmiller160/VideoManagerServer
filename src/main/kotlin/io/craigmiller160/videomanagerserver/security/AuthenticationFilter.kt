@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security.jwt
+package io.craigmiller160.videomanagerserver.security
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter

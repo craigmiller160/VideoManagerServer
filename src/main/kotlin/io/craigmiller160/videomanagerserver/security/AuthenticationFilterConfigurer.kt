@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security.jwt
+package io.craigmiller160.videomanagerserver.security
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

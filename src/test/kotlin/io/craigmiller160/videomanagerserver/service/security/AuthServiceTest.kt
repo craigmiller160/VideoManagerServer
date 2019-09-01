@@ -4,13 +4,12 @@ import com.nhaarman.mockito_kotlin.times
 import com.nimbusds.jwt.JWTClaimsSet
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.security.jwt.JwtValidationStatus
+import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.JwtValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -28,7 +27,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.isA
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder

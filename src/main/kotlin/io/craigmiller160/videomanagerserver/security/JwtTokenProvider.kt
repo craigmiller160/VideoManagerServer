@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security.jwt
+package io.craigmiller160.videomanagerserver.security
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -8,8 +8,6 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
-import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
-import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication

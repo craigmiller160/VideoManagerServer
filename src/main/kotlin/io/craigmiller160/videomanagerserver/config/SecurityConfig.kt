@@ -1,10 +1,7 @@
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
-import io.craigmiller160.videomanagerserver.security.jwt.AuthenticationFilter
-import io.craigmiller160.videomanagerserver.security.jwt.AuthenticationFilterConfigurer
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.AuthenticationFilterConfigurer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -57,6 +53,7 @@ class SecurityConfig (
                     .apply(authenticationFilterConfigurer)
                     .and()
                     .requiresChannel().anyRequest().requiresSecure()
+                    .and()
         }
     }
 

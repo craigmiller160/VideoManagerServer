@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security.jwt
+package io.craigmiller160.videomanagerserver.security
 
 enum class JwtValidationStatus {
     VALID,

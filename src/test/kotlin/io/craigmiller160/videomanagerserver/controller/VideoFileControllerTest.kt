@@ -9,7 +9,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import org.hamcrest.Matchers.equalTo

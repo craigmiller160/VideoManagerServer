@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Series
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.SeriesService
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty

@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security.jwt
+package io.craigmiller160.videomanagerserver.security
 
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify

@@ -8,11 +8,10 @@ import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
-import io.craigmiller160.videomanagerserver.security.jwt.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.arrayContaining
 import org.hamcrest.Matchers.equalTo
