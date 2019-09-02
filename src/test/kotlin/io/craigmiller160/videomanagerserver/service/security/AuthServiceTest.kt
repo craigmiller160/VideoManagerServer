@@ -14,6 +14,7 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.isEmptyString
+import org.hamcrest.Matchers.notNullValue
 import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -27,6 +28,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -83,6 +85,13 @@ class AuthServiceTest {
 
         val result = authService.login(request)
         assertEquals(TOKEN, result)
+
+        val captor = ArgumentCaptor.forClass(AppUser::class.java)
+
+        verify(appUserRepository, times(1))
+                .save(captor.capture())
+
+        assertThat(captor.value, hasProperty("lastAuthenticated", notNullValue()))
     }
 
     @Test(expected = ApiUnauthorizedException::class)

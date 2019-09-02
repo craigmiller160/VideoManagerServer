@@ -9,7 +9,6 @@ class ExceptionHandlers {
 
     @ExceptionHandler(ApiUnauthorizedException::class)
     fun handleApiExceptions(res: HttpServletResponse, ex: BaseApiException) {
-        println("Working")
         res.sendError(ex.status.value(), ex.message)
     }
 
