@@ -34,7 +34,7 @@ video:
   vlcCommand: vlc
   filePathRoot: ${VIDEO_MANAGER_DIR:}
   apiPageSize: 10
-  fileExts: mp4,mkv,avi,m4v
+  fileExts: mp4,m4v
   security:
     password:
       hashRounds: 12
