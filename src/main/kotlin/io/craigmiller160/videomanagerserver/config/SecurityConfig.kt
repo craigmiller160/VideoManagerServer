@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.config
 
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.AuthenticationFilterConfigurer
+import org.apache.catalina.filters.RestCsrfPreventionFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -37,6 +38,7 @@ class SecurityConfig (
     override fun configure(http: HttpSecurity?) {
         http?.let {
             http
+                    .csrf().disable()
                     .cors()
                         .configurationSource(corsConfigurationSource())
                     .and()
@@ -45,7 +47,8 @@ class SecurityConfig (
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionFixation().none()
                     .and()
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
@@ -59,6 +62,11 @@ class SecurityConfig (
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder(hashRounds)
+    }
+
+    @Bean
+    fun restCsrfPreventionFilter(): RestCsrfPreventionFilter {
+        return RestCsrfPreventionFilter()
     }
 
     @Bean
