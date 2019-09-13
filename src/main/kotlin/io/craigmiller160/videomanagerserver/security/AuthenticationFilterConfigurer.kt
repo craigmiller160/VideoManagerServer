@@ -14,6 +14,5 @@ class AuthenticationFilterConfigurer (
     override fun configure(http: HttpSecurity?) {
         http
                 ?.addFilterBefore(AuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
-//                ?.addFilterAfter(CsrfResponseHeaderBindingFilter(), CsrfFilter::class.java)
     }
 }

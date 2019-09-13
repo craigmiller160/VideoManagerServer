@@ -6,6 +6,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@Deprecated(message = "Using Tomcat CSRF filter now")
 class CsrfResponseHeaderBindingFilter : OncePerRequestFilter() {
 
     companion object {
