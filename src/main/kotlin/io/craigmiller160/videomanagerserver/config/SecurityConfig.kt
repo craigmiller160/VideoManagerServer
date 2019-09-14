@@ -68,7 +68,7 @@ class SecurityConfig (
     @Bean
     fun restCsrfPreventionFilter(): FilterRegistrationBean<RestCsrfPreventionFilter> {
         val filter = RestCsrfPreventionFilter()
-//        filter.denyStatus = 403
+        filter.denyStatus = 403
         val filterRegistration = FilterRegistrationBean(filter)
         filterRegistration.order = Integer.MIN_VALUE
         return filterRegistration

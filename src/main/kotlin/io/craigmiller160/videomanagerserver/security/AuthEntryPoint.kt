@@ -18,8 +18,11 @@ class AuthEntryPoint : AuthenticationEntryPoint {
     private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
     override fun commence(req: HttpServletRequest?, resp: HttpServletResponse?, ex: AuthenticationException?) {
-        val status = HttpStatus.UNAUTHORIZED.value()
+        val status = resp?.let {
+            if (resp.status >= 400) resp.status else HttpStatus.UNAUTHORIZED.value()
+        } ?: HttpStatus.UNAUTHORIZED.value()
         resp?.status = status
+
         resp?.addHeader("Content-Type", "application/json")
         val error = ErrorMessage().apply {
             timestamp = formatter.format(ZonedDateTime.now())
