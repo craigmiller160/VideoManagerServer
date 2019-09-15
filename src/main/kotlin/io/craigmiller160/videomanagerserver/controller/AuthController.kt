@@ -5,6 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
+import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -26,18 +26,17 @@ class AuthController (
 ) {
 
     companion object {
-        const val DEFAULT_MAX_AGE = 1_000_000
+        const val DEFAULT_MAX_AGE = 1_000_000L
     }
 
-    fun createCookie(token: String, maxAge: Int): Cookie {
-        return Cookie(COOKIE_NAME, token).apply {
-            path = "/"
-            secure = true
-            isHttpOnly = true
-            this.maxAge = maxAge
-            // TODO test out same-site, see if it works
-        }
-    }
+    fun createCookie(token: String, maxAge: Long) = ResponseCookie
+            .from(COOKIE_NAME, token)
+            .path("/")
+            .secure(true)
+            .httpOnly(true)
+            .maxAge(maxAge)
+            .sameSite("strict")
+            .build()
 
     @GetMapping("/check")
     fun checkAuth(): ResponseEntity<Void> {
@@ -48,7 +47,7 @@ class AuthController (
     fun login(@RequestBody request: AppUser, response: HttpServletResponse): ResponseEntity<Void> {
         val token = authService.login(request)
         val cookie = createCookie(token, DEFAULT_MAX_AGE)
-        response.addCookie(cookie)
+        response.addHeader("Set-Cookie", cookie.toString())
         return ResponseEntity.noContent().build()
     }
 
@@ -57,7 +56,7 @@ class AuthController (
         val token = request.cookies?.find { cookie -> cookie.name == COOKIE_NAME }?.value ?: return ResponseEntity.status(401).build()
         val newToken = authService.refreshToken(token)
         val cookie = createCookie(newToken, DEFAULT_MAX_AGE)
-        response.addCookie(cookie)
+        response.addHeader("Set-Cookie", cookie.toString())
         return ResponseEntity.noContent().build()
     }
 
@@ -115,7 +114,7 @@ class AuthController (
     @GetMapping("/logout")
     fun logout(response: HttpServletResponse): ResponseEntity<Void> {
         val cookie = createCookie("", 0)
-        response.addCookie(cookie)
+        response.addHeader("Set-Cookie", cookie.toString())
         return ResponseEntity.noContent().build()
     }
 
