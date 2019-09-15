@@ -7,9 +7,10 @@ import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
+import io.craigmiller160.videomanagerserver.test_util.header
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -36,6 +37,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import java.lang.RuntimeException
+import java.time.Duration
 import javax.servlet.http.Cookie
 
 
@@ -100,14 +103,16 @@ class AuthControllerTest {
 
         val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
         assertThat(response, allOf(
-                hasProperty("status", equalTo(204)),
-                hasProperty("cookies", arrayContaining<Cookie>(
-                        allOf(
-                                hasProperty("name", equalTo(COOKIE_NAME)),
-                                hasProperty("value", equalTo(token))
-                        )
-                ))
+                hasProperty("status", equalTo(204))
+//                header("Set-Cookie", MatchesPattern.matchesPattern())
+//                hasProperty("cookies", arrayContaining<Cookie>(
+//                        allOf(
+//                                hasProperty("name", equalTo(COOKIE_NAME)),
+//                                hasProperty("value", equalTo(token))
+//                        )
+//                ))
         ))
+        throw RuntimeException("Finish this")
     }
 
     @Test
@@ -143,6 +148,7 @@ class AuthControllerTest {
                         )
                 ))
         ))
+        throw RuntimeException("Finish this")
     }
 
     @Test
@@ -552,12 +558,7 @@ class AuthControllerTest {
         val response = mockMvcHandler.doGet("/auth/logout")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
-                hasProperty("cookies", arrayContaining<Cookie>(
-                        allOf(
-                                hasProperty("name", equalTo(COOKIE_NAME)),
-                                hasProperty("maxAge", equalTo(0))
-                        )
-                ))
+                header("Set-Cookie", equalTo("vm_token=; Path=/; Max-Age=0; Expires=Thu, 1 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=strict"))
         ))
     }
 
@@ -570,7 +571,8 @@ class AuthControllerTest {
                 hasProperty("value", equalTo(token)),
                 hasProperty("secure", equalTo(true)),
                 hasProperty("httpOnly", equalTo(true)),
-                hasProperty("maxAge", equalTo(DEFAULT_MAX_AGE))
+                hasProperty("maxAge", equalTo(Duration.ofSeconds(DEFAULT_MAX_AGE))),
+                hasProperty("sameSite", equalTo("strict"))
         ))
     }
 

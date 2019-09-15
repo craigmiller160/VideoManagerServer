@@ -11,3 +11,11 @@ fun responseBody(matcher: Matcher<String>): FeatureMatcher<MockHttpServletRespon
         }
     }
 }
+
+fun header(name: String, matcher: Matcher<String>): FeatureMatcher<MockHttpServletResponse, String> {
+    return object : FeatureMatcher<MockHttpServletResponse, String>(matcher, "cookie", "cookie") {
+        override fun featureValueOf(resp: MockHttpServletResponse?): String {
+            return resp?.getHeader(name) ?: ""
+        }
+    }
+}
