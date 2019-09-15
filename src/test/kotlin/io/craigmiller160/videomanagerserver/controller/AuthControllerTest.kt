@@ -18,6 +18,7 @@ import org.hamcrest.Matchers.arrayContaining
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.isEmptyString
+import org.hamcrest.Matchers.matchesPattern
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,16 +104,9 @@ class AuthControllerTest {
 
         val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
         assertThat(response, allOf(
-                hasProperty("status", equalTo(204))
-//                header("Set-Cookie", MatchesPattern.matchesPattern())
-//                hasProperty("cookies", arrayContaining<Cookie>(
-//                        allOf(
-//                                hasProperty("name", equalTo(COOKIE_NAME)),
-//                                hasProperty("value", equalTo(token))
-//                        )
-//                ))
+                hasProperty("status", equalTo(204)),
+                header("Set-Cookie", matchesPattern("vm_token=ABCDEFG; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
         ))
-        throw RuntimeException("Finish this")
     }
 
     @Test
@@ -141,14 +135,8 @@ class AuthControllerTest {
         val response = mockMvcHandler.doGet("/auth/refresh")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
-                hasProperty("cookies", arrayContaining<Cookie>(
-                        allOf(
-                                hasProperty("name", equalTo(COOKIE_NAME)),
-                                hasProperty("value", equalTo(token2))
-                        )
-                ))
+                header("Set-Cookie", matchesPattern("vm_token=token2; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
         ))
-        throw RuntimeException("Finish this")
     }
 
     @Test
