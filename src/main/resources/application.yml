@@ -19,13 +19,6 @@ spring:
 server:
   servlet:
     context-path: /api
-    session:
-      timeout: 48h
-      cookie:
-        http-only: true
-        secure: true
-        name: VMSESSIONID
-      tracking-modes: cookie
   port: 8443
   ssl:
     key-store-type: PKCS12
