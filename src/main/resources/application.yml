@@ -48,6 +48,6 @@ video:
     password:
       hashRounds: 12
     token:
-      expSecs: 300
+      expSecs: 60000
       refreshExpSecs: 1200
       keySizeBits: 256
