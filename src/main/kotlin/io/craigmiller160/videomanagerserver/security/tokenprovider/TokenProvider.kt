@@ -4,7 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import org.springframework.security.core.Authentication
 import javax.servlet.http.HttpServletRequest
 
-interface TokenProvider<T> {
+interface TokenProvider {
 
     fun createToken(user: AppUser): String
 
@@ -14,7 +14,7 @@ interface TokenProvider<T> {
 
     fun createAuthentication(token: String): Authentication
 
-    fun getClaims(token: String): T
+    fun getClaims(token: String): Map<String,Any>
 
     fun isRefreshAllowed(user: AppUser): Boolean
 

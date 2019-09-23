@@ -1,7 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import com.nhaarman.mockito_kotlin.times
-import com.nimbusds.jwt.JWTClaimsSet
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
@@ -9,6 +8,7 @@ import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenClaims
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
@@ -320,9 +320,7 @@ class AuthServiceTest {
         val userName = "userName"
 
         val user = AppUser(userName = userName)
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
+        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)
@@ -361,9 +359,7 @@ class AuthServiceTest {
         val userName = "userName"
 
         val user = AppUser(userName = userName)
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
+        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)
@@ -385,9 +381,7 @@ class AuthServiceTest {
         val token1 = "token1"
         val userName = "userName"
 
-        val claims = JWTClaimsSet.Builder()
-                .subject(userName)
-                .build()
+        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)

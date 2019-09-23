@@ -10,6 +10,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider.Companion.ISSUER
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenClaims
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
@@ -177,7 +178,7 @@ class JwtTokenProviderTest {
     fun test_getClaims() {
         val token = createToken(KEY, EXP_SECS.toLong())
         val claims = jwtTokenProvider.getClaims(token)
-        assertEquals(USER_NAME, claims.subject)
+        assertEquals(USER_NAME, claims[TokenClaims.CLAIM_SUBJECT])
     }
 
     @Test

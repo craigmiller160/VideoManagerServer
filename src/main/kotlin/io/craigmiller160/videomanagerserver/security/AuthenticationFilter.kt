@@ -1,6 +1,5 @@
 package io.craigmiller160.videomanagerserver.security
 
-import com.nimbusds.jwt.JWTClaimsSet
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.springframework.security.core.context.SecurityContextHolder
@@ -10,7 +9,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class AuthenticationFilter (
-        private val jwtTokenProvider: TokenProvider<JWTClaimsSet>
+        private val jwtTokenProvider: TokenProvider
 ) : OncePerRequestFilter() {
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {

@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest
 class JwtTokenProvider (
        private val tokenConfig: TokenConfig,
        private val legacyDateConverter: LegacyDateConverter
-) : TokenProvider<JWTClaimsSet> {
+) : TokenProvider {
 
     companion object {
         const val AUTHORIZATION_HEADER = "Authorization"
@@ -89,18 +89,18 @@ class JwtTokenProvider (
 
     override fun createAuthentication(token: String): Authentication {
         val claims = getClaims(token)
-        val authorities = claims.getStringListClaim("roles")
+        val authorities = (claims[TokenClaims.CLAIM_ROLES] as List<String>)
                 .map { role -> AuthGrantedAuthority(role) }
-        val userDetails = User.withUsername(claims.subject)
+        val userDetails = User.withUsername(claims[TokenClaims.CLAIM_SUBJECT] as String)
                 .password("")
                 .authorities(authorities)
                 .build()
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    override fun getClaims(token: String): JWTClaimsSet {
+    override fun getClaims(token: String): Map<String,Any> {
         val jwt = SignedJWT.parse(token)
-        return jwt.jwtClaimsSet
+        return jwt.jwtClaimsSet.claims
     }
 
     override fun isRefreshAllowed(user: AppUser): Boolean {
