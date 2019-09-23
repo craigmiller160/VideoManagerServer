@@ -1,12 +1,13 @@
 package io.craigmiller160.videomanagerserver.service.security
 
+import com.nimbusds.jwt.JWTClaimsSet
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class AuthService (
         private val appUserRepository: AppUserRepository,
         private val roleRepository: RoleRepository,
         private val passwordEncoder: BCryptPasswordEncoder,
-        private val jwtTokenProvider: JwtTokenProvider
+        private val jwtTokenProvider: TokenProvider<JWTClaimsSet>
 ) {
 
     fun login(request: AppUser): String {

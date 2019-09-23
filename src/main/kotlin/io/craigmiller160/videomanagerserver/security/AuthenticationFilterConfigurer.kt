@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.security
 
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import com.nimbusds.jwt.JWTClaimsSet
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.DefaultSecurityFilterChain
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthenticationFilterConfigurer (
-        private val jwtTokenProvider: JwtTokenProvider
+        private val jwtTokenProvider: TokenProvider<JWTClaimsSet>
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 
     override fun configure(http: HttpSecurity?) {
