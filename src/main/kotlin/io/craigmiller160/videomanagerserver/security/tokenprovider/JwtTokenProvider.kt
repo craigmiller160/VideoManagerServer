@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest
 class JwtTokenProvider (
        private val tokenConfig: TokenConfig,
        private val legacyDateConverter: LegacyDateConverter
-) {
+) : TokenProvider<JWTClaimsSet> {
 
     companion object {
         const val AUTHORIZATION_HEADER = "Authorization"
@@ -38,7 +38,7 @@ class JwtTokenProvider (
         return legacyDateConverter.convertLocalDateTimeToDate(exp)
     }
 
-    fun createToken(user: AppUser): String {
+    override fun createToken(user: AppUser): String {
         val roles = user.roles.map { role -> role.name }
         val claims = JWTClaimsSet.Builder()
                 .subject(user.userName)
@@ -57,7 +57,7 @@ class JwtTokenProvider (
         return jwt.serialize()
     }
 
-    fun resolveToken(req: HttpServletRequest): String? {
+    override fun resolveToken(req: HttpServletRequest): String? {
         return req.cookies?.find { cookie -> cookie.name == COOKIE_NAME }?.value
     }
 
@@ -69,7 +69,7 @@ class JwtTokenProvider (
         return null
     }
 
-    fun validateToken(token: String): TokenValidationStatus {
+    override fun validateToken(token: String): TokenValidationStatus {
         if (token.isEmpty()) {
             return TokenValidationStatus.NO_TOKEN
         }
@@ -87,7 +87,7 @@ class JwtTokenProvider (
         return TokenValidationStatus.BAD_SIGNATURE
     }
 
-    fun createAuthentication(token: String): Authentication {
+    override fun createAuthentication(token: String): Authentication {
         val claims = getClaims(token)
         val authorities = claims.getStringListClaim("roles")
                 .map { role -> AuthGrantedAuthority(role) }
@@ -98,12 +98,12 @@ class JwtTokenProvider (
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    fun getClaims(token: String): JWTClaimsSet {
+    override fun getClaims(token: String): JWTClaimsSet {
         val jwt = SignedJWT.parse(token)
         return jwt.jwtClaimsSet
     }
 
-    fun isRefreshAllowed(user: AppUser): Boolean {
+    override fun isRefreshAllowed(user: AppUser): Boolean {
         val lastAuthenticated = user.lastAuthenticated ?: LocalDateTime.MIN
         val now = LocalDateTime.now()
         return now <= (lastAuthenticated.plusSeconds(tokenConfig.refreshExpSecs.toLong()))
