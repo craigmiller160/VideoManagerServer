@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security
+package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -8,6 +8,8 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -67,9 +69,9 @@ class JwtTokenProvider (
         return null
     }
 
-    fun validateToken(token: String): JwtValidationStatus {
+    fun validateToken(token: String): TokenValidationStatus {
         if (token.isEmpty()) {
-            return JwtValidationStatus.NO_TOKEN
+            return TokenValidationStatus.NO_TOKEN
         }
 
         val jwt = SignedJWT.parse(token)
@@ -78,11 +80,11 @@ class JwtTokenProvider (
             val exp = legacyDateConverter.convertDateToLocalDateTime(jwt.jwtClaimsSet.expirationTime)
             val now = LocalDateTime.now()
             if (exp >= now) {
-                return JwtValidationStatus.VALID
+                return TokenValidationStatus.VALID
             }
-            return JwtValidationStatus.EXPIRED
+            return TokenValidationStatus.EXPIRED
         }
-        return JwtValidationStatus.BAD_SIGNATURE
+        return TokenValidationStatus.BAD_SIGNATURE
     }
 
     fun createAuthentication(token: String): Authentication {

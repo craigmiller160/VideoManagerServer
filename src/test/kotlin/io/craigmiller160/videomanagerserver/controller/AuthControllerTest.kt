@@ -7,14 +7,13 @@ import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
-import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.header
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.arrayContaining
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.isEmptyString
@@ -38,9 +37,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import java.lang.RuntimeException
 import java.time.Duration
-import javax.servlet.http.Cookie
 
 
 @RunWith(SpringJUnit4ClassRunner::class)

@@ -6,8 +6,8 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.security.JwtValidationStatus
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -79,7 +79,7 @@ class AuthService (
 
     fun refreshToken(token: String): String {
         val validStatus = jwtTokenProvider.validateToken(token)
-        if (JwtValidationStatus.BAD_SIGNATURE == validStatus) {
+        if (TokenValidationStatus.BAD_SIGNATURE == validStatus) {
             throw ApiUnauthorizedException("Invalid token")
         }
 

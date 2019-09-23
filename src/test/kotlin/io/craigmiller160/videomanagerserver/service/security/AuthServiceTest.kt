@@ -8,8 +8,8 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.security.JwtValidationStatus
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -28,7 +28,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.any
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -326,7 +325,7 @@ class AuthServiceTest {
                 .build()
 
         `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
+                .thenReturn(TokenValidationStatus.EXPIRED)
         `when`(jwtTokenProvider.isRefreshAllowed(user))
                 .thenReturn(true)
         `when`(jwtTokenProvider.getClaims(token1))
@@ -348,7 +347,7 @@ class AuthServiceTest {
         val token1 = "token1"
 
         `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.BAD_SIGNATURE)
+                .thenReturn(TokenValidationStatus.BAD_SIGNATURE)
 
         val ex = assertFailsWith<ApiUnauthorizedException> {
             authService.refreshToken(token1)
@@ -367,7 +366,7 @@ class AuthServiceTest {
                 .build()
 
         `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
+                .thenReturn(TokenValidationStatus.EXPIRED)
         `when`(jwtTokenProvider.isRefreshAllowed(user))
                 .thenReturn(false)
         `when`(jwtTokenProvider.getClaims(token1))
@@ -391,7 +390,7 @@ class AuthServiceTest {
                 .build()
 
         `when`(jwtTokenProvider.validateToken(token1))
-                .thenReturn(JwtValidationStatus.EXPIRED)
+                .thenReturn(TokenValidationStatus.EXPIRED)
         `when`(jwtTokenProvider.getClaims(token1))
                 .thenReturn(claims)
 

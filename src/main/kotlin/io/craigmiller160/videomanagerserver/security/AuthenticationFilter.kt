@@ -1,5 +1,7 @@
 package io.craigmiller160.videomanagerserver.security
 
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
@@ -15,10 +17,10 @@ class AuthenticationFilter (
         token?.let {
             try {
                 when (jwtTokenProvider.validateToken(token)) {
-                    JwtValidationStatus.VALID -> validToken(token, req, resp, chain)
-                    JwtValidationStatus.EXPIRED,
-                    JwtValidationStatus.BAD_SIGNATURE,
-                    JwtValidationStatus.NO_TOKEN -> unauthenticated(req, resp, chain)
+                    TokenValidationStatus.VALID -> validToken(token, req, resp, chain)
+                    TokenValidationStatus.EXPIRED,
+                    TokenValidationStatus.BAD_SIGNATURE,
+                    TokenValidationStatus.NO_TOKEN -> unauthenticated(req, resp, chain)
                 }
             }
             catch (ex: Exception) {

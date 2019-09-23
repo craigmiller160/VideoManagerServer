@@ -8,7 +8,9 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.security.JwtTokenProvider.Companion.ISSUER
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider.Companion.ISSUER
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -95,7 +97,7 @@ class JwtTokenProviderTest {
     @Test
     fun test_validateToken_empty() {
         val result = jwtTokenProvider.validateToken("")
-        assertEquals(JwtValidationStatus.NO_TOKEN, result)
+        assertEquals(TokenValidationStatus.NO_TOKEN, result)
     }
 
     private fun createToken(key: String, exp: Long): String {
@@ -117,7 +119,7 @@ class JwtTokenProviderTest {
     fun test_validateToken_invalidSignature() {
         val token = createToken("BadSecretKeyBadSecretKeyBadSecretKey", EXP_SECS.toLong())
         val result = jwtTokenProvider.validateToken(token)
-        assertEquals(JwtValidationStatus.BAD_SIGNATURE, result)
+        assertEquals(TokenValidationStatus.BAD_SIGNATURE, result)
     }
 
     @Test
@@ -125,7 +127,7 @@ class JwtTokenProviderTest {
         val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
         val token = createToken(secretKey, -100L)
         val result = jwtTokenProvider.validateToken(token)
-        assertEquals(JwtValidationStatus.EXPIRED, result)
+        assertEquals(TokenValidationStatus.EXPIRED, result)
     }
 
     @Test
@@ -133,7 +135,7 @@ class JwtTokenProviderTest {
         val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
         val token = createToken(secretKey, EXP_SECS.toLong())
         val result = jwtTokenProvider.validateToken(token)
-        assertEquals(JwtValidationStatus.VALID, result)
+        assertEquals(TokenValidationStatus.VALID, result)
     }
 
     @Test
