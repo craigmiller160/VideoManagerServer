@@ -64,7 +64,6 @@ class JwtTokenProviderTest {
                 .thenReturn(EXP_SECS)
         `when`(tokenConfig.key)
                 .thenReturn(KEY)
-        jwtTokenProvider.init()
     }
 
     @Test
@@ -157,9 +156,9 @@ class JwtTokenProviderTest {
     }
 
     @Test
-    fun test_getAuthentication() {
+    fun test_createAuthentication() {
         val token = createToken(KEY, EXP_SECS.toLong())
-        val result = jwtTokenProvider.getAuthentication(token)
+        val result = jwtTokenProvider.createAuthentication(token)
         assertThat(result, allOf(
                 hasProperty("principal", allOf<UserDetails>(
                         hasProperty("username", equalTo(USER_NAME)),

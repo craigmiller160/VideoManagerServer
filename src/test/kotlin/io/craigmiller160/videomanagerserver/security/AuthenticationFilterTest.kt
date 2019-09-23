@@ -54,7 +54,7 @@ class AuthenticationFilterTest {
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
                 .thenReturn(JwtValidationStatus.VALID)
-        `when`(jwtTokenProvider.getAuthentication(token))
+        `when`(jwtTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
 
         authenticationFilter.doFilterInternal(request, response, chain)

@@ -29,7 +29,7 @@ class AuthenticationFilter (
     }
 
     private fun validToken(token: String, req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val auth = jwtTokenProvider.getAuthentication(token)
+        val auth = jwtTokenProvider.createAuthentication(token)
         SecurityContextHolder.getContext().authentication = auth
         chain.doFilter(req, resp)
     }

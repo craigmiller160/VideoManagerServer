@@ -14,10 +14,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
-import java.util.Base64
 import java.util.Date
 import java.util.UUID
-import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
 
 @Component
@@ -30,13 +28,6 @@ class JwtTokenProvider (
         const val AUTHORIZATION_HEADER = "Authorization"
         const val BEARER_PREFIX = "Bearer "
         const val ISSUER = "VideoManagerServer"
-    }
-
-    private var secretKey: String = ""
-
-    @PostConstruct
-    internal fun init() {
-        secretKey = Base64.getEncoder().encodeToString(tokenConfig.key.toByteArray())
     }
 
     private fun generateExpiration(): Date {
@@ -59,7 +50,7 @@ class JwtTokenProvider (
         val header = JWSHeader.Builder(JWSAlgorithm.HS256)
                 .build()
         val jwt = SignedJWT(header, claims)
-        val signer = MACSigner(secretKey)
+        val signer = MACSigner(tokenConfig.key)
         jwt.sign(signer)
         return jwt.serialize()
     }
@@ -82,7 +73,7 @@ class JwtTokenProvider (
         }
 
         val jwt = SignedJWT.parse(token)
-        val verifier = MACVerifier(secretKey)
+        val verifier = MACVerifier(tokenConfig.key)
         if (jwt.verify(verifier)) {
             val exp = legacyDateConverter.convertDateToLocalDateTime(jwt.jwtClaimsSet.expirationTime)
             val now = LocalDateTime.now()
@@ -94,7 +85,7 @@ class JwtTokenProvider (
         return JwtValidationStatus.BAD_SIGNATURE
     }
 
-    fun getAuthentication(token: String): Authentication {
+    fun createAuthentication(token: String): Authentication {
         val claims = getClaims(token)
         val authorities = claims.getStringListClaim("roles")
                 .map { role -> AuthGrantedAuthority(role) }
