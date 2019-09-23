@@ -125,16 +125,14 @@ class JwtTokenProviderTest {
 
     @Test
     fun test_validateToken_expired() {
-        val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
-        val token = createToken(secretKey, -100L)
+        val token = createToken(KEY, -100L)
         val result = jwtTokenProvider.validateToken(token)
         assertEquals(TokenValidationStatus.EXPIRED, result)
     }
 
     @Test
     fun test_validateToken_valid() {
-        val secretKey = Base64.getEncoder().encodeToString(KEY.toByteArray())
-        val token = createToken(secretKey, EXP_SECS.toLong())
+        val token = createToken(KEY, EXP_SECS.toLong())
         val result = jwtTokenProvider.validateToken(token)
         assertEquals(TokenValidationStatus.VALID, result)
     }
