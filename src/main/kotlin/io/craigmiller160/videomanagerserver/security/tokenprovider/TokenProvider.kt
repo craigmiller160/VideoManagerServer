@@ -10,7 +10,7 @@ interface TokenProvider {
 
     fun resolveToken(req: HttpServletRequest): String?
 
-    fun validateToken(token: String): TokenValidationStatus
+    fun validateToken(token: String, params: Map<String,Any> = HashMap()): TokenValidationStatus
 
     fun createAuthentication(token: String): Authentication
 

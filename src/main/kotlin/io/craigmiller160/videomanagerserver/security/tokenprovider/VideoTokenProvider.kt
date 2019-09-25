@@ -57,7 +57,7 @@ class VideoTokenProvider (
         return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
     }
 
-    override fun validateToken(token: String): TokenValidationStatus {
+    override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
         // Validate that it isn't expired
         // Validate that it is for the current video - probably need optional params for this
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

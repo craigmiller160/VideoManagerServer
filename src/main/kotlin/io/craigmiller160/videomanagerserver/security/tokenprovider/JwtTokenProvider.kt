@@ -69,7 +69,7 @@ class JwtTokenProvider (
         return null
     }
 
-    override fun validateToken(token: String): TokenValidationStatus {
+    override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
         if (token.isEmpty()) {
             return TokenValidationStatus.NO_TOKEN
         }
