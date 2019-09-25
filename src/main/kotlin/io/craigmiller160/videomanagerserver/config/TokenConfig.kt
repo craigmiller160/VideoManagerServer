@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated
 import java.util.Base64
 import javax.annotation.PostConstruct
 import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 
 @Suppress("ConfigurationProperties")
 @Configuration
@@ -20,13 +21,14 @@ data class TokenConfig (
         var videoExpSecs: Int = 0
 ) {
 
-    lateinit var key: String
+    lateinit var key: String // TODO rename this to keyString
+    lateinit var secretKey: SecretKey
 
     @PostConstruct
     fun createKey() {
         val keyGen = KeyGenerator.getInstance("AES")
         keyGen.init(keySizeBits)
-        val secretKey = keyGen.generateKey()
+        this.secretKey = keyGen.generateKey()
         this.key = Base64.getEncoder().encodeToString(secretKey.encoded)
     }
 }

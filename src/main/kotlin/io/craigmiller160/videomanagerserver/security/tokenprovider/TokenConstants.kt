@@ -5,6 +5,8 @@ object TokenConstants {
     const val CLAIM_SUBJECT = "sub"
     const val CLAIM_ROLES = "roles"
 
-    const val PARAM_USER = "user"
+    const val PARAM_VIDEO_ID = "videoId"
+
+    const val VIDEO_TOKEN_SEPARATOR = "::"
 
 }
