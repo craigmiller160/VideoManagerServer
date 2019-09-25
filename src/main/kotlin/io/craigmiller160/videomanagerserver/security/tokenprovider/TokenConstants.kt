@@ -11,4 +11,6 @@ object TokenConstants {
 
     const val VIDEO_TOKEN_SEPARATOR = "::"
 
+    const val QUERY_PARAM_VIDEO_TOKEN = "videoToken"
+
 }

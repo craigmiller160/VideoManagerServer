@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
@@ -51,7 +52,9 @@ class VideoTokenProvider (
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val queryString = req.queryString ?: ""
+        val queryParams = parseQueryString(queryString)
+        return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
     }
 
     override fun validateToken(token: String): TokenValidationStatus {
