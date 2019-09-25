@@ -14,8 +14,17 @@ class AuthenticationFilter (
         private val jwtTokenProvider: TokenProvider
 ) : OncePerRequestFilter() {
 
+    companion object {
+        val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,4}""")
+    }
+
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        TODO("Finish this with URL checks")
+        if (VIDEO_URI.matches(req.servletPath)) {
+            validateVideoToken(req, resp, chain)
+        }
+        else {
+            validateJwtToken(req, resp, chain)
+        }
     }
 
     private fun validateVideoToken(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
