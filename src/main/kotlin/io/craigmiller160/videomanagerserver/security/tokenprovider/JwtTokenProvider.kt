@@ -38,7 +38,7 @@ class JwtTokenProvider (
         return legacyDateConverter.convertLocalDateTimeToDate(exp)
     }
 
-    override fun createToken(user: AppUser): String {
+    override fun createToken(user: AppUser, params: Map<String,Any>): String {
         val roles = user.roles.map { role -> role.name }
         val claims = JWTClaimsSet.Builder()
                 .subject(user.userName)
@@ -89,9 +89,9 @@ class JwtTokenProvider (
 
     override fun createAuthentication(token: String): Authentication {
         val claims = getClaims(token)
-        val authorities = (claims[TokenClaims.CLAIM_ROLES] as List<String>)
+        val authorities = (claims[TokenConstants.CLAIM_ROLES] as List<String>)
                 .map { role -> AuthGrantedAuthority(role) }
-        val userDetails = User.withUsername(claims[TokenClaims.CLAIM_SUBJECT] as String)
+        val userDetails = User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
                 .password("")
                 .authorities(authorities)
                 .build()

@@ -10,7 +10,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider.Companion.ISSUER
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenClaims
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
@@ -36,7 +36,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
-import java.util.Base64
 import java.util.Date
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
@@ -176,7 +175,7 @@ class JwtTokenProviderTest {
     fun test_getClaims() {
         val token = createToken(KEY, EXP_SECS.toLong())
         val claims = jwtTokenProvider.getClaims(token)
-        assertEquals(USER_NAME, claims[TokenClaims.CLAIM_SUBJECT])
+        assertEquals(USER_NAME, claims[TokenConstants.CLAIM_SUBJECT])
     }
 
     @Test

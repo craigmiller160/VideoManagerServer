@@ -13,7 +13,7 @@ class VideoTokenProvider (
         private val tokenConfig: TokenConfig
 ) : TokenProvider {
 
-    override fun createToken(user: AppUser): String {
+    override fun createToken(user: AppUser, params: Map<String,Any>): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -34,6 +34,6 @@ class VideoTokenProvider (
     }
 
     override fun isRefreshAllowed(user: AppUser): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 }

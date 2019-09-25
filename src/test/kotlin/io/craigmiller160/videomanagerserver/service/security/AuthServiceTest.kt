@@ -8,7 +8,7 @@ import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenClaims
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
@@ -320,7 +320,7 @@ class AuthServiceTest {
         val userName = "userName"
 
         val user = AppUser(userName = userName)
-        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
+        val claims = mapOf(TokenConstants.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)
@@ -359,7 +359,7 @@ class AuthServiceTest {
         val userName = "userName"
 
         val user = AppUser(userName = userName)
-        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
+        val claims = mapOf(TokenConstants.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)
@@ -381,7 +381,7 @@ class AuthServiceTest {
         val token1 = "token1"
         val userName = "userName"
 
-        val claims = mapOf(TokenClaims.CLAIM_SUBJECT to userName)
+        val claims = mapOf(TokenConstants.CLAIM_SUBJECT to userName)
 
         `when`(jwtTokenProvider.validateToken(token1))
                 .thenReturn(TokenValidationStatus.EXPIRED)

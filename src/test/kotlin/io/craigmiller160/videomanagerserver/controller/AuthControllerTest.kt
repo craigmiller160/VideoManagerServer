@@ -7,8 +7,8 @@ import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.header
 import io.craigmiller160.videomanagerserver.test_util.responseBody

@@ -6,7 +6,7 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenClaims
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -85,7 +85,7 @@ class AuthService (
         }
 
         val claims = jwtTokenProvider.getClaims(token)
-        val user = appUserRepository.findByUserName(claims[TokenClaims.CLAIM_SUBJECT] as String)
+        val user = appUserRepository.findByUserName(claims[TokenConstants.CLAIM_SUBJECT] as String)
                 ?: throw ApiUnauthorizedException("No user exists for token")
         if (!jwtTokenProvider.isRefreshAllowed(user)) {
             throw ApiUnauthorizedException("Token refresh not allowed")

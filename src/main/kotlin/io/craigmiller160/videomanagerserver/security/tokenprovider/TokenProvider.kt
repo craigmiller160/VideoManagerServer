@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest
 
 interface TokenProvider {
 
-    fun createToken(user: AppUser): String
+    fun createToken(user: AppUser, params: Map<String,Any> = HashMap()): String
 
     fun resolveToken(req: HttpServletRequest): String?
 
