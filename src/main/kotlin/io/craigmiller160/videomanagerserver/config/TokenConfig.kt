@@ -21,7 +21,7 @@ data class TokenConfig (
         var videoExpSecs: Int = 0
 ) {
 
-    lateinit var key: String // TODO rename this to keyString
+    lateinit var keyString: String
     lateinit var secretKey: SecretKey
 
     @PostConstruct
@@ -29,6 +29,6 @@ data class TokenConfig (
         val keyGen = KeyGenerator.getInstance("AES")
         keyGen.init(keySizeBits)
         this.secretKey = keyGen.generateKey()
-        this.key = Base64.getEncoder().encodeToString(secretKey.encoded)
+        this.keyString = Base64.getEncoder().encodeToString(secretKey.encoded)
     }
 }

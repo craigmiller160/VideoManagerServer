@@ -52,7 +52,7 @@ class JwtTokenProvider (
         val header = JWSHeader.Builder(JWSAlgorithm.HS256)
                 .build()
         val jwt = SignedJWT(header, claims)
-        val signer = MACSigner(tokenConfig.key)
+        val signer = MACSigner(tokenConfig.keyString)
         jwt.sign(signer)
         return jwt.serialize()
     }
@@ -75,7 +75,7 @@ class JwtTokenProvider (
         }
 
         val jwt = SignedJWT.parse(token)
-        val verifier = MACVerifier(tokenConfig.key)
+        val verifier = MACVerifier(tokenConfig.keyString)
         if (jwt.verify(verifier)) {
             val exp = legacyDateConverter.convertDateToLocalDateTime(jwt.jwtClaimsSet.expirationTime)
             val now = LocalDateTime.now()

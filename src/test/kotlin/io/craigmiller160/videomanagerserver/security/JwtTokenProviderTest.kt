@@ -64,7 +64,7 @@ class JwtTokenProviderTest {
     fun setup() {
         `when`(tokenConfig.expSecs)
                 .thenReturn(EXP_SECS)
-        `when`(tokenConfig.key)
+        `when`(tokenConfig.keyString)
                 .thenReturn(KEY)
     }
 
