@@ -15,7 +15,7 @@ class AuthenticationFilter (
 ) : OncePerRequestFilter() {
 
     companion object {
-        val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,4}""")
+        val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}""")
     }
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
