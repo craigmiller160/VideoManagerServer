@@ -58,6 +58,8 @@ class VideoTokenProvider (
     }
 
     override fun validateToken(token: String): TokenValidationStatus {
+        // Validate that it isn't expired
+        // Validate that it is for the current video - probably need optional params for this
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
