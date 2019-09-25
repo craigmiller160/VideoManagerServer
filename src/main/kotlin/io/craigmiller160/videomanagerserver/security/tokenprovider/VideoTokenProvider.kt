@@ -2,7 +2,9 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.util.Base64
 import javax.crypto.Cipher
@@ -57,7 +59,11 @@ class VideoTokenProvider (
     }
 
     override fun createAuthentication(token: String): Authentication {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val claims = getClaims(token)
+        val userDetails = User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
+                .password("")
+                .build()
+        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
     override fun getClaims(token: String): Map<String, Any> {
