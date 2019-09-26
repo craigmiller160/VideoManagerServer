@@ -21,6 +21,7 @@ class VideoTokenProvider (
 
     companion object {
         private const val ALGORITHM = "AES/CBC/PKCS5Padding"
+        private val TOKEN_REGEX = Regex("") // TODO finish this
     }
 
     private fun doEncrypt(value: String): String {
@@ -58,6 +59,7 @@ class VideoTokenProvider (
     }
 
     override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
+        // Validate the signature through a regex check
         // Validate that it isn't expired
         // Validate that it is for the current video - probably need optional params for this
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
