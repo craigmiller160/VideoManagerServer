@@ -7,6 +7,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
@@ -21,7 +24,18 @@ class VideoTokenProvider (
 
     companion object {
         private const val ALGORITHM = "AES/CBC/PKCS5Padding"
-        private val TOKEN_REGEX = Regex("") // TODO finish this
+        private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    }
+
+    private fun generateExpiration(): String {
+        val now = LocalDateTime.now()
+        val exp = now.plusSeconds(tokenConfig.videoExpSecs.toLong())
+        return EXP_FORMATTER.format(exp)
+    }
+
+    private fun getTokenRegex(): Regex {
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        return "\\.+$separator\\.+$separator\\.+".toRegex()
     }
 
     private fun doEncrypt(value: String): String {
@@ -46,7 +60,7 @@ class VideoTokenProvider (
     override fun createToken(user: AppUser, params: Map<String,Any>): String {
         val userName = user.userName
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        val exp = tokenConfig.videoExpSecs
+        val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp"
         return doEncrypt(tokenString)
@@ -59,10 +73,33 @@ class VideoTokenProvider (
     }
 
     override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
-        // Validate the signature through a regex check
-        // Validate that it isn't expired
-        // Validate that it is for the current video - probably need optional params for this
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (token.isEmpty()) {
+            return TokenValidationStatus.NO_TOKEN
+        }
+
+        val tokenDecrypted = doEncrypt(token)
+        if (!getTokenRegex().matches(tokenDecrypted)) {
+            return TokenValidationStatus.BAD_SIGNATURE
+        }
+
+        val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
+        try {
+            val expDateTime = EXP_FORMATTER.parse(tokenParts[2]) as LocalDateTime
+            val now = LocalDateTime.now()
+            if (now > expDateTime) {
+                return TokenValidationStatus.EXPIRED
+            }
+        }
+        catch (ex: DateTimeParseException) {
+            return TokenValidationStatus.EXPIRED
+        }
+
+        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+        if (videoId !== tokenParts[1]) {
+            return TokenValidationStatus.RESOURCE_FORBIDDEN
+        }
+
+        return TokenValidationStatus.VALID
     }
 
     override fun createAuthentication(token: String): Authentication {

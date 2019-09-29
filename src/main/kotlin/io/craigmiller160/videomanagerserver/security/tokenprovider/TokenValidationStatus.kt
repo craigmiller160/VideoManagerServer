@@ -4,5 +4,6 @@ enum class TokenValidationStatus {
     VALID,
     BAD_SIGNATURE,
     EXPIRED,
-    NO_TOKEN
+    NO_TOKEN,
+    RESOURCE_FORBIDDEN
 }
