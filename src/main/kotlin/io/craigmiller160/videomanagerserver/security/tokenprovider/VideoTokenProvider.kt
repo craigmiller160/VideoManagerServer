@@ -7,6 +7,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.security.GeneralSecurityException
@@ -99,6 +100,7 @@ class VideoTokenProvider (
         val claims = getClaims(token)
         val userDetails = User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
                 .password("")
+                .authorities(ArrayList<GrantedAuthority>())
                 .build()
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }

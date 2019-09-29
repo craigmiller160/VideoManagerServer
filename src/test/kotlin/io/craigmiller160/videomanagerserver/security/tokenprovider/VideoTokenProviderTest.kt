@@ -4,8 +4,14 @@ import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasEntry
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,6 +19,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Base64
@@ -132,12 +140,35 @@ class VideoTokenProviderTest {
 
     @Test
     fun test_createAuthentication() {
-        TODO("Finish this")
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val date = LocalDateTime.now().plusHours(10)
+        val dateString = EXP_FORMATTER.format(date)
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+
+        val result = videoTokenProvider.createAuthentication(tokenEncrypted)
+        assertThat(result, allOf(
+                hasProperty("principal", allOf<UserDetails>(
+                        hasProperty("username", equalTo(USER_NAME)),
+                        hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0))
+                ))
+        ))
     }
 
     @Test
     fun test_getClaims() {
-        TODO("Finish this")
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val date = LocalDateTime.now().plusHours(10)
+        val dateString = EXP_FORMATTER.format(date)
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+
+        val claims = videoTokenProvider.getClaims(tokenEncrypted)
+        assertThat(claims, allOf<Map<String,Any>>(
+                hasEntry(TokenConstants.CLAIM_SUBJECT, USER_NAME),
+                hasEntry(TokenConstants.CLAIM_VIDEO_ID, VIDEO_ID),
+                hasEntry(TokenConstants.CLAIM_EXP, dateString)
+        ))
     }
 
     @Test
