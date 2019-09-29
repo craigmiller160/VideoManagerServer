@@ -44,7 +44,7 @@ class VideoTokenProviderTest {
         val appUser = AppUser(userName = USER_NAME)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
         val token = videoTokenProvider.createToken(appUser, params)
-        println(videoTokenProvider.doDecrypt(token)) // TODO delete this
+//        println(videoTokenProvider.doDecrypt(token)) // TODO delete this
         TODO("Finish this")
     }
 
