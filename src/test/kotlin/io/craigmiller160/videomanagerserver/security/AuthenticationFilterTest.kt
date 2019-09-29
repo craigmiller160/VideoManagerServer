@@ -232,12 +232,31 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_video_resourceForbidden() {
-        TODO("Finish this")
+        val token = "TOKEN"
+
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+        `when`(videoTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(videoTokenProvider.validateToken(token, params))
+                .thenReturn(TokenValidationStatus.RESOURCE_FORBIDDEN)
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_noToken() {
-        TODO("Finish this")
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+        authenticationFilter.doFilterInternal(request, response, chain)
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
 }
