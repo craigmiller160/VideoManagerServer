@@ -12,7 +12,6 @@ class AesEncryptHandler (private val secretKey: SecretKey): EncryptHandler {
     }
 
     override fun doEncrypt(value: String): String {
-        println("EncryptHandler ${this.hashCode()} ${Base64.getEncoder().encodeToString(this.secretKey.encoded)}") // TODO delete this
         val iv = ByteArray(16)
         val ivSpec = IvParameterSpec(iv)
 
@@ -22,13 +21,11 @@ class AesEncryptHandler (private val secretKey: SecretKey): EncryptHandler {
     }
 
     override fun doDecrypt(value: String): String {
-        println("DecryptHandler ${this.hashCode()} ${Base64.getEncoder().encodeToString(this.secretKey.encoded)}") // TODO delete this
         val iv = ByteArray(16)
         val ivSpec = IvParameterSpec(iv)
 
         val cipher = Cipher.getInstance(ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-        println(value) // TODO delete this
         val bytes = Base64.getDecoder().decode(value)
         return String(cipher.doFinal(bytes))
     }

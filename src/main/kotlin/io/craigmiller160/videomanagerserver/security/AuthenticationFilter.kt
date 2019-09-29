@@ -40,9 +40,7 @@ class AuthenticationFilter (
                               chain: FilterChain, tokenProvider: TokenProvider,
                               params: Map<String,Any> = HashMap()) {
         val token = tokenProvider.resolveToken(req)
-        println("ValidateToken: $token") // TODO delete this
         token?.let {
-            println("Preparing to Validate Token") // TODO delete this
             try {
                 val status = tokenProvider.validateToken(token, params)
                 logger.debug("Token Validation Status: $status")

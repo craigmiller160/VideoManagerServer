@@ -51,7 +51,6 @@ class VideoTokenProvider (
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp"
-        println("TokenString: $tokenString") // TODO delete this
         return encryptHandler.doEncrypt(tokenString)
     }
 
@@ -62,27 +61,19 @@ class VideoTokenProvider (
     }
 
     override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
-        println("Validating Token") // TODO delete this
         if (token.isEmpty()) {
             return TokenValidationStatus.NO_TOKEN
         }
 
         val tokenDecrypted: String
         try {
-            println("About to Decrypt") // TODO delete this
             tokenDecrypted = encryptHandler.doDecrypt(token)
-            println("Decrypted: $tokenDecrypted") // TODO delete this
             if (!getTokenRegex().matches(tokenDecrypted)) {
                 return TokenValidationStatus.BAD_SIGNATURE
             }
         }
         catch (ex: GeneralSecurityException) {
-            println("Security Exception") // TODO delete this
             return TokenValidationStatus.BAD_SIGNATURE
-        }
-        catch (ex: Throwable) {
-//            ex.printStackTrace() // TODO delete this
-            throw ex
         }
 
         val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)

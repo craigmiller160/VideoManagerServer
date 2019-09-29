@@ -92,9 +92,6 @@ class VideoFileControllerTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @Autowired
-    private lateinit var tokenConfig: TokenConfig // TODO if not necessary, delete
-
     @Before
     fun setup() {
         videoFileNoId = VideoFile(fileName = "NoId")
