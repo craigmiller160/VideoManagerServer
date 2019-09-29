@@ -112,6 +112,11 @@ class VideoFileController @Autowired constructor(
                 .body(region)
     }
 
+    @GetMapping("/videotoken/{fileId}")
+    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<Void> {
+        TODO("Finish this")
+    }
+
     @GetMapping("/record-play/{fileId}")
     fun recordNewVideoPlay(@PathVariable fileId: Long): ResponseEntity<Void> {
         videoFileService.recordNewVideoPlay(fileId)

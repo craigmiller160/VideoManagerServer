@@ -313,4 +313,14 @@ class VideoFileControllerTest {
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
+    @Test
+    fun test_getVideoToken() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getVideoToken_unauthorized() {
+        TODO("Finish this")
+    }
+
 }
