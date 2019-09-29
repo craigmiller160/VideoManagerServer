@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse
 // TODO need tests for the differing behavior for URLs
 
 class AuthenticationFilter (
-        private val jwtTokenProvider: TokenProvider
+        private val jwtTokenProvider: TokenProvider,
+        private val videoTokenProvider: TokenProvider
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -28,7 +29,23 @@ class AuthenticationFilter (
     }
 
     private fun validateVideoToken(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        TODO("Finish this")
+        val token = videoTokenProvider.resolveToken(req)
+        token?.let {
+            try {
+                when (jwtTokenProvider.validateToken(token)) {
+                    TokenValidationStatus.VALID -> {
+                        val auth = videoTokenProvider.createAuthentication(token)
+                        SecurityContextHolder.getContext().authentication = auth
+                        chain.doFilter(req, resp)
+                    }
+                    else -> unauthenticated(req, resp, chain)
+                }
+            }
+            catch (ex: Exception) {
+                logger.error("Error handling token", ex)
+                unauthenticated(req, resp, chain)
+            }
+        } ?: unauthenticated(req, resp, chain)
     }
 
     private fun validateJwtToken(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
@@ -41,9 +58,7 @@ class AuthenticationFilter (
                         SecurityContextHolder.getContext().authentication = auth
                         chain.doFilter(req, resp)
                     }
-                    TokenValidationStatus.EXPIRED,
-                    TokenValidationStatus.BAD_SIGNATURE,
-                    TokenValidationStatus.NO_TOKEN -> unauthenticated(req, resp, chain)
+                    else -> unauthenticated(req, resp, chain)
                 }
             }
             catch (ex: Exception) {
