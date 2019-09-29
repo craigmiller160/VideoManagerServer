@@ -27,6 +27,11 @@ import javax.servlet.http.HttpServletResponse
 @RunWith(MockitoJUnitRunner::class)
 class AuthenticationFilterTest {
 
+    companion object {
+        private const val VIDEO_PATH = "/video-file/play/1"
+        private const val JWT_PATH = "/categories"
+    }
+
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
@@ -62,6 +67,8 @@ class AuthenticationFilterTest {
                 .thenReturn(TokenValidationStatus.VALID)
         `when`(jwtTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
+        `when`(request.servletPath)
+                .thenReturn(JWT_PATH)
 
         authenticationFilter.doFilterInternal(request, response, chain)
 
@@ -75,6 +82,8 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_jwt_noToken() {
+        `when`(request.servletPath)
+                .thenReturn(JWT_PATH)
         authenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
@@ -85,6 +94,8 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_badSignature() {
         val token = "TOKEN"
 
+        `when`(request.servletPath)
+                .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
@@ -101,6 +112,8 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_expiredToken() {
         val token = "TOKEN"
 
+        `when`(request.servletPath)
+                .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
@@ -117,6 +130,8 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_exception() {
         val token = "TOKEN"
 
+        `when`(request.servletPath)
+                .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token))
@@ -155,7 +170,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_resourceForbidden() {
+    fun test_doFilterInternal_video_resourceForbidden() {
         TODO("Finish this")
     }
 
