@@ -51,5 +51,4 @@ video:
       expSecs: 60000
       refreshExpSecs: 1200
       keySizeBits: 256
-      video:
-        expSecs: 21600
+      videoExpSecs: 21600

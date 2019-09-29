@@ -17,7 +17,6 @@ data class TokenConfig (
         var expSecs: Int = 0,
         var refreshExpSecs: Int = 0,
         var keySizeBits: Int = 0,
-        @Value("\${video.expSecs}")
         var videoExpSecs: Int = 0
 ) {
 
