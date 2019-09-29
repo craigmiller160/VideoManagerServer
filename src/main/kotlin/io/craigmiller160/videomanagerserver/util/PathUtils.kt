@@ -11,9 +11,10 @@ fun ensureTrailingSlash(value: String): String {
 fun parseQueryString(queryString: String): Map<String,String> {
     val queryPairs = HashMap<String,String>()
     val pairs = queryString.split("&")
-    pairs.forEach { pair ->
-        val keyValue = pair.split("=")
-        queryPairs += URLDecoder.decode(keyValue[0], "UTF-8") to URLDecoder.decode(keyValue[1], "UTF-8")
-    }
+    pairs.filter { pair -> !pair.isBlank() }
+            .forEach { pair ->
+                val keyValue = pair.split("=")
+                queryPairs += URLDecoder.decode(keyValue[0], "UTF-8") to URLDecoder.decode(keyValue[1], "UTF-8")
+            }
     return queryPairs
 }
