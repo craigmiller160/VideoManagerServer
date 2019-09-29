@@ -77,7 +77,7 @@ class VideoTokenProvider (
             return TokenValidationStatus.NO_TOKEN
         }
 
-        val tokenDecrypted = doEncrypt(token)
+        val tokenDecrypted = doDecrypt(token)
         if (!getTokenRegex().matches(tokenDecrypted)) {
             return TokenValidationStatus.BAD_SIGNATURE
         }
