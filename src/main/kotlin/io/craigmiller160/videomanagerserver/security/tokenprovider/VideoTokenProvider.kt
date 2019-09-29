@@ -51,6 +51,7 @@ class VideoTokenProvider (
         val userName = user.userName
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
         val exp = generateExpiration()
+        println("Exp: $exp ${LocalDateTime.now()}") // TODO delete this
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp"
         return encryptHandler.doEncrypt(tokenString)
