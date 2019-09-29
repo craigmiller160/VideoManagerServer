@@ -53,7 +53,7 @@ class VideoTokenProviderTest {
     fun setup() {
         val keyBytes = Base64.getDecoder().decode(KEY)
         this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
-        aesEncryptHandler = AesEncryptHandler(this.secretKey)
+        aesEncryptHandler = AesEncryptHandler(this.secretKey, true)
         `when`(tokenConfig.secretKey)
                 .thenReturn(secretKey)
         videoTokenProvider = VideoTokenProvider(tokenConfig)

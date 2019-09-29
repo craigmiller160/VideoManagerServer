@@ -28,7 +28,7 @@ class VideoTokenProvider (
     private val encryptHandler: EncryptHandler
 
     init {
-        encryptHandler = AesEncryptHandler(tokenConfig.secretKey)
+        encryptHandler = AesEncryptHandler(tokenConfig.secretKey, true)
     }
 
     companion object {
