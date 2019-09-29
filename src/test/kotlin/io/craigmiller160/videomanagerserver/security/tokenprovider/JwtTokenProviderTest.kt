@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.security
+package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -8,10 +8,9 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.AuthGrantedAuthority
+import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider.Companion.ISSUER
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.util.LegacyDateConverter
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf

@@ -38,7 +38,7 @@ class VideoTokenProvider (
         return "\\.+$separator\\.+$separator\\.+".toRegex()
     }
 
-    private fun doEncrypt(value: String): String {
+    internal fun doEncrypt(value: String): String {
         val iv = ByteArray(16)
         val ivSpec = IvParameterSpec(iv)
 
@@ -47,7 +47,7 @@ class VideoTokenProvider (
         return Base64.getEncoder().encodeToString(cipher.doFinal(value.toByteArray()))
     }
 
-    private fun doDecrypt(value: String): String {
+    internal fun doDecrypt(value: String): String {
         val iv = ByteArray(16)
         val ivSpec = IvParameterSpec(iv)
 

@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.security.CsrfResponseHeaderBindingFilter.Companion.CSRF_REQ_ATTR_NAME
 import io.craigmiller160.videomanagerserver.security.CsrfResponseHeaderBindingFilter.Companion.RESPONSE_TOKEN_NAME
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -17,6 +18,7 @@ class CsrfResponseHeaderBindingFilterTest {
     private val csrfResponseHeaderBindingFilter = CsrfResponseHeaderBindingFilter()
 
     @Test
+    @Ignore
     fun test_doFilterInternal() {
         val req = mock(HttpServletRequest::class.java)
         val resp = mock(HttpServletResponse::class.java)
