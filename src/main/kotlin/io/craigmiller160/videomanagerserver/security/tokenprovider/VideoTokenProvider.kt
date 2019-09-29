@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import java.net.URLDecoder
 import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -36,6 +37,7 @@ class VideoTokenProvider (
 
     private fun generateExpiration(): String {
         val now = LocalDateTime.now()
+        println("VideoExpSecs: ${tokenConfig.videoExpSecs}") // TODO delete this
         val exp = now.plusSeconds(tokenConfig.videoExpSecs.toLong())
         return EXP_FORMATTER.format(exp)
     }
@@ -56,8 +58,12 @@ class VideoTokenProvider (
 
     override fun resolveToken(req: HttpServletRequest): String? {
         val queryString = req.queryString ?: ""
+        println("RawQueryString: $queryString") // TODO delete this
         val queryParams = parseQueryString(queryString)
-        return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
+        val result = queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
+        println("Token: $result") // TODO delete this
+        println("TokenDecoded: ${URLDecoder.decode(result, "UTF-8")}")
+        return result
     }
 
     override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {

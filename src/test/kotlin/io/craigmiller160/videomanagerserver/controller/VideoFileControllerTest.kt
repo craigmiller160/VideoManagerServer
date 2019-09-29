@@ -296,8 +296,8 @@ class VideoFileControllerTest {
         val file = File(".")
         `when`(videoFileService.playVideo(1L))
                 .thenReturn(UrlResource(file.toURI()))
-        val encodedToken = URLEncoder.encode(token, "UTF-8")
-        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$encodedToken")
+//        val encodedToken = URLEncoder.encode(token, "UTF-8")
+        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
         assertEquals(206, response.status)
         assertTrue(response.contentAsByteArray.isNotEmpty())
     }

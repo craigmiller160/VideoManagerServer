@@ -13,7 +13,7 @@ fun parseQueryString(queryString: String): Map<String,String> {
     pairs.filter { pair -> !pair.isBlank() }
             .forEach { pair ->
                 val keyValue = pair.split("=")
-                queryPairs += URLDecoder.decode(keyValue[0], "UTF-8") to URLDecoder.decode(keyValue[1], "UTF-8")
+                queryPairs += URLDecoder.decode(keyValue[0], "UTF-8") to keyValue[1]
             }
     return queryPairs
 }

@@ -28,6 +28,6 @@ video:
       refreshExpSecs: 1200
       keySizeBits: 256
       video:
-        expSecs: 1_000_000
+        expSecs: 1000000
     password:
       hashRounds: 12
