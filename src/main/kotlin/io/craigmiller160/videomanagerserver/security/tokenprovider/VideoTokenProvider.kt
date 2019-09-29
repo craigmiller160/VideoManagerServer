@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -42,7 +43,7 @@ class VideoTokenProvider (
 
     private fun getTokenRegex(): Regex {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        return "\\.+$separator\\.+$separator\\.+".toRegex()
+        return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}""".toRegex()
     }
 
     override fun createToken(user: AppUser, params: Map<String,Any>): String {
@@ -65,8 +66,14 @@ class VideoTokenProvider (
             return TokenValidationStatus.NO_TOKEN
         }
 
-        val tokenDecrypted = encryptHandler.doDecrypt(token)
-        if (!getTokenRegex().matches(tokenDecrypted)) {
+        val tokenDecrypted: String
+        try {
+            tokenDecrypted = encryptHandler.doDecrypt(token)
+            if (!getTokenRegex().matches(tokenDecrypted)) {
+                return TokenValidationStatus.BAD_SIGNATURE
+            }
+        }
+        catch (ex: GeneralSecurityException) {
             return TokenValidationStatus.BAD_SIGNATURE
         }
 

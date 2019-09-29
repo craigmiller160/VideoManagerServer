@@ -50,6 +50,7 @@ class AuthenticationFilter (
     }
 
     private fun unauthenticated(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        logger.error("Attempted unauthenticated access") // TODO make this better and more robust
         SecurityContextHolder.clearContext()
         chain.doFilter(req, resp)
     }

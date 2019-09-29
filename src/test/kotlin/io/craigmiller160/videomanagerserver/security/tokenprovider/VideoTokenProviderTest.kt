@@ -2,21 +2,22 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
-import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandlerTest
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.Base64
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
+import javax.servlet.http.HttpServletRequest
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
@@ -61,22 +62,34 @@ class VideoTokenProviderTest {
 
     @Test
     fun test_resolveToken() {
-        TODO("Finish this")
+        val token = "ABCDEFG"
+        val queryString = "${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token"
+        val req = mock(HttpServletRequest::class.java)
+        `when`(req.queryString)
+                .thenReturn(queryString)
+
+        val result = videoTokenProvider.resolveToken(req)
+        assertEquals(token, result)
     }
 
     @Test
     fun test_resolveToken_noToken() {
-        TODO("Finish this")
+        val req = mock(HttpServletRequest::class.java)
+        val result = videoTokenProvider.resolveToken(req)
+        assertNull(result)
     }
 
     @Test
     fun test_validateToken_empty() {
-        TODO("Finish this")
+        val result = videoTokenProvider.validateToken("")
+        assertEquals(TokenValidationStatus.NO_TOKEN, result)
     }
 
     @Test
     fun test_validateToken_badSignature() {
-        TODO("Finish this")
+        val token = "ABCDEFGHIJLKMNO"
+        val result = videoTokenProvider.validateToken(token)
+        assertEquals(TokenValidationStatus.BAD_SIGNATURE, result)
     }
 
     @Test
