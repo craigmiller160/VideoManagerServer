@@ -21,40 +21,21 @@ class AuthenticationFilter (
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
         if (VIDEO_URI.matches(req.servletPath)) {
-            validateVideoToken(req, resp, chain)
+            validateToken(req, resp, chain, videoTokenProvider)
         }
         else {
-            validateJwtToken(req, resp, chain)
+            validateToken(req, resp, chain, jwtTokenProvider)
         }
     }
 
-    private fun validateVideoToken(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val token = videoTokenProvider.resolveToken(req)
+    private fun validateToken(req: HttpServletRequest, resp: HttpServletResponse,
+                              chain: FilterChain, tokenProvider: TokenProvider) {
+        val token = tokenProvider.resolveToken(req)
         token?.let {
             try {
-                when (jwtTokenProvider.validateToken(token)) {
+                when (tokenProvider.validateToken(token)) {
                     TokenValidationStatus.VALID -> {
-                        val auth = videoTokenProvider.createAuthentication(token)
-                        SecurityContextHolder.getContext().authentication = auth
-                        chain.doFilter(req, resp)
-                    }
-                    else -> unauthenticated(req, resp, chain)
-                }
-            }
-            catch (ex: Exception) {
-                logger.error("Error handling token", ex)
-                unauthenticated(req, resp, chain)
-            }
-        } ?: unauthenticated(req, resp, chain)
-    }
-
-    private fun validateJwtToken(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        val token = jwtTokenProvider.resolveToken(req)
-        token?.let {
-            try {
-                when (jwtTokenProvider.validateToken(token)) {
-                    TokenValidationStatus.VALID -> {
-                        val auth = jwtTokenProvider.createAuthentication(token)
+                        val auth = tokenProvider.createAuthentication(token)
                         SecurityContextHolder.getContext().authentication = auth
                         chain.doFilter(req, resp)
                     }
