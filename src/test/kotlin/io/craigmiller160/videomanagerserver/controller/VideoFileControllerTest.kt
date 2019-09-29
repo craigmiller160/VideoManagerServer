@@ -286,7 +286,7 @@ class VideoFileControllerTest {
         val file = File(".")
         `when`(videoFileService.playVideo(1L))
                 .thenReturn(UrlResource(file.toURI()))
-        val response = mockMvcHandler.doGet("/video-files/play/1")
+        val response = mockMvcHandler.doGet("/api/video-files/play/1")
         assertEquals(206, response.status)
         assertTrue(response.contentAsByteArray.isNotEmpty())
         TODO("This should fail now")

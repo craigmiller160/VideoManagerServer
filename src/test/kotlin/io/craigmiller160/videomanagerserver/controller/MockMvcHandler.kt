@@ -17,7 +17,8 @@ class MockMvcHandler (private val mockMvc: MockMvc) {
     var token = ""
 
     private fun applyCommon(builder: MockHttpServletRequestBuilder) {
-        builder.secure(true)
+        builder.contextPath("/api")
+                .secure(true)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())

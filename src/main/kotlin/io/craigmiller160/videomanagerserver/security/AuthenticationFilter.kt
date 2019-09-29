@@ -21,12 +21,18 @@ class AuthenticationFilter (
     }
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        println("ServletPath: ${req.servletPath}") // TODO delete this
+        println("ContextPath: ${req.contextPath}") // TODO delete this
+        println("PathInfo: ${req.pathInfo}") // TODO delete this
+        println("RequestUri: ${req.requestURI}") // TODO delete this
         if (VIDEO_URI.matches(req.servletPath)) {
+            println("VideoPath") // TODO delete this
             val fileId = req.servletPath.split("/")[3]
             val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
             validateToken(req, resp, chain, videoTokenProvider, params)
         }
         else {
+            println("OtherPath") // TODO delete this
             validateToken(req, resp, chain, jwtTokenProvider)
         }
     }
