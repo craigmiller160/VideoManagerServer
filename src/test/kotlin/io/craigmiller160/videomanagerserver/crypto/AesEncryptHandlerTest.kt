@@ -5,11 +5,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import javax.crypto.KeyGenerator
+import java.util.Base64
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 @RunWith(MockitoJUnitRunner::class)
 class AesEncryptHandlerTest {
+
+    companion object {
+        private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
+    }
 
     private lateinit var secretKey: SecretKey
 
@@ -17,17 +22,15 @@ class AesEncryptHandlerTest {
 
     @Before
     fun setup() {
-        val keyGen = KeyGenerator.getInstance("AES")
-        keyGen.init(256)
-        this.secretKey = keyGen.generateKey()
+        val keyBytes = Base64.getDecoder().decode(KEY)
+        this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
         this.aesEncryptHandler = AesEncryptHandler(this.secretKey)
     }
 
     @Test
     fun test_encryptDecrypt() {
-        // TODO I need a way to have the key be static
         val value = "Hello World"
-        val expectedEncrypted = "9q2wt+ANTSz/YRBm4AekSg=="
+        val expectedEncrypted = "+4mpYOphqcYmtb+yMU8Ypw=="
         val encrypted = aesEncryptHandler.doEncrypt(value)
         assertEquals(expectedEncrypted, encrypted)
         val decrypted = aesEncryptHandler.doDecrypt(encrypted)
