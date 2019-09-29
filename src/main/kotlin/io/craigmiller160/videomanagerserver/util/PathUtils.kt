@@ -7,7 +7,6 @@ fun ensureTrailingSlash(value: String): String {
     return "$value/"
 }
 
-// TODO create unit test
 fun parseQueryString(queryString: String): Map<String,String> {
     val queryPairs = HashMap<String,String>()
     val pairs = queryString.split("&")
