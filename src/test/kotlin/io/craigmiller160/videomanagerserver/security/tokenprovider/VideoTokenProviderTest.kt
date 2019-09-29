@@ -1,11 +1,22 @@
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
+import io.craigmiller160.videomanagerserver.config.TokenConfig
+import io.craigmiller160.videomanagerserver.dto.AppUser
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class VideoTokenProviderTest {
+
+    @Mock
+    private lateinit var tokenConfig: TokenConfig
+
+    @InjectMocks
+    private lateinit var videoTokenProvider: VideoTokenProvider
 
     @Test
     fun test_createToken() {
@@ -59,7 +70,7 @@ class VideoTokenProviderTest {
 
     @Test
     fun test_isRefreshAllowed() {
-        TODO("Finish this")
+        assertFalse(videoTokenProvider.isRefreshAllowed(AppUser()))
     }
 
 }
