@@ -1,6 +1,9 @@
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
+import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
+import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandlerTest
+import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import org.junit.Assert.assertFalse
 import org.junit.Before
@@ -9,9 +12,12 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import javax.crypto.KeyGenerator
+import java.util.Base64
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
+import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
 class VideoTokenProviderTest {
@@ -19,33 +25,38 @@ class VideoTokenProviderTest {
     companion object {
         const val USER_NAME = "userName"
         const val VIDEO_ID = "10"
-        private const val KEY = "ThisIsMySecretKeyThisIsMySecretKey"
+        private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
     }
 
     @Mock
     private lateinit var tokenConfig: TokenConfig
 
-    @InjectMocks
     private lateinit var videoTokenProvider: VideoTokenProvider
 
     private lateinit var secretKey: SecretKey
 
+    private lateinit var aesEncryptHandler: EncryptHandler
+
     @Before
     fun setup() {
-        val keyGen = KeyGenerator.getInstance("AES")
-        keyGen.init(256)
-        this.secretKey = keyGen.generateKey()
+        val keyBytes = Base64.getDecoder().decode(KEY)
+        this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
+        aesEncryptHandler = AesEncryptHandler(this.secretKey)
         `when`(tokenConfig.secretKey)
                 .thenReturn(secretKey)
+        videoTokenProvider = VideoTokenProvider(tokenConfig)
     }
 
     @Test
     fun test_createToken() {
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
+        val tokenRegex = "$USER_NAME$separator$VIDEO_ID$separator$dateRegex".toRegex()
         val appUser = AppUser(userName = USER_NAME)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
         val token = videoTokenProvider.createToken(appUser, params)
-//        println(videoTokenProvider.doDecrypt(token)) // TODO delete this
-        TODO("Finish this")
+        val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
+        assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
     }
 
     @Test
