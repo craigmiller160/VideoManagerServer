@@ -20,19 +20,18 @@ class AuthenticationFilter (
         val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}$""")
     }
 
+    private fun getPathUri(req: HttpServletRequest): String {
+        return req.requestURI.replace(req.contextPath ?: "", "")
+    }
+
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        println("ServletPath: ${req.servletPath}") // TODO delete this
-        println("ContextPath: ${req.contextPath}") // TODO delete this
-        println("PathInfo: ${req.pathInfo}") // TODO delete this
-        println("RequestUri: ${req.requestURI}") // TODO delete this
-        if (VIDEO_URI.matches(req.servletPath)) {
-            println("VideoPath") // TODO delete this
-            val fileId = req.servletPath.split("/")[3]
+        val pathUri = getPathUri(req)
+        if (VIDEO_URI.matches(pathUri)) {
+            val fileId = pathUri.split("/")[3]
             val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
             validateToken(req, resp, chain, videoTokenProvider, params)
         }
         else {
-            println("OtherPath") // TODO delete this
             validateToken(req, resp, chain, jwtTokenProvider)
         }
     }
@@ -41,9 +40,13 @@ class AuthenticationFilter (
                               chain: FilterChain, tokenProvider: TokenProvider,
                               params: Map<String,Any> = HashMap()) {
         val token = tokenProvider.resolveToken(req)
+        println("ValidateToken: $token") // TODO delete this
         token?.let {
+            println("Preparing to Validate Token") // TODO delete this
             try {
-                when (tokenProvider.validateToken(token, params)) {
+                val status = tokenProvider.validateToken(token, params)
+                logger.debug("Token Validation Status: $status")
+                when (status) {
                     TokenValidationStatus.VALID -> {
                         val auth = tokenProvider.createAuthentication(token)
                         SecurityContextHolder.getContext().authentication = auth

@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
@@ -10,6 +11,8 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
+import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import org.hamcrest.Matchers.equalTo
@@ -42,6 +45,8 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.io.File
+import java.net.URLEncoder
+import java.util.Base64
 import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
@@ -82,7 +87,13 @@ class VideoFileControllerTest {
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Autowired
+    private lateinit var videoTokenProvider: VideoTokenProvider
+
+    @Autowired
     private lateinit var objectMapper: ObjectMapper
+
+    @Autowired
+    private lateinit var tokenConfig: TokenConfig // TODO if not necessary, delete
 
     @Before
     fun setup() {
@@ -282,14 +293,16 @@ class VideoFileControllerTest {
 
     @Test
     fun test_playVideo() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(userName = "userName")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val token = videoTokenProvider.createToken(user, params)
         val file = File(".")
         `when`(videoFileService.playVideo(1L))
                 .thenReturn(UrlResource(file.toURI()))
-        val response = mockMvcHandler.doGet("/api/video-files/play/1")
+        val encodedToken = URLEncoder.encode(token, "UTF-8")
+        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$encodedToken")
         assertEquals(206, response.status)
         assertTrue(response.contentAsByteArray.isNotEmpty())
-        TODO("This should fail now")
     }
 
     @Test
