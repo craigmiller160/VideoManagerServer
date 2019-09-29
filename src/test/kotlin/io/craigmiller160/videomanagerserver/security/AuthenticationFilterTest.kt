@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
+import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
@@ -29,6 +30,9 @@ class AuthenticationFilterTest {
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
+    @Mock
+    private lateinit var videoTokenProvider: VideoTokenProvider
+
     @InjectMocks
     private lateinit var authenticationFilter: AuthenticationFilter
 
@@ -49,7 +53,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_validToken() {
+    fun test_doFilterInternal_jwt_validToken() {
         val token = "TOKEN"
 
         `when`(jwtTokenProvider.resolveToken(request))
@@ -70,7 +74,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_noToken() {
+    fun test_doFilterInternal_jwt_noToken() {
         authenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
@@ -78,7 +82,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_invalidToken() {
+    fun test_doFilterInternal_jwt_badSignature() {
         val token = "TOKEN"
 
         `when`(jwtTokenProvider.resolveToken(request))
@@ -94,7 +98,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_expiredToken() {
+    fun test_doFilterInternal_jwt_expiredToken() {
         val token = "TOKEN"
 
         `when`(jwtTokenProvider.resolveToken(request))
@@ -110,7 +114,7 @@ class AuthenticationFilterTest {
     }
 
     @Test
-    fun test_doFilterInternal_exception() {
+    fun test_doFilterInternal_jwt_exception() {
         val token = "TOKEN"
 
         `when`(jwtTokenProvider.resolveToken(request))
@@ -123,6 +127,36 @@ class AuthenticationFilterTest {
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
                 .doFilter(request, response)
+    }
+
+    @Test
+    fun test_doFilterInternal_video_valid() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_video_badSignature() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_video_invalidToken() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_video_exception() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_video_expired() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_resourceForbidden() {
+        TODO("Finish this")
     }
 
 }

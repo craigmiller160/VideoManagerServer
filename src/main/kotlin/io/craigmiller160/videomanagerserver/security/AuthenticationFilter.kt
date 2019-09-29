@@ -8,8 +8,6 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-// TODO need tests for the differing behavior for URLs
-
 class AuthenticationFilter (
         private val jwtTokenProvider: TokenProvider,
         private val videoTokenProvider: TokenProvider
