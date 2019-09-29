@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse
 class AuthenticationFilterTest {
 
     companion object {
-        private const val VIDEO_PATH = "/video-file/play/1"
+        private const val VIDEO_PATH = "/video-files/play/1"
         private const val JWT_PATH = "/categories"
     }
 
@@ -146,7 +146,25 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_video_valid() {
-        TODO("Finish this")
+        val token = "TOKEN"
+
+        `when`(videoTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(videoTokenProvider.validateToken(token))
+                .thenReturn(TokenValidationStatus.VALID)
+        `when`(videoTokenProvider.createAuthentication(token))
+                .thenReturn(authentication)
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        val authArgCaptor = ArgumentCaptor.forClass(Authentication::class.java)
+        verify(securityContext, times(1)).authentication = authArgCaptor.capture()
+        assertEquals(authentication, authArgCaptor.value)
+
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test

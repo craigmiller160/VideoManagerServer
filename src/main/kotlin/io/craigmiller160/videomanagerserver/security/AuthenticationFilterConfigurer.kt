@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.security
 
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthenticationFilterConfigurer (
-        private val jwtTokenProvider: TokenProvider,
+        private val jwtTokenProvider: JwtTokenProvider,
         private val videoTokenProvider: VideoTokenProvider
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 

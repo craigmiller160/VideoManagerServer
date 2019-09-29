@@ -1,7 +1,9 @@
 package io.craigmiller160.videomanagerserver.security
 
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
+import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
@@ -9,8 +11,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class AuthenticationFilter (
-        private val jwtTokenProvider: TokenProvider,
-        private val videoTokenProvider: TokenProvider
+        private val jwtTokenProvider: JwtTokenProvider,
+        private val videoTokenProvider: VideoTokenProvider
 ) : OncePerRequestFilter() {
 
     companion object {
