@@ -37,7 +37,6 @@ class VideoTokenProvider (
 
     private fun generateExpiration(): String {
         val now = LocalDateTime.now()
-        println("VideoExpSecs: ${tokenConfig.videoExpSecs}") // TODO delete this
         val exp = now.plusSeconds(tokenConfig.videoExpSecs.toLong())
         return EXP_FORMATTER.format(exp)
     }
@@ -51,7 +50,6 @@ class VideoTokenProvider (
         val userName = user.userName
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
         val exp = generateExpiration()
-        println("Exp: $exp ${LocalDateTime.now()}") // TODO delete this
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp"
         return encryptHandler.doEncrypt(tokenString)
@@ -59,10 +57,8 @@ class VideoTokenProvider (
 
     override fun resolveToken(req: HttpServletRequest): String? {
         val queryString = req.queryString ?: ""
-        println("RawQueryString: $queryString") // TODO delete this
         val queryParams = parseQueryString(queryString)
         val result = queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
-        println("Token: $result") // TODO delete this
         println("TokenDecoded: ${URLDecoder.decode(result, "UTF-8")}")
         return result
     }

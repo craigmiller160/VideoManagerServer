@@ -25,7 +25,6 @@ class AuthenticationFilter (
     }
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        println("Filter QueryString: ${req.queryString}") // TODO delete this
         val pathUri = getPathUri(req)
         if (VIDEO_URI.matches(pathUri)) {
             val fileId = pathUri.split("/")[3]
@@ -56,10 +55,6 @@ class AuthenticationFilter (
             }
             catch (ex: Exception) {
                 logger.error("Error handling token", ex)
-                unauthenticated(req, resp, chain)
-            }
-            catch (ex: Throwable) {
-                ex.printStackTrace() // TODO delete this
                 unauthenticated(req, resp, chain)
             }
         } ?: unauthenticated(req, resp, chain)

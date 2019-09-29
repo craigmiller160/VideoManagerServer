@@ -34,7 +34,6 @@ class JwtTokenProvider (
 
     private fun generateExpiration(): Date {
         val now = LocalDateTime.now()
-        println("JwtExp: ${tokenConfig.expSecs}") // TODO delete this
         val exp = now.plusSeconds(tokenConfig.expSecs.toLong())
         return legacyDateConverter.convertLocalDateTimeToDate(exp)
     }

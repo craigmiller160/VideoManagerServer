@@ -27,7 +27,7 @@ class AesEncryptHandler (private val secretKey: SecretKey, private val urlEncode
 
         val cipher = Cipher.getInstance(ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-        val decoder = if (urlEncode) Base64.getUrlDecoder() else Base64.getDecoder()
+        val decoder = if (urlEncode) Base64.getUrlDecoder() else Base64.getDecoder() // TODO add unit tests for this
         val bytes = decoder.decode(value)
         return String(cipher.doFinal(bytes))
     }
