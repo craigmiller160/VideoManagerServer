@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.security
 
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
@@ -16,12 +17,14 @@ class AuthenticationFilter (
 ) : OncePerRequestFilter() {
 
     companion object {
-        val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}""")
+        val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}$""")
     }
 
     public override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
         if (VIDEO_URI.matches(req.servletPath)) {
-            validateToken(req, resp, chain, videoTokenProvider)
+            val fileId = req.servletPath.split("/")[3]
+            val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
+            validateToken(req, resp, chain, videoTokenProvider, params)
         }
         else {
             validateToken(req, resp, chain, jwtTokenProvider)
@@ -29,11 +32,12 @@ class AuthenticationFilter (
     }
 
     private fun validateToken(req: HttpServletRequest, resp: HttpServletResponse,
-                              chain: FilterChain, tokenProvider: TokenProvider) {
+                              chain: FilterChain, tokenProvider: TokenProvider,
+                              params: Map<String,Any> = HashMap()) {
         val token = tokenProvider.resolveToken(req)
         token?.let {
             try {
-                when (tokenProvider.validateToken(token)) {
+                when (tokenProvider.validateToken(token, params)) {
                     TokenValidationStatus.VALID -> {
                         val auth = tokenProvider.createAuthentication(token)
                         SecurityContextHolder.getContext().authentication = auth

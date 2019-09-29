@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.security
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.hamcrest.MatcherAssert.assertThat
@@ -61,9 +62,10 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_validToken() {
         val token = "TOKEN"
 
+        val params = HashMap<String,Any>()
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token))
+        `when`(jwtTokenProvider.validateToken(token, params))
                 .thenReturn(TokenValidationStatus.VALID)
         `when`(jwtTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
@@ -94,11 +96,12 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_badSignature() {
         val token = "TOKEN"
 
+        val params = HashMap<String,Any>()
         `when`(request.servletPath)
                 .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token))
+        `when`(jwtTokenProvider.validateToken(token, params))
                 .thenReturn(TokenValidationStatus.BAD_SIGNATURE)
 
         authenticationFilter.doFilterInternal(request, response, chain)
@@ -112,11 +115,12 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_expiredToken() {
         val token = "TOKEN"
 
+        val params = HashMap<String,Any>()
         `when`(request.servletPath)
                 .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token))
+        `when`(jwtTokenProvider.validateToken(token, params))
                 .thenReturn(TokenValidationStatus.EXPIRED)
 
         authenticationFilter.doFilterInternal(request, response, chain)
@@ -130,11 +134,12 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_jwt_exception() {
         val token = "TOKEN"
 
+        val params = HashMap<String,Any>()
         `when`(request.servletPath)
                 .thenReturn(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token))
+        `when`(jwtTokenProvider.validateToken(token, params))
                 .thenThrow(RuntimeException("Hello World"))
 
         authenticationFilter.doFilterInternal(request, response, chain)
@@ -148,9 +153,10 @@ class AuthenticationFilterTest {
     fun test_doFilterInternal_video_valid() {
         val token = "TOKEN"
 
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
-        `when`(videoTokenProvider.validateToken(token))
+        `when`(videoTokenProvider.validateToken(token, params))
                 .thenReturn(TokenValidationStatus.VALID)
         `when`(videoTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
@@ -169,26 +175,68 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_video_badSignature() {
-        TODO("Finish this")
-    }
+        val token = "TOKEN"
 
-    @Test
-    fun test_doFilterInternal_video_invalidToken() {
-        TODO("Finish this")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+        `when`(videoTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(videoTokenProvider.validateToken(token, params))
+                .thenReturn(TokenValidationStatus.BAD_SIGNATURE)
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_exception() {
-        TODO("Finish this")
+        val token = "TOKEN"
+
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+        `when`(videoTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(videoTokenProvider.validateToken(token, params))
+                .thenThrow(RuntimeException("Hello World"))
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test
-    fun test_doFilterInternal_video_expired() {
-        TODO("Finish this")
+    fun test_doFilterInternal_video_expiredToken() {
+        val token = "TOKEN"
+
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        `when`(request.servletPath)
+                .thenReturn(VIDEO_PATH)
+        `when`(videoTokenProvider.resolveToken(request))
+                .thenReturn(token)
+        `when`(videoTokenProvider.validateToken(token, params))
+                .thenReturn(TokenValidationStatus.EXPIRED)
+
+        authenticationFilter.doFilterInternal(request, response, chain)
+
+        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
+        verify(chain, times(1))
+                .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_resourceForbidden() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_doFilterInternal_video_noToken() {
         TODO("Finish this")
     }
 
