@@ -121,19 +121,19 @@ class VideoFileControllerTest {
                 .thenReturn(videoFileList)
                 .thenReturn(listOf())
 
-        var response = mockMvcHandler.doGet("/video-files")
+        var response = mockMvcHandler.doGet("/api/video-files")
         assertOkResponse(response, jacksonVideoFileList.write(videoFileList).json)
 
-        response = mockMvcHandler.doGet("/video-files")
+        response = mockMvcHandler.doGet("/api/video-files")
         assertNoContentResponse(response)
 
-        response = mockMvcHandler.doGet("/video-files?page=0&sortDirection=FooBar")
+        response = mockMvcHandler.doGet("/api/video-files?page=0&sortDirection=FooBar")
         assertBadRequest(response)
     }
 
     @Test
     fun test_getAllVideoFiles_unauthorized() {
-        val response = mockMvcHandler.doGet("/video-files?page=0&sortDirection=FooBar")
+        val response = mockMvcHandler.doGet("/api/video-files?page=0&sortDirection=FooBar")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -145,16 +145,16 @@ class VideoFileControllerTest {
         `when`(videoFileService.getVideoFile(5))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doGet("/video-files/1")
+        var response = mockMvcHandler.doGet("/api/video-files/1")
         assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
 
-        response = mockMvcHandler.doGet("/video-files/5")
+        response = mockMvcHandler.doGet("/api/video-files/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getVideoFile_unauthorized() {
-        val response = mockMvcHandler.doGet("/video-files/1")
+        val response = mockMvcHandler.doGet("/api/video-files/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -165,13 +165,13 @@ class VideoFileControllerTest {
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
 
-        val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
+        val response = mockMvcHandler.doPost("/api/video-files", jacksonVideoFile.write(videoFileNoId).json)
         assertOkResponse(response, jacksonVideoFile.write(videoFileWithId).json)
     }
 
     @Test
     fun test_addVideoFile_unauthorized() {
-        val response = mockMvcHandler.doPost("/video-files", jacksonVideoFile.write(videoFileNoId).json)
+        val response = mockMvcHandler.doPost("/api/video-files", jacksonVideoFile.write(videoFileNoId).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -184,16 +184,16 @@ class VideoFileControllerTest {
         `when`(videoFileService.updateVideoFile(5, videoFile3))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doPut("/video-files/1", jacksonVideoFile.write(videoFile2).json)
+        var response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
         assertOkResponse(response, jacksonVideoFile.write(updatedVideoFile).json)
 
-        response = mockMvcHandler.doPut("/video-files/5", jacksonVideoFile.write(videoFile3).json)
+        response = mockMvcHandler.doPut("/api/video-files/5", jacksonVideoFile.write(videoFile3).json)
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_updateVideoFile_unauthorized() {
-        val response = mockMvcHandler.doPut("/video-files/1", jacksonVideoFile.write(videoFile2).json)
+        val response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -204,16 +204,16 @@ class VideoFileControllerTest {
                 .thenReturn(Optional.of(videoFile1))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doDelete("/video-files/1")
+        var response = mockMvcHandler.doDelete("/api/video-files/1")
         assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
 
-        response = mockMvcHandler.doDelete("/video-files/5")
+        response = mockMvcHandler.doDelete("/api/video-files/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_deleteVideoFile_unauthorized() {
-        val response = mockMvcHandler.doDelete("/video-files/1")
+        val response = mockMvcHandler.doDelete("/api/video-files/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -224,16 +224,16 @@ class VideoFileControllerTest {
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
 
-        var response = mockMvcHandler.doPost("/video-files/scanner")
+        var response = mockMvcHandler.doPost("/api/video-files/scanner")
         assertOkResponse(response, jacksonStatus.write(scanRunning).json)
 
-        response = mockMvcHandler.doPost("/video-files/scanner")
+        response = mockMvcHandler.doPost("/api/video-files/scanner")
         assertBadRequest(response, jacksonStatus.write(scanAlreadyRunning).json)
     }
 
     @Test
     fun test_startVideoScan_unauthorized() {
-        val response = mockMvcHandler.doPost("/video-files/scanner")
+        val response = mockMvcHandler.doPost("/api/video-files/scanner")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -244,16 +244,16 @@ class VideoFileControllerTest {
                 .thenReturn(scanNotRunning)
                 .thenReturn(scanRunning)
 
-        var response = mockMvcHandler.doGet("/video-files/scanner")
+        var response = mockMvcHandler.doGet("/api/video-files/scanner")
         assertOkResponse(response, jacksonStatus.write(scanNotRunning).json)
 
-        response = mockMvcHandler.doGet("/video-files/scanner")
+        response = mockMvcHandler.doGet("/api/video-files/scanner")
         assertOkResponse(response, jacksonStatus.write(scanRunning).json)
     }
 
     @Test
     fun test_isVideoScanRunning_unauthorized() {
-        val response = mockMvcHandler.doGet("/video-files/scanner")
+        val response = mockMvcHandler.doGet("/api/video-files/scanner")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -266,17 +266,17 @@ class VideoFileControllerTest {
 
         val search = VideoSearch("HelloWorld")
 
-        var response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
+        var response = mockMvcHandler.doPost("/api/video-files/search", jacksonSearch.write(search).json)
         assertOkResponse(response, jacksonVideoSearchResults.write(videoSearchResults).json)
 
-        response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
+        response = mockMvcHandler.doPost("/api/video-files/search", jacksonSearch.write(search).json)
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_searchForVideos_unauthorized() {
         val search = VideoSearch("HelloWorld")
-        val response = mockMvcHandler.doPost("/video-files/search", jacksonSearch.write(search).json)
+        val response = mockMvcHandler.doPost("/api/video-files/search", jacksonSearch.write(search).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -294,14 +294,14 @@ class VideoFileControllerTest {
 
     @Test
     fun test_playVideo_unauthorized() {
-        val response = mockMvcHandler.doGet("/video-files/play/1")
+        val response = mockMvcHandler.doGet("/api/video-files/play/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_recordNewVideoPlay() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
-        val response = mockMvcHandler.doGet("/video-files/record-play/1")
+        val response = mockMvcHandler.doGet("/api/video-files/record-play/1")
         assertEquals(200, response.status)
 
         verify(videoFileService, times(1))
@@ -310,7 +310,7 @@ class VideoFileControllerTest {
 
     @Test
     fun test_recordNewVideoPlay_unauthorized() {
-        val response = mockMvcHandler.doGet("/video-files/record-play/1")
+        val response = mockMvcHandler.doGet("/api/video-files/record-play/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 

@@ -86,16 +86,16 @@ class SeriesControllerTest {
                 .thenReturn(seriesList)
                 .thenReturn(listOf())
 
-        var response = mockMvcHandler.doGet("/series")
+        var response = mockMvcHandler.doGet("/api/series")
         assertOkResponse(response, jacksonSeriesList.write(seriesList).json)
 
-        response = mockMvcHandler.doGet("/series")
+        response = mockMvcHandler.doGet("/api/series")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getAllSeries_unauthorized() {
-        val response = mockMvcHandler.doGet("/series")
+        val response = mockMvcHandler.doGet("/api/series")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -107,16 +107,16 @@ class SeriesControllerTest {
         `when`(seriesService.getSeries(5))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doGet("/series/1")
+        var response = mockMvcHandler.doGet("/api/series/1")
         assertOkResponse(response, jacksonSeries.write(series1).json)
 
-        response = mockMvcHandler.doGet("/series/5")
+        response = mockMvcHandler.doGet("/api/series/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getSeries_unauthorized() {
-        val response = mockMvcHandler.doGet("/series/1")
+        val response = mockMvcHandler.doGet("/api/series/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -127,13 +127,13 @@ class SeriesControllerTest {
         `when`(seriesService.addSeries(seriesNoId))
                 .thenReturn(seriesWithId)
 
-        val response = mockMvcHandler.doPost("/series", jacksonSeries.write(seriesNoId).json)
+        val response = mockMvcHandler.doPost("/api/series", jacksonSeries.write(seriesNoId).json)
         assertOkResponse(response, jacksonSeries.write(seriesWithId).json)
     }
 
     @Test
     fun test_addSeries_unauthorized() {
-        val response = mockMvcHandler.doPost("/series", jacksonSeries.write(seriesNoId).json)
+        val response = mockMvcHandler.doPost("/api/series", jacksonSeries.write(seriesNoId).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -146,16 +146,16 @@ class SeriesControllerTest {
         `when`(seriesService.updateSeries(5, series3))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doPut("/series/1", jacksonSeries.write(series2).json)
+        var response = mockMvcHandler.doPut("/api/series/1", jacksonSeries.write(series2).json)
         assertOkResponse(response, jacksonSeries.write(updatedSeries).json)
 
-        response = mockMvcHandler.doPut("/series/5", jacksonSeries.write(series3).json)
+        response = mockMvcHandler.doPut("/api/series/5", jacksonSeries.write(series3).json)
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_updateSeries_unauthorized() {
-        val response = mockMvcHandler.doPut("/series/1", jacksonSeries.write(series2).json)
+        val response = mockMvcHandler.doPut("/api/series/1", jacksonSeries.write(series2).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -166,16 +166,16 @@ class SeriesControllerTest {
                 .thenReturn(Optional.of(series1))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doDelete("/series/1")
+        var response = mockMvcHandler.doDelete("/api/series/1")
         assertOkResponse(response, jacksonSeries.write(series1).json)
 
-        response = mockMvcHandler.doDelete("/series/5")
+        response = mockMvcHandler.doDelete("/api/series/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_deleteSeries_unauthorized() {
-        val response = mockMvcHandler.doDelete("/series/1")
+        val response = mockMvcHandler.doDelete("/api/series/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 

@@ -87,16 +87,16 @@ class CategoryControllerTest {
                 .thenReturn(categoryList)
                 .thenReturn(listOf())
 
-        var response = mockMvcHandler.doGet("/categories")
+        var response = mockMvcHandler.doGet("/api/categories")
         assertOkResponse(response, jacksonCategoryList.write(categoryList).json)
 
-        response = mockMvcHandler.doGet("/categories")
+        response = mockMvcHandler.doGet("/api/categories")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getAllCategories_unauthorized() {
-        val response = mockMvcHandler.doGet("/categories")
+        val response = mockMvcHandler.doGet("/api/categories")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -108,16 +108,16 @@ class CategoryControllerTest {
         `when`(categoryService.getCategory(5))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doGet("/categories/1")
+        var response = mockMvcHandler.doGet("/api/categories/1")
         assertOkResponse(response, jacksonCategory.write(category1).json)
 
-        response = mockMvcHandler.doGet("/categories/5")
+        response = mockMvcHandler.doGet("/api/categories/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getCategory_unauthorized() {
-        val response = mockMvcHandler.doGet("/categories/1")
+        val response = mockMvcHandler.doGet("/api/categories/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -128,13 +128,13 @@ class CategoryControllerTest {
         `when`(categoryService.addCategory(categoryNoId))
                 .thenReturn(categoryWithId)
 
-        val response = mockMvcHandler.doPost("/categories", jacksonCategory.write(categoryNoId).json)
+        val response = mockMvcHandler.doPost("/api/categories", jacksonCategory.write(categoryNoId).json)
         assertOkResponse(response, jacksonCategory.write(categoryWithId).json)
     }
 
     @Test
     fun test_addCategory_unauthorized() {
-        val response = mockMvcHandler.doPost("/categories", jacksonCategory.write(categoryNoId).json)
+        val response = mockMvcHandler.doPost("/api/categories", jacksonCategory.write(categoryNoId).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -147,16 +147,16 @@ class CategoryControllerTest {
         `when`(categoryService.updateCategory(5, category3))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doPut("/categories/1", jacksonCategory.write(category2).json)
+        var response = mockMvcHandler.doPut("/api/categories/1", jacksonCategory.write(category2).json)
         assertOkResponse(response, jacksonCategory.write(updatedCategory).json)
 
-        response = mockMvcHandler.doPut("/categories/5", jacksonCategory.write(category3).json)
+        response = mockMvcHandler.doPut("/api/categories/5", jacksonCategory.write(category3).json)
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_updateCategory_unauthorized() {
-        val response = mockMvcHandler.doPut("/categories/1", jacksonCategory.write(categoryNoId).json)
+        val response = mockMvcHandler.doPut("/api/categories/1", jacksonCategory.write(categoryNoId).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -167,16 +167,16 @@ class CategoryControllerTest {
                 .thenReturn(Optional.of(category1))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doDelete("/categories/1")
+        var response = mockMvcHandler.doDelete("/api/categories/1")
         assertOkResponse(response, jacksonCategory.write(category1).json)
 
-        response = mockMvcHandler.doDelete("/categories/5")
+        response = mockMvcHandler.doDelete("/api/categories/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_deleteCategory_unauthorized() {
-        val response = mockMvcHandler.doDelete("/categories/1")
+        val response = mockMvcHandler.doDelete("/api/categories/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 

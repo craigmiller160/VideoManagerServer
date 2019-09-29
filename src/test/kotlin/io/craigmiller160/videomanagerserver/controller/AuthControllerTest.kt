@@ -99,7 +99,7 @@ class AuthControllerTest {
         `when`(authService.login(request))
                 .thenReturn(token)
 
-        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(request).json)
+        val response = mockMvcHandler.doPost("/api/auth/login", jacksonUser.write(request).json)
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
                 header("Set-Cookie", matchesPattern("vm_token=ABCDEFG; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
@@ -115,7 +115,7 @@ class AuthControllerTest {
         `when`(authService.login(badRequest))
                 .thenThrow(ApiUnauthorizedException("Invalid login"))
 
-        val response = mockMvcHandler.doPost("/auth/login", jacksonUser.write(badRequest).json)
+        val response = mockMvcHandler.doPost("/api/auth/login", jacksonUser.write(badRequest).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -129,7 +129,7 @@ class AuthControllerTest {
 
         mockMvcHandler.token = token1
 
-        val response = mockMvcHandler.doGet("/auth/refresh")
+        val response = mockMvcHandler.doGet("/api/auth/refresh")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
                 header("Set-Cookie", matchesPattern("vm_token=token2; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
@@ -138,7 +138,7 @@ class AuthControllerTest {
 
     @Test
     fun test_refreshToken_noToken() {
-        val response = mockMvcHandler.doGet("/auth/refresh")
+        val response = mockMvcHandler.doGet("/api/auth/refresh")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -148,7 +148,7 @@ class AuthControllerTest {
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
-        val response = mockMvcHandler.doGet("/auth/roles")
+        val response = mockMvcHandler.doGet("/api/auth/roles")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(401))
@@ -166,7 +166,7 @@ class AuthControllerTest {
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
-        val response = mockMvcHandler.doGet("/auth/roles")
+        val response = mockMvcHandler.doGet("/api/auth/roles")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(403))
@@ -185,7 +185,7 @@ class AuthControllerTest {
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
-        val response = mockMvcHandler.doGet("/auth/roles")
+        val response = mockMvcHandler.doGet("/api/auth/roles")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -201,7 +201,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/auth/roles")
+        val response = mockMvcHandler.doGet("/api/auth/roles")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
@@ -225,7 +225,7 @@ class AuthControllerTest {
         `when`(authService.createUser(userRequest))
                 .thenReturn(userResponse)
 
-        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/api/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -240,7 +240,7 @@ class AuthControllerTest {
             password = PASSWORD
         }
 
-        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/api/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, hasProperty("status", equalTo(401)))
     }
@@ -256,7 +256,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doPost("/auth/users", jacksonUser.write(userRequest).json)
+        val response = mockMvcHandler.doPost("/api/auth/users", jacksonUser.write(userRequest).json)
 
         assertThat(response, hasProperty("status", equalTo(403)))
     }
@@ -273,7 +273,7 @@ class AuthControllerTest {
         `when`(authService.getAllUsers())
                 .thenReturn(users)
 
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -292,7 +292,7 @@ class AuthControllerTest {
         `when`(authService.getAllUsers())
                 .thenReturn(listOf())
 
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204))
@@ -301,7 +301,7 @@ class AuthControllerTest {
 
     @Test
     fun test_getAllUsers_unauthorized() {
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -312,7 +312,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
@@ -329,7 +329,7 @@ class AuthControllerTest {
         `when`(authService.getUser(userId))
                 .thenReturn(user)
 
-        val response = mockMvcHandler.doGet("/auth/users/$userId")
+        val response = mockMvcHandler.doGet("/api/auth/users/$userId")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -345,13 +345,13 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
         assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
     fun test_getUser_unauthorized() {
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -362,7 +362,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
@@ -380,7 +380,7 @@ class AuthControllerTest {
         `when`(authService.updateUser(userId, user))
                 .thenReturn(userResponse)
 
-        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -397,7 +397,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204))
@@ -411,7 +411,7 @@ class AuthControllerTest {
             userName = "userName"
             roles = listOf(Role(name = ROLE_ADMIN))
         }
-        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -422,7 +422,7 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doPut("/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
@@ -439,7 +439,7 @@ class AuthControllerTest {
         `when`(authService.deleteUser(userId))
                 .thenReturn(user)
 
-        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        val response = mockMvcHandler.doDelete("/api/auth/users/$userId")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -457,14 +457,14 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        val response = mockMvcHandler.doDelete("/api/auth/users/$userId")
         assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
     fun test_deleteUser_unauthorized() {
         val userId = 1L
-        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        val response = mockMvcHandler.doDelete("/api/auth/users/$userId")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -477,7 +477,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doDelete("/auth/users/$userId")
+        val response = mockMvcHandler.doDelete("/api/auth/users/$userId")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
@@ -493,7 +493,7 @@ class AuthControllerTest {
         `when`(authService.revokeAccess(user))
                 .thenReturn(user)
 
-        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
                 responseBody(equalTo(jacksonUser.write(user).json))
@@ -506,7 +506,7 @@ class AuthControllerTest {
             userId = 1L
             userName = "userName"
         }
-        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -517,7 +517,7 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doPost("/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
@@ -528,19 +528,19 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doGet("/auth/check")
+        val response = mockMvcHandler.doGet("/api/auth/check")
         assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
     fun test_checkAuth_unauthorized() {
-        val response = mockMvcHandler.doGet("/auth/check")
+        val response = mockMvcHandler.doGet("/api/auth/check")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_logout() {
-        val response = mockMvcHandler.doGet("/auth/logout")
+        val response = mockMvcHandler.doGet("/api/auth/logout")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204)),
                 header("Set-Cookie", equalTo("vm_token=; Path=/; Max-Age=0; Expires=Thu, 1 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=strict"))

@@ -86,16 +86,16 @@ class StarControllerTest {
                 .thenReturn(starList)
                 .thenReturn(listOf())
 
-        var response = mockMvcHandler.doGet("/stars")
+        var response = mockMvcHandler.doGet("/api/stars")
         assertOkResponse(response, jacksonStarList.write(starList).json)
 
-        response = mockMvcHandler.doGet("/stars")
+        response = mockMvcHandler.doGet("/api/stars")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getAllStars_unauthorized() {
-        val response = mockMvcHandler.doGet("/stars")
+        val response = mockMvcHandler.doGet("/api/stars")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -107,16 +107,16 @@ class StarControllerTest {
         `when`(starService.getStar(5))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doGet("/stars/1")
+        var response = mockMvcHandler.doGet("/api/stars/1")
         assertOkResponse(response, jacksonStar.write(star1).json)
 
-        response = mockMvcHandler.doGet("/stars/5")
+        response = mockMvcHandler.doGet("/api/stars/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_getStar_unauthorized() {
-        val response = mockMvcHandler.doGet("/stars/1")
+        val response = mockMvcHandler.doGet("/api/stars/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -127,13 +127,13 @@ class StarControllerTest {
         `when`(starService.addStar(starNoId))
                 .thenReturn(starWithId)
 
-        val response = mockMvcHandler.doPost("/stars", jacksonStar.write(starNoId).json)
+        val response = mockMvcHandler.doPost("/api/stars", jacksonStar.write(starNoId).json)
         assertOkResponse(response, jacksonStar.write(starWithId).json)
     }
 
     @Test
     fun test_addStar_unauthorized() {
-        val response = mockMvcHandler.doPost("/stars", jacksonStar.write(starNoId).json)
+        val response = mockMvcHandler.doPost("/api/stars", jacksonStar.write(starNoId).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -146,16 +146,16 @@ class StarControllerTest {
         `when`(starService.updateStar(5, star3))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doPut("/stars/1", jacksonStar.write(star2).json)
+        var response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
         assertOkResponse(response, jacksonStar.write(updatedStar).json)
 
-        response = mockMvcHandler.doPut("/stars/5", jacksonStar.write(star3).json)
+        response = mockMvcHandler.doPut("/api/stars/5", jacksonStar.write(star3).json)
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_updateStar_unauthorized() {
-        val response = mockMvcHandler.doPut("/stars/1", jacksonStar.write(star2).json)
+        val response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -166,16 +166,16 @@ class StarControllerTest {
                 .thenReturn(Optional.of(star1))
                 .thenReturn(Optional.empty())
 
-        var response = mockMvcHandler.doDelete("/stars/1")
+        var response = mockMvcHandler.doDelete("/api/stars/1")
         assertOkResponse(response, jacksonStar.write(star1).json)
 
-        response = mockMvcHandler.doDelete("/stars/5")
+        response = mockMvcHandler.doDelete("/api/stars/5")
         assertNoContentResponse(response)
     }
 
     @Test
     fun test_deleteStar_unauthorized() {
-        val response = mockMvcHandler.doDelete("/stars/1")
+        val response = mockMvcHandler.doDelete("/api/stars/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
