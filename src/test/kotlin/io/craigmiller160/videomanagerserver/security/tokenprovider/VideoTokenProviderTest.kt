@@ -13,6 +13,8 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Base64
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -27,6 +29,7 @@ class VideoTokenProviderTest {
         const val USER_NAME = "userName"
         const val VIDEO_ID = "10"
         private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
+        private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     }
 
     @Mock
@@ -94,17 +97,37 @@ class VideoTokenProviderTest {
 
     @Test
     fun test_validateToken_expired() {
-        TODO("Finish this")
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val date = LocalDateTime.of(2001, 1, 1, 1, 1, 1)
+        val dateString = EXP_FORMATTER.format(date)
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+        val result = videoTokenProvider.validateToken(tokenEncrypted)
+        assertEquals(TokenValidationStatus.EXPIRED, result)
     }
 
     @Test
     fun test_valdateToken_resourceForbidden() {
-        TODO("Finish this")
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val date = LocalDateTime.now().plusHours(10)
+        val dateString = EXP_FORMATTER.format(date)
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "11")
+        val result = videoTokenProvider.validateToken(tokenEncrypted, params)
+        assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
     }
 
     @Test
     fun test_validateToken_valid() {
-        TODO("Finish this")
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val date = LocalDateTime.now().plusHours(10)
+        val dateString = EXP_FORMATTER.format(date)
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
+        val result = videoTokenProvider.validateToken(tokenEncrypted, params)
+        assertEquals(TokenValidationStatus.VALID, result)
     }
 
     @Test

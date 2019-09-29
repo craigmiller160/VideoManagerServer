@@ -18,8 +18,6 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.servlet.http.HttpServletRequest
 
-// TODO need unit tests for all methods here
-
 @Component
 class VideoTokenProvider (
         private val tokenConfig: TokenConfig
@@ -79,7 +77,7 @@ class VideoTokenProvider (
 
         val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
         try {
-            val expDateTime = EXP_FORMATTER.parse(tokenParts[2]) as LocalDateTime
+            val expDateTime = LocalDateTime.parse(tokenParts[2], EXP_FORMATTER)
             val now = LocalDateTime.now()
             if (now > expDateTime) {
                 return TokenValidationStatus.EXPIRED
@@ -90,7 +88,7 @@ class VideoTokenProvider (
         }
 
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        if (videoId !== tokenParts[1]) {
+        if (videoId != tokenParts[1]) {
             return TokenValidationStatus.RESOURCE_FORBIDDEN
         }
 
