@@ -1,6 +1,8 @@
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
+import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
+import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -22,8 +24,13 @@ class VideoTokenProvider (
         private val tokenConfig: TokenConfig
 ) : TokenProvider {
 
+    private val encryptHandler: EncryptHandler
+
+    init {
+        encryptHandler = AesEncryptHandler(tokenConfig.secretKey)
+    }
+
     companion object {
-        private const val ALGORITHM = "AES/CBC/PKCS5Padding"
         private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     }
 
@@ -38,32 +45,13 @@ class VideoTokenProvider (
         return "\\.+$separator\\.+$separator\\.+".toRegex()
     }
 
-    internal fun doEncrypt(value: String): String {
-        val iv = ByteArray(16)
-        val ivSpec = IvParameterSpec(iv)
-
-        val cipher = Cipher.getInstance(ALGORITHM)
-        cipher.init(Cipher.ENCRYPT_MODE, tokenConfig.secretKey, ivSpec)
-        return Base64.getEncoder().encodeToString(cipher.doFinal(value.toByteArray()))
-    }
-
-    internal fun doDecrypt(value: String): String {
-        val iv = ByteArray(16)
-        val ivSpec = IvParameterSpec(iv)
-
-        val cipher = Cipher.getInstance(ALGORITHM)
-        cipher.init(Cipher.DECRYPT_MODE, tokenConfig.secretKey, ivSpec)
-        val bytes = Base64.getDecoder().decode(value)
-        return String(cipher.doFinal(bytes))
-    }
-
     override fun createToken(user: AppUser, params: Map<String,Any>): String {
         val userName = user.userName
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp"
-        return doEncrypt(tokenString)
+        return encryptHandler.doEncrypt(tokenString)
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
@@ -77,7 +65,7 @@ class VideoTokenProvider (
             return TokenValidationStatus.NO_TOKEN
         }
 
-        val tokenDecrypted = doDecrypt(token)
+        val tokenDecrypted = encryptHandler.doDecrypt(token)
         if (!getTokenRegex().matches(tokenDecrypted)) {
             return TokenValidationStatus.BAD_SIGNATURE
         }
@@ -111,7 +99,7 @@ class VideoTokenProvider (
     }
 
     override fun getClaims(token: String): Map<String, Any> {
-        val tokenString = doDecrypt(token)
+        val tokenString = encryptHandler.doDecrypt(token)
         val tokenParams = tokenString.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
         return mapOf(
                 TokenConstants.CLAIM_SUBJECT to tokenParams[0],
