@@ -13,6 +13,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@Deprecated("The class this is testing is deprecated")
 class CsrfResponseHeaderBindingFilterTest {
 
     private val csrfResponseHeaderBindingFilter = CsrfResponseHeaderBindingFilter()
