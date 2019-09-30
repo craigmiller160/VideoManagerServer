@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletResponse
 class AuthenticationFilterTest {
 
     companion object {
-        private const val VIDEO_PATH = "/video-files/play/1"
-        private const val JWT_PATH = "/categories"
+        private const val VIDEO_PATH = "/api/video-files/play/1"
+        private const val JWT_PATH = "/api/categories"
     }
 
     @Mock
@@ -58,6 +58,13 @@ class AuthenticationFilterTest {
         SecurityContextHolder.setContext(securityContext)
     }
 
+    private fun setupRequest(path: String) {
+        `when`(request.requestURI)
+                .thenReturn(JWT_PATH)
+        `when`(request.contextPath)
+                .thenReturn("/api")
+    }
+
     @Test
     fun test_doFilterInternal_jwt_validToken() {
         val token = "TOKEN"
@@ -69,8 +76,7 @@ class AuthenticationFilterTest {
                 .thenReturn(TokenValidationStatus.VALID)
         `when`(jwtTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
-        `when`(request.servletPath)
-                .thenReturn(JWT_PATH)
+        setupRequest(JWT_PATH)
 
         authenticationFilter.doFilterInternal(request, response, chain)
 
@@ -84,8 +90,7 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_jwt_noToken() {
-        `when`(request.servletPath)
-                .thenReturn(JWT_PATH)
+        setupRequest(JWT_PATH)
         authenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
@@ -97,8 +102,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = HashMap<String,Any>()
-        `when`(request.servletPath)
-                .thenReturn(JWT_PATH)
+        setupRequest(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token, params))
@@ -116,8 +120,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = HashMap<String,Any>()
-        `when`(request.servletPath)
-                .thenReturn(JWT_PATH)
+        setupRequest(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token, params))
@@ -135,8 +138,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = HashMap<String,Any>()
-        `when`(request.servletPath)
-                .thenReturn(JWT_PATH)
+        setupRequest(JWT_PATH)
         `when`(jwtTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(jwtTokenProvider.validateToken(token, params))
@@ -160,8 +162,7 @@ class AuthenticationFilterTest {
                 .thenReturn(TokenValidationStatus.VALID)
         `when`(videoTokenProvider.createAuthentication(token))
                 .thenReturn(authentication)
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
 
         authenticationFilter.doFilterInternal(request, response, chain)
 
@@ -178,8 +179,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -197,8 +197,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -216,8 +215,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -235,8 +233,7 @@ class AuthenticationFilterTest {
         val token = "TOKEN"
 
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -251,8 +248,7 @@ class AuthenticationFilterTest {
 
     @Test
     fun test_doFilterInternal_video_noToken() {
-        `when`(request.servletPath)
-                .thenReturn(VIDEO_PATH)
+        setupRequest(VIDEO_PATH)
         authenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
         verify(chain, times(1))
