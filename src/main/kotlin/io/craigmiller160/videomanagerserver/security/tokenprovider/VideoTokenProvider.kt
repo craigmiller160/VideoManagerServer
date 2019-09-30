@@ -58,9 +58,7 @@ class VideoTokenProvider (
     override fun resolveToken(req: HttpServletRequest): String? {
         val queryString = req.queryString ?: ""
         val queryParams = parseQueryString(queryString)
-        val result = queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
-        println("TokenDecoded: ${URLDecoder.decode(result, "UTF-8")}")
-        return result
+        return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
     }
 
     override fun validateToken(token: String, params: Map<String,Any>): TokenValidationStatus {
