@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service.security
 
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
@@ -19,7 +20,9 @@ class AuthService (
         private val appUserRepository: AppUserRepository,
         private val roleRepository: RoleRepository,
         private val passwordEncoder: BCryptPasswordEncoder,
-        private val jwtTokenProvider: TokenProvider
+        private val jwtTokenProvider: JwtTokenProvider,
+        private val videoTokenProvider: VideoTokenProvider,
+        private val securityContextService: SecurityContextService
 ) {
 
     fun login(request: AppUser): String {
@@ -105,8 +108,12 @@ class AuthService (
         return removePassword(appUserRepository.save(existingUser))
     }
 
-    fun getVideoToken(): String {
-        TODO("Finish this")
+    fun getVideoToken(videoId: Long): VideoToken {
+        val userName = securityContextService.getUserName()
+        val user = AppUser(userName = userName)
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)
+        val token = videoTokenProvider.createToken(user, params)
+        return VideoToken(token)
     }
 
     fun rolesHaveIds(roles: List<Role>) =
