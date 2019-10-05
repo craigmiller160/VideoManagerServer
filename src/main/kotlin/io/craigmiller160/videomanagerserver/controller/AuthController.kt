@@ -118,4 +118,9 @@ class AuthController (
         return ResponseEntity.noContent().build()
     }
 
+    @GetMapping("/videotoken/{fileId}")
+    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<Void> {
+        TODO("Finish this")
+    }
+
 }

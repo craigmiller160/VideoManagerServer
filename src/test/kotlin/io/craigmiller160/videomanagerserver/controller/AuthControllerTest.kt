@@ -561,4 +561,14 @@ class AuthControllerTest {
         ))
     }
 
+    @Test
+    fun test_getVideoToken() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_getVideoToken_unauthorized() {
+        TODO("Finish this")
+    }
+
 }
