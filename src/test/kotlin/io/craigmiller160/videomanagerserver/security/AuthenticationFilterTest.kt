@@ -60,7 +60,7 @@ class AuthenticationFilterTest {
 
     private fun setupRequest(path: String) {
         `when`(request.requestURI)
-                .thenReturn(JWT_PATH)
+                .thenReturn(path)
         `when`(request.contextPath)
                 .thenReturn("/api")
     }
