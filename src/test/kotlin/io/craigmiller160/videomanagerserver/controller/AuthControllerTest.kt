@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.controller.AuthController.Companion.DEFAULT_MAX_AGE
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.dto.Token
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
+import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.header
 import io.craigmiller160.videomanagerserver.test_util.responseBody
@@ -59,7 +58,6 @@ class AuthControllerTest {
     private lateinit var authController: AuthController
 
     private lateinit var jacksonUser: JacksonTester<AppUser>
-    private lateinit var jacksonToken: JacksonTester<Token>
     private lateinit var jacksonRoles: JacksonTester<List<Role>>
     private lateinit var jacksonUserList: JacksonTester<List<AppUser>>
 

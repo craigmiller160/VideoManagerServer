@@ -435,4 +435,9 @@ class AuthServiceTest {
         assertThat(ex, hasProperty("message", containsString("Cannot find user")))
     }
 
+    @Test
+    fun test_getVideoToken() {
+        TODO("Finish this")
+    }
+
 }

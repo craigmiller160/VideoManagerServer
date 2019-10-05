@@ -104,6 +104,10 @@ class AuthService (
         return removePassword(appUserRepository.save(existingUser))
     }
 
+    fun getVideoToken(): String {
+        TODO("Finish this")
+    }
+
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 
