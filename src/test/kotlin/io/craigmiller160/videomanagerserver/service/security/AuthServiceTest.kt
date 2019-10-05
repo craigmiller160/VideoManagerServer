@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.service.security
 import com.nhaarman.mockito_kotlin.times
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
@@ -10,6 +11,7 @@ import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
+import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -46,6 +48,7 @@ class AuthServiceTest {
         private const val TOKEN = "token"
         private const val ROLE = "role"
     }
+
     @Mock
     private lateinit var appUserRepository: AppUserRepository
 
@@ -57,6 +60,12 @@ class AuthServiceTest {
 
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
+
+    @Mock
+    private lateinit var videoTokenProvider: VideoTokenProvider
+
+    @Mock
+    private lateinit var securityContextService: SecurityContextService
 
     @InjectMocks
     private lateinit var authService: AuthService
@@ -437,7 +446,18 @@ class AuthServiceTest {
 
     @Test
     fun test_getVideoToken() {
-        TODO("Finish this")
+        val userName = "userName"
+        val user = AppUser(userName = userName)
+        val videoId = 10L
+        val token = "ABCDEFG"
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(userName)
+        `when`(videoTokenProvider.createToken(user, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)))
+                .thenReturn(token)
+
+        val result = authService.getVideoToken(videoId)
+        assertEquals(VideoToken(token), result)
     }
 
 }

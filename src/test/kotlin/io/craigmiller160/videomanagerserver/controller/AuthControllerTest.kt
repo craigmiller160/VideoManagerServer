@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.controller.AuthController.Companion.DEFAULT_MAX_AGE
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
@@ -60,6 +61,7 @@ class AuthControllerTest {
     private lateinit var jacksonUser: JacksonTester<AppUser>
     private lateinit var jacksonRoles: JacksonTester<List<Role>>
     private lateinit var jacksonUserList: JacksonTester<List<AppUser>>
+    private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
 
     private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
@@ -537,6 +539,32 @@ class AuthControllerTest {
     }
 
     @Test
+    fun test_getVideoToken() {
+        val user = AppUser().apply {
+            userId = 1L
+            userName = "userName"
+        }
+        val videoId = 10L
+        val token = VideoToken("ABCDEFG")
+
+        `when`(authService.getVideoToken(videoId))
+                .thenReturn(token)
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonVideoToken.write(token).json))
+        ))
+    }
+
+    @Test
+    fun test_getVideoToken_unauthorized() {
+        val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
+        assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
     fun test_logout() {
         val response = mockMvcHandler.doGet("/api/auth/logout")
         assertThat(response, allOf(
@@ -557,16 +585,6 @@ class AuthControllerTest {
                 hasProperty("maxAge", equalTo(Duration.ofSeconds(DEFAULT_MAX_AGE))),
                 hasProperty("sameSite", equalTo("strict"))
         ))
-    }
-
-    @Test
-    fun test_getVideoToken() {
-        TODO("Finish this")
-    }
-
-    @Test
-    fun test_getVideoToken_unauthorized() {
-        TODO("Finish this")
     }
 
 }
