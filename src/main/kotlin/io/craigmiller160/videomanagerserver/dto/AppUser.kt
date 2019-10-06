@@ -21,6 +21,8 @@ data class AppUser (
         @Column(unique = true)
         var userName: String = "",
         var password: String = "",
+        var firstName: String = "",
+        var lastName: String = "",
         var lastAuthenticated: LocalDateTime? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
