@@ -12,6 +12,7 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvi
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -458,6 +459,32 @@ class AuthServiceTest {
 
         val result = authService.getVideoToken(videoId)
         assertEquals(VideoToken(token), result)
+    }
+
+    @Test
+    fun test_checkAuth() {
+        val userName = "userName"
+        val user = AppUser(userName = userName, password = "ABCDEFG")
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(userName)
+        `when`(appUserRepository.findByUserName(userName))
+                .thenReturn(user)
+
+        val result = authService.checkAuth()
+        assertThat(result, allOf(
+                hasProperty("userName", equalTo(userName)),
+                hasProperty("password", equalTo(""))
+        ))
+    }
+
+    @Test(expected = ApiUnauthorizedException::class)
+    fun test_checkAuth_invalidUserName() {
+        val userName = "userName"
+        `when`(securityContextService.getUserName())
+                .thenReturn(userName)
+
+        authService.checkAuth()
     }
 
 }

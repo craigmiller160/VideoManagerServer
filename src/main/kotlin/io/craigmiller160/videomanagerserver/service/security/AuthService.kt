@@ -25,9 +25,15 @@ class AuthService (
         private val securityContextService: SecurityContextService
 ) {
 
+    fun checkAuth(): AppUser {
+        val userName = securityContextService.getUserName()
+        val user = appUserRepository.findByUserName(userName) ?: throw ApiUnauthorizedException("Invalid user name")
+        return removePassword(user)
+    }
+
     fun login(request: AppUser): String {
-        val user = appUserRepository.findByUserName(request.userName)
-        if (user != null && passwordEncoder.matches(request.password, user.password)) {
+        val user = appUserRepository.findByUserName(request.userName) ?: throw ApiUnauthorizedException("Invalid login")
+        if (passwordEncoder.matches(request.password, user.password)) {
             user.lastAuthenticated = LocalDateTime.now()
             appUserRepository.save(user)
             return jwtTokenProvider.createToken(user)

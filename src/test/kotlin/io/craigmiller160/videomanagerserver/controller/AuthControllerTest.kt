@@ -528,8 +528,15 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.checkAuth())
+                .thenReturn(user)
+
         val response = mockMvcHandler.doGet("/api/auth/check")
-        assertThat(response, hasProperty("status", equalTo(204)))
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(user).json))
+        ))
     }
 
     @Test

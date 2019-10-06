@@ -40,8 +40,9 @@ class AuthController (
             .build()
 
     @GetMapping("/check")
-    fun checkAuth(): ResponseEntity<Void> {
-        return ResponseEntity.noContent().build()
+    fun checkAuth(): ResponseEntity<AppUser> {
+        val user = authService.checkAuth()
+        return ResponseEntity.ok(user)
     }
 
     @PostMapping("/login")
