@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
@@ -171,7 +173,11 @@ class VideoFileControllerTest {
 
     @Test
     fun testAddVideoFile() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
@@ -188,12 +194,22 @@ class VideoFileControllerTest {
 
     @Test
     fun test_addVideoFile_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPost("/api/video-files", jacksonVideoFile.write(videoFileNoId).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testUpdateVideoFile() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedVideoFile = videoFile2.copy(fileId = 1)
         `when`(videoFileService.updateVideoFile(1, videoFile2))
                 .thenReturn(Optional.of(updatedVideoFile))
@@ -215,12 +231,22 @@ class VideoFileControllerTest {
 
     @Test
     fun test_updateVideoFile_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testDeleteVideoFile() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(videoFileService.deleteVideoFile(1))
                 .thenReturn(Optional.of(videoFile1))
                 .thenReturn(Optional.empty())
@@ -240,7 +266,13 @@ class VideoFileControllerTest {
 
     @Test
     fun test_deleteVideoFile_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doDelete("/api/video-files/1")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
