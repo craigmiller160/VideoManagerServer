@@ -380,7 +380,7 @@ class AuthControllerTest {
         `when`(authService.updateUserAdmin(userId, user))
                 .thenReturn(userResponse)
 
-        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/admin/$userId", jacksonUser.write(user).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -397,7 +397,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/admin/$userId", jacksonUser.write(user).json)
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(204))
@@ -411,7 +411,7 @@ class AuthControllerTest {
             userName = "userName"
             roles = listOf(Role(name = ROLE_ADMIN))
         }
-        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/admin/$userId", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -422,7 +422,7 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPut("/api/auth/users/admin/$userId", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
