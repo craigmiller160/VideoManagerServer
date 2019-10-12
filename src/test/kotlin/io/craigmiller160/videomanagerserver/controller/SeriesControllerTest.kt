@@ -2,7 +2,9 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.SeriesService
 import org.hamcrest.Matchers.equalTo
@@ -122,7 +124,11 @@ class SeriesControllerTest {
 
     @Test
     fun testAddSeries() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val seriesWithId = seriesNoId.copy(seriesId = 1)
         `when`(seriesService.addSeries(seriesNoId))
                 .thenReturn(seriesWithId)
@@ -139,12 +145,22 @@ class SeriesControllerTest {
 
     @Test
     fun test_addSeries_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPost("/api/series", jacksonSeries.write(seriesNoId).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testUpdateSeries() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedSeries = series2.copy(seriesId = 1)
         `when`(seriesService.updateSeries(1, series2))
                 .thenReturn(Optional.of(updatedSeries))
@@ -166,12 +182,22 @@ class SeriesControllerTest {
 
     @Test
     fun test_updateSeries_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPut("/api/series/1", jacksonSeries.write(series2).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testDeleteSeries() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(seriesService.deleteSeries(1))
                 .thenReturn(Optional.of(series1))
                 .thenReturn(Optional.empty())
@@ -191,7 +217,13 @@ class SeriesControllerTest {
 
     @Test
     fun test_deleteSeries_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doDelete("/api/series/1")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
 }

@@ -2,7 +2,9 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
+import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.StarService
 import org.hamcrest.MatcherAssert.assertThat
@@ -122,7 +124,11 @@ class StarControllerTest {
 
     @Test
     fun testAddStar() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val starWithId = starNoId.copy(starId = 1)
         `when`(starService.addStar(starNoId))
                 .thenReturn(starWithId)
@@ -139,12 +145,22 @@ class StarControllerTest {
 
     @Test
     fun test_addStar_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPost("/api/stars", jacksonStar.write(starNoId).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testUpdateStar() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedStar = star2.copy(starId = 1)
         `when`(starService.updateStar(1, star2))
                 .thenReturn(Optional.of(updatedStar))
@@ -166,12 +182,22 @@ class StarControllerTest {
 
     @Test
     fun test_updateStar_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
     fun testDeleteStar() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_EDIT))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(starService.deleteStar(1))
                 .thenReturn(Optional.of(star1))
                 .thenReturn(Optional.empty())
@@ -191,7 +217,13 @@ class StarControllerTest {
 
     @Test
     fun test_deleteStar_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        val response = mockMvcHandler.doDelete("/api/stars/1")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
 }
