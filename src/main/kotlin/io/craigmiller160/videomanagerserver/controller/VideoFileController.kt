@@ -5,6 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
+import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -91,7 +92,7 @@ class VideoFileController @Autowired constructor(
         return okOrNoContent(videoFileService.deleteVideoFile(videoFileId))
     }
 
-    // TODO I think there should be a scanning role, add it later
+    @Secured(ROLE_SCAN)
     @PostMapping("/scanner")
     fun startVideoFileScan(): ResponseEntity<FileScanStatus> {
         val status = videoFileService.startVideoFileScan()

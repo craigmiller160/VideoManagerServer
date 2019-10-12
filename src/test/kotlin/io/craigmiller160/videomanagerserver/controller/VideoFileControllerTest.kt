@@ -12,6 +12,7 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
+import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
@@ -276,8 +277,12 @@ class VideoFileControllerTest {
     }
 
     @Test
-    fun testStartVideoScan() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+    fun test_StartVideoScan() {
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_SCAN))
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
@@ -287,6 +292,20 @@ class VideoFileControllerTest {
 
         response = mockMvcHandler.doPost("/api/video-files/scanner")
         assertBadRequest(response, jacksonStatus.write(scanAlreadyRunning).json)
+    }
+
+    @Test
+    fun test_startVideoScan_missingRole() {
+        val user = AppUser(
+                userName = "userName"
+        )
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        `when`(videoFileService.startVideoFileScan())
+                .thenReturn(scanRunning)
+                .thenReturn(scanAlreadyRunning)
+
+        val response = mockMvcHandler.doPost("/api/video-files/scanner")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
     @Test
