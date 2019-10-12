@@ -367,7 +367,7 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_updateUser() {
+    fun test_updateUserAdmin() {
         val userId = 1L
         val user = AppUser().apply {
             userName = "userName"
@@ -377,7 +377,7 @@ class AuthControllerTest {
 
         val userResponse = user.copy(userId = userId)
 
-        `when`(authService.updateUser(userId, user))
+        `when`(authService.updateUserAdmin(userId, user))
                 .thenReturn(userResponse)
 
         val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
@@ -389,7 +389,7 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_updateUser_notFound() {
+    fun test_updateUserAdmin_notFound() {
         val userId = 1L
         val user = AppUser().apply {
             userName = "userName"
@@ -405,7 +405,7 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_updateUser_unauthorized() {
+    fun test_updateUserAdmin_unauthorized() {
         val userId = 1L
         val user = AppUser().apply {
             userName = "userName"
@@ -416,7 +416,7 @@ class AuthControllerTest {
     }
 
     @Test
-    fun test_updateUser_lacksRole() {
+    fun test_updateUserAdmin_lacksRole() {
         val userId = 1L
         val user = AppUser().apply {
             userName = "userName"
@@ -424,6 +424,26 @@ class AuthControllerTest {
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val response = mockMvcHandler.doPut("/api/auth/users/$userId", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(403)))
+    }
+
+    @Test
+    fun test_updateUserSelf() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_unauthorized() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_notFound() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_notUser() {
+        TODO("Finish this")
     }
 
     @Test

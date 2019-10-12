@@ -54,7 +54,7 @@ class AuthService (
         return removePassword(savedUser)
     }
 
-    fun updateUser(userId: Long, user: AppUser): AppUser? {
+    fun updateUserAdmin(userId: Long, user: AppUser): AppUser? {
         val existing = appUserRepository.findById(userId).orElse(null)
         return existing?.let {
             user.userId = userId
@@ -66,6 +66,10 @@ class AuthService (
             val savedUser = appUserRepository.save(user)
             removePassword(savedUser)
         }
+    }
+
+    fun updateUserSelf() {
+        TODO("Finish this")
     }
 
     fun getAllUsers(): List<AppUser> {

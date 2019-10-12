@@ -181,7 +181,7 @@ class AuthServiceTest {
     }
 
     @Test
-    fun test_updateUser() {
+    fun test_updateUserAdmin() {
         val userId = 1L
         val request = AppUser().apply {
             userName = USER_NAME
@@ -203,12 +203,12 @@ class AuthServiceTest {
         `when`(appUserRepository.findById(userId))
                 .thenReturn(Optional.of(existing))
 
-        val result = authService.updateUser(userId, request)
+        val result = authService.updateUserAdmin(userId, request)
         assertEquals(expected, result)
     }
 
     @Test
-    fun test_updateUser_withPassword() {
+    fun test_updateUserAdmin_withPassword() {
         val userId = 1L
         val request = AppUser().apply {
             userName = USER_NAME
@@ -235,12 +235,12 @@ class AuthServiceTest {
         `when`(passwordEncoder.encode(PASSWORD))
                 .thenReturn(ENCODED_PASSWORD)
 
-        val result = authService.updateUser(userId, request)
+        val result = authService.updateUserAdmin(userId, request)
         assertEquals(expected, result)
     }
 
     @Test
-    fun test_updateUser_notFound() {
+    fun test_updateUserAdmin_notFound() {
         val userId = 1L
         val user = AppUser().apply {
             userName = USER_NAME
@@ -251,8 +251,28 @@ class AuthServiceTest {
         `when`(appUserRepository.save(expected))
                 .thenReturn(expected)
 
-        val result = authService.updateUser(userId, user)
+        val result = authService.updateUserAdmin(userId, user)
         assertNull(result)
+    }
+
+    @Test
+    fun test_updateUserSelf() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_skipsRoles() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_notFound() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_withPassword() {
+        TODO("Finish this")
     }
 
     @Test
