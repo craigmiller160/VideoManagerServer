@@ -60,6 +60,7 @@ class AuthService (
         return existing?.let {
             user.userId = userId
             user.userName = existing.userName
+            user.lastAuthenticated = existing.lastAuthenticated
 
             if (user.password.isEmpty()) {
                 user.password = existing.password
@@ -78,6 +79,7 @@ class AuthService (
         return existing?.let {
             user.userId = existing.userId
             user.userName = userName
+            user.lastAuthenticated = existing.lastAuthenticated
 
             if (existing.roles.find { role -> role.name == ROLE_ADMIN } == null) {
                 user.roles = existing.roles

@@ -8,6 +8,8 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -182,6 +184,7 @@ class AuthServiceTest {
 
     @Test
     fun test_updateUserAdmin() {
+        val lastAuth = LocalDateTime.now()
         val userId = 1L
         val request = AppUser().apply {
             userName = USER_NAME
@@ -189,10 +192,41 @@ class AuthServiceTest {
         }
         val response = request.copy(
                 userId = userId,
+                password = PASSWORD,
+                lastAuthenticated = lastAuth
+        )
+        val existing = request.copy(
+                userId = userId,
+                roles = listOf(),
+                password = PASSWORD,
+                lastAuthenticated = lastAuth
+        )
+        val expected = response.copy(password = "")
+
+        `when`(appUserRepository.save(response))
+                .thenReturn(response)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(existing))
+
+        val result = authService.updateUserAdmin(userId, request)
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun test_updateUserAdmin_noUpdateUsername() {
+        val userId = 1L
+        val request = AppUser().apply {
+            userName = "userName2"
+            roles = listOf(Role(name = ROLE))
+        }
+        val response = request.copy(
+                userId = userId,
+                userName = USER_NAME,
                 password = PASSWORD
         )
         val existing = request.copy(
                 userId = userId,
+                userName = USER_NAME,
                 roles = listOf(),
                 password = PASSWORD
         )
@@ -256,33 +290,212 @@ class AuthServiceTest {
     }
 
     @Test
-    fun test_updateUserAdmin_noUpdateUsername() {
-        TODO("Finish this")
-    }
-
-    @Test
     fun test_updateUserSelf() {
-        TODO("Finish this")
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller"
+        )
+
+        val existing = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Bob",
+                lastName = "Saget",
+                password = PASSWORD
+        )
+
+        val response = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = PASSWORD
+        )
+
+        val expected = response.copy(password = "")
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(existing)
+        `when`(appUserRepository.save(response))
+                .thenReturn(expected)
+
+        val result = authService.updateUserSelf(request)
+        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_skipsRoles() {
-        TODO("Finish this")
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                roles = listOf(Role(1, ROLE_ADMIN))
+        )
+
+        val existing = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Bob",
+                lastName = "Saget",
+                password = PASSWORD
+        )
+
+        val response = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = PASSWORD
+        )
+
+        val expected = response.copy(password = "")
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(existing)
+        `when`(appUserRepository.save(response))
+                .thenReturn(expected)
+
+        val result = authService.updateUserSelf(request)
+        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_adminCanUpdateRoles() {
-        TODO("Finish this")
+        val roles = listOf(Role(1, ROLE_ADMIN), Role(2, ROLE_EDIT))
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                roles = roles
+        )
+
+        val existing = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Bob",
+                lastName = "Saget",
+                password = PASSWORD,
+                roles = listOf(Role(1, ROLE_ADMIN))
+        )
+
+        val response = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = PASSWORD,
+                roles = roles
+        )
+
+        val expected = response.copy(password = "")
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(existing)
+        `when`(appUserRepository.save(response))
+                .thenReturn(expected)
+
+        val result = authService.updateUserSelf(request)
+        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_notFound() {
-        TODO("Finish this")
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller"
+        )
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(null)
+
+        val result = authService.updateUserSelf(request)
+        assertNull(result)
     }
 
     @Test
     fun test_updateUserSelf_withPassword() {
-        TODO("Finish this")
+        val newPassword = "newPassword"
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = newPassword
+        )
+
+        val existing = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Bob",
+                lastName = "Saget",
+                password = PASSWORD
+        )
+
+        val response = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = newPassword
+        )
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(existing)
+        `when`(appUserRepository.save(response))
+                .thenReturn(response)
+        `when`(passwordEncoder.encode(newPassword))
+                .thenReturn(newPassword)
+
+        val result = authService.updateUserSelf(request)
+        assertEquals(response, result)
+    }
+
+    @Test
+    fun test_updateUserSelf_noUpdateUsername() {
+        val request = AppUser(
+                userName = "userName2",
+                firstName = "Craig",
+                lastName = "Miller"
+        )
+
+        val existing = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Bob",
+                lastName = "Saget",
+                password = PASSWORD
+        )
+
+        val response = AppUser(
+                userId = 1L,
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                password = PASSWORD
+        )
+
+        val expected = response.copy(password = "")
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(USER_NAME)
+        `when`(appUserRepository.findByUserName(USER_NAME))
+                .thenReturn(existing)
+        `when`(appUserRepository.save(response))
+                .thenReturn(expected)
+
+        val result = authService.updateUserSelf(request)
+        assertEquals(expected, result)
     }
 
     @Test
