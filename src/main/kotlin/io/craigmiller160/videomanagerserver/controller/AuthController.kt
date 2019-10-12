@@ -81,9 +81,9 @@ class AuthController (
         return okOrNoContent(authService.updateUserAdmin(userId, user))
     }
 
-    @PutMapping("/users/self/{userId}")
-    fun updateUserSelf(@PathVariable("userId") userId: Long, @RequestBody user: AppUser): ResponseEntity<AppUser> {
-        TODO("Finish this")
+    @PutMapping("/users/self")
+    fun updateUserSelf(@RequestBody user: AppUser): ResponseEntity<AppUser> {
+        return okOrNoContent(authService.updateUserSelf(user))
     }
 
     @Secured(ROLE_ADMIN)

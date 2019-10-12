@@ -256,12 +256,22 @@ class AuthServiceTest {
     }
 
     @Test
+    fun test_updateUserAdmin_noUpdateUsername() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_updateUserSelf() {
         TODO("Finish this")
     }
 
     @Test
     fun test_updateUserSelf_skipsRoles() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_updateUserSelf_adminCanUpdateRoles() {
         TODO("Finish this")
     }
 

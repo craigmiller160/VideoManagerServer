@@ -7,6 +7,7 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
+import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -58,18 +59,39 @@ class AuthService (
         val existing = appUserRepository.findById(userId).orElse(null)
         return existing?.let {
             user.userId = userId
+            user.userName = existing.userName
+
             if (user.password.isEmpty()) {
                 user.password = existing.password
             } else {
                 user.password = passwordEncoder.encode(user.password)
             }
+
             val savedUser = appUserRepository.save(user)
             removePassword(savedUser)
         }
     }
 
-    fun updateUserSelf(userId: Long, user: AppUser): AppUser? {
-        TODO("Finish this")
+    fun updateUserSelf(user: AppUser): AppUser? {
+        val userName = securityContextService.getUserName()
+        val existing = appUserRepository.findByUserName(userName)
+        return existing?.let {
+            user.userId = existing.userId
+            user.userName = userName
+
+            if (existing.roles.find { role -> role.name == ROLE_ADMIN } == null) {
+                user.roles = existing.roles
+            }
+
+            if (user.password.isEmpty()) {
+                user.password = existing.password
+            } else {
+                user.password = passwordEncoder.encode(user.password)
+            }
+
+            val savedUser = appUserRepository.save(user)
+            removePassword(savedUser)
+        }
     }
 
     fun getAllUsers(): List<AppUser> {
