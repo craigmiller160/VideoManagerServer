@@ -82,7 +82,7 @@ class AuthController (
     }
 
     @PutMapping("/users/self/{userId}")
-    fun updateUserSelf() {
+    fun updateUserSelf(@PathVariable("userId") userId: Long, @RequestBody user: AppUser): ResponseEntity<AppUser> {
         TODO("Finish this")
     }
 

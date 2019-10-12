@@ -68,7 +68,7 @@ class AuthService (
         }
     }
 
-    fun updateUserSelf() {
+    fun updateUserSelf(userId: Long, user: AppUser): AppUser? {
         TODO("Finish this")
     }
 
