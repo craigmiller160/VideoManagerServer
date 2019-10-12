@@ -428,22 +428,40 @@ class AuthControllerTest {
 
     @Test
     fun test_updateUserSelf() {
-        TODO("Finish this")
+        val user = AppUser(userName = "userName")
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+
+        `when`(authService.updateUserSelf(user))
+                .thenReturn(user)
+
+        val response = mockMvcHandler.doPut("/api/auth/users/self", jacksonUser.write(user).json)
+
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonUser.write(user).json))
+        ))
     }
 
     @Test
     fun test_updateUserSelf_unauthorized() {
-        TODO("Finish this")
+        val user = AppUser(userName = "userName")
+
+        `when`(authService.updateUserSelf(user))
+                .thenReturn(user)
+
+        val response = mockMvcHandler.doPut("/api/auth/users/self", jacksonUser.write(user).json)
+
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_updateUserSelf_notFound() {
-        TODO("Finish this")
-    }
+        val user = AppUser(userName = "userName")
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-    @Test
-    fun test_updateUserSelf_notUser() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doPut("/api/auth/users/self", jacksonUser.write(user).json)
+
+        assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
