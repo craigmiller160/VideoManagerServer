@@ -1,9 +1,11 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.Category
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.service.CategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -33,16 +35,19 @@ class CategoryController @Autowired constructor(
         return okOrNoContent(categoryService.getCategory(categoryId))
     }
 
+    @Secured(ROLE_EDIT)
     @PostMapping
     fun addCategory(@RequestBody category: Category): ResponseEntity<Category> {
         return ResponseEntity.ok(categoryService.addCategory(category))
     }
 
+    @Secured(ROLE_EDIT)
     @PutMapping("/{categoryId}")
     fun updateCategory(@PathVariable categoryId: Long, @RequestBody category: Category): ResponseEntity<Category> {
         return okOrNoContent(categoryService.updateCategory(categoryId, category))
     }
 
+    @Secured(ROLE_EDIT)
     @DeleteMapping("/{categoryId}")
     fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<Category> {
         return okOrNoContent(categoryService.deleteCategory(categoryId))

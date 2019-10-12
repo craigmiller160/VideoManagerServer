@@ -187,6 +187,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_addVideoFile_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateVideoFile() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedVideoFile = videoFile2.copy(fileId = 1)
@@ -209,6 +214,11 @@ class VideoFileControllerTest {
     }
 
     @Test
+    fun test_updateVideoFile_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testDeleteVideoFile() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.deleteVideoFile(1))
@@ -226,6 +236,11 @@ class VideoFileControllerTest {
     fun test_deleteVideoFile_unauthorized() {
         val response = mockMvcHandler.doDelete("/api/video-files/1")
         assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_deleteVideoFile_missingRole() {
+        TODO("Finish this")
     }
 
     @Test

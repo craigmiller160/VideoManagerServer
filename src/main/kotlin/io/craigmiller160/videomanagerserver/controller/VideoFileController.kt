@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.FileScanStatus
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.MediaTypeFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -71,21 +73,25 @@ class VideoFileController @Autowired constructor(
         return okOrNoContent(videoFileService.getVideoFile(videoFileId))
     }
 
+    @Secured(ROLE_EDIT)
     @PostMapping
     fun addVideoFile(@RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
         return ResponseEntity.ok(videoFileService.addVideoFile(videoFile))
     }
 
+    @Secured(ROLE_EDIT)
     @PutMapping("/{videoFileId}")
     fun updateVideoFile(@PathVariable videoFileId: Long, @RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
         return okOrNoContent(videoFileService.updateVideoFile(videoFileId, videoFile))
     }
 
+    @Secured(ROLE_EDIT)
     @DeleteMapping("/{videoFileId}")
     fun deleteVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFile> {
         return okOrNoContent(videoFileService.deleteVideoFile(videoFileId))
     }
 
+    // TODO I think there should be a scanning role, add it later
     @PostMapping("/scanner")
     fun startVideoFileScan(): ResponseEntity<FileScanStatus> {
         val status = videoFileService.startVideoFileScan()

@@ -139,6 +139,11 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_addCategory_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateCategory() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedCategory = category2.copy(categoryId = 1)
@@ -161,6 +166,11 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun test_updateCategory_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testDeleteCategory() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(categoryService.deleteCategory(1))
@@ -178,6 +188,11 @@ class CategoryControllerTest {
     fun test_deleteCategory_unauthorized() {
         val response = mockMvcHandler.doDelete("/api/categories/1")
         assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_deleteCategory_missingRole() {
+        TODO("Finish this")
     }
 
 }

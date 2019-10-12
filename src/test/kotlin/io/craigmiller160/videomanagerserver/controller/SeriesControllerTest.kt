@@ -138,6 +138,11 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_addSeries_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateSeries() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedSeries = series2.copy(seriesId = 1)
@@ -160,6 +165,11 @@ class SeriesControllerTest {
     }
 
     @Test
+    fun test_updateSeries_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testDeleteSeries() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(seriesService.deleteSeries(1))
@@ -177,6 +187,11 @@ class SeriesControllerTest {
     fun test_deleteSeries_unauthorized() {
         val response = mockMvcHandler.doDelete("/api/series/1")
         assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_deleteSeries_missingRole() {
+        TODO("Finish this")
     }
 
 }

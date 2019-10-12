@@ -138,6 +138,11 @@ class StarControllerTest {
     }
 
     @Test
+    fun test_addStar_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testUpdateStar() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         val updatedStar = star2.copy(starId = 1)
@@ -160,6 +165,11 @@ class StarControllerTest {
     }
 
     @Test
+    fun test_updateStar_missingRole() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun testDeleteStar() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(starService.deleteStar(1))
@@ -177,6 +187,11 @@ class StarControllerTest {
     fun test_deleteStar_unauthorized() {
         val response = mockMvcHandler.doDelete("/api/stars/1")
         assertThat(response, hasProperty("status", equalTo(401)))
+    }
+
+    @Test
+    fun test_deleteStar_missingRole() {
+        TODO("Finish this")
     }
 
 }
