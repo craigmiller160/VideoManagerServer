@@ -329,7 +329,7 @@ class AuthControllerTest {
         `when`(authService.getUser(userId))
                 .thenReturn(user)
 
-        val response = mockMvcHandler.doGet("/api/auth/users/$userId")
+        val response = mockMvcHandler.doGet("/api/auth/users/admin/$userId")
 
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -345,13 +345,13 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/api/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users/admin/1")
         assertThat(response, hasProperty("status", equalTo(204)))
     }
 
     @Test
     fun test_getUser_unauthorized() {
-        val response = mockMvcHandler.doGet("/api/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users/admin/1")
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -362,7 +362,7 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val response = mockMvcHandler.doGet("/api/auth/users")
+        val response = mockMvcHandler.doGet("/api/auth/users/admin/1")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
