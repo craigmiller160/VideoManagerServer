@@ -97,7 +97,7 @@ class AuthController (
     }
 
     @Secured(ROLE_ADMIN)
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/admin/{userId}")
     fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
         return okOrNoContent(authService.getUser(userId))
     }
