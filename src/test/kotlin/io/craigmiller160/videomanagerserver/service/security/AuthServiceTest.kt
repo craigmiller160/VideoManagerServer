@@ -655,11 +655,11 @@ class AuthServiceTest {
             password = "password"
             userId = 1L
         }
-        `when`(appUserRepository.findById(user.userId))
+        `when`(appUserRepository.findById(1L))
                 .thenReturn(Optional.of(user))
         `when`(appUserRepository.save(ArgumentMatchers.isA(AppUser::class.java)))
                 .thenReturn(user)
-        val result = authService.revokeAccess(user)
+        val result = authService.revokeAccess(1L)
         assertThat(result, hasProperty("password", isEmptyString()))
 
         val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
@@ -682,7 +682,7 @@ class AuthServiceTest {
                 .thenReturn(Optional.empty())
 
         val ex = assertFailsWith<NoUserException> {
-            authService.revokeAccess(user)
+            authService.revokeAccess(user.userId)
         }
 
         assertThat(ex, hasProperty("message", containsString("Cannot find user")))

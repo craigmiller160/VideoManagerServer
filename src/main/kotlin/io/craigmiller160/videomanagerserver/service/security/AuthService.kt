@@ -135,8 +135,8 @@ class AuthService (
         return newToken
     }
 
-    fun revokeAccess(user: AppUser): AppUser {
-        val existingUser = appUserRepository.findById(user.userId)
+    fun revokeAccess(userId: Long): AppUser {
+        val existingUser = appUserRepository.findById(userId)
                 .orElseThrow { NoUserException("Cannot find user") }
         existingUser.lastAuthenticated = null
         return removePassword(appUserRepository.save(existingUser))

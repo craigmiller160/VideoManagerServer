@@ -528,10 +528,10 @@ class AuthControllerTest {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        `when`(authService.revokeAccess(user))
+        `when`(authService.revokeAccess(1L))
                 .thenReturn(user)
 
-        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke/1", jacksonUser.write(user).json)
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
                 responseBody(equalTo(jacksonUser.write(user).json))
@@ -544,7 +544,7 @@ class AuthControllerTest {
             userId = 1L
             userName = "userName"
         }
-        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke/1", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }
 
@@ -555,7 +555,7 @@ class AuthControllerTest {
             userName = "userName"
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doPost("/api/auth/users/revoke", jacksonUser.write(user).json)
+        val response = mockMvcHandler.doPost("/api/auth/users/revoke/1", jacksonUser.write(user).json)
         assertThat(response, hasProperty("status", equalTo(403)))
     }
 
