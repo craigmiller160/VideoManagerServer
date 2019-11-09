@@ -47,15 +47,25 @@ class AuthService (
     }
 
     fun createUser(user: AppUser): AppUser {
-        if (user.userName.isEmpty() || user.password.isEmpty() || user.roles.isEmpty() || !rolesHaveIds(user.roles)) {
-            throw IllegalArgumentException("User is missing required fields")
+        require(!(user.userName.isEmpty() || user.password.isEmpty())) {
+            "User is missing required fields"
         }
+
+        require(!(user.roles.isNotEmpty() && !rolesHaveIds(user.roles))) {
+            "User roles are not configured properly"
+        }
+
         user.password = passwordEncoder.encode(user.password)
         val savedUser = appUserRepository.save(user)
         return removePassword(savedUser)
     }
 
+    // TODO update unit tests
     fun updateUserAdmin(userId: Long, user: AppUser): AppUser? {
+        require(user.roles.isNotEmpty() && rolesHaveIds(user.roles)) {
+            "User roles are not configured properly"
+        }
+
         val existing = appUserRepository.findById(userId).orElse(null)
         return existing?.let {
             user.userId = userId
@@ -73,7 +83,12 @@ class AuthService (
         }
     }
 
+    // TODO update unit tests
     fun updateUserSelf(user: AppUser): AppUser? {
+        require(user.roles.isNotEmpty() && rolesHaveIds(user.roles)) {
+            "User roles are not configured properly"
+        }
+
         val userName = securityContextService.getUserName()
         val existing = appUserRepository.findByUserName(userName)
         return existing?.let {

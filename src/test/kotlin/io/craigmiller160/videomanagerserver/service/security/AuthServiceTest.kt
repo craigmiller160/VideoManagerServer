@@ -38,6 +38,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
 import java.util.Optional
+import kotlin.math.exp
 import kotlin.test.assertFailsWith
 
 
@@ -161,10 +162,20 @@ class AuthServiceTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun test_createUser_invalid() {
+    fun test_createUser_missingPass() {
         val user = AppUser().apply {
             userName = "Bob"
         }
+        authService.createUser(user)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun test_createUser_badRoles() {
+        val user = AppUser(
+                userName = "Bob",
+                password = "pass",
+                roles = listOf(Role(name = "Foo"))
+        )
         authService.createUser(user)
     }
 
