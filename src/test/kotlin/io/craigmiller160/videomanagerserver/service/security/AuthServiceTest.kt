@@ -199,7 +199,7 @@ class AuthServiceTest {
         val userId = 1L
         val request = AppUser().apply {
             userName = USER_NAME
-            roles = listOf(Role(name = ROLE))
+            roles = listOf(Role(roleId = 1, name = ROLE))
         }
         val response = request.copy(
                 userId = userId,
@@ -228,7 +228,7 @@ class AuthServiceTest {
         val userId = 1L
         val request = AppUser().apply {
             userName = "userName2"
-            roles = listOf(Role(name = ROLE))
+            roles = listOf(Role(roleId = 1, name = ROLE))
         }
         val response = request.copy(
                 userId = userId,
@@ -257,7 +257,7 @@ class AuthServiceTest {
         val userId = 1L
         val request = AppUser().apply {
             userName = USER_NAME
-            roles = listOf(Role(name = ROLE))
+            roles = listOf(Role(roleId = 1, name = ROLE))
             password = PASSWORD
         }
         val response = request.copy(
@@ -289,7 +289,7 @@ class AuthServiceTest {
         val userId = 1L
         val user = AppUser().apply {
             userName = USER_NAME
-            roles = listOf(Role(name = ROLE))
+            roles = listOf(Role(roleId = 1, name = ROLE))
         }
         val expected = user.copy(userId = userId)
 
