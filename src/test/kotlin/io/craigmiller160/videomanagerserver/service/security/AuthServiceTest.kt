@@ -193,6 +193,16 @@ class AuthServiceTest {
         assertFalse(result)
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun test_updateUserAdmin_badRoles() {
+        val userId = 1L
+        val request = AppUser().apply {
+            userName = USER_NAME
+            roles = listOf(Role(name = ROLE))
+        }
+        authService.updateUserAdmin(userId, request)
+    }
+
     @Test
     fun test_updateUserAdmin() {
         val lastAuth = LocalDateTime.now()
@@ -298,6 +308,17 @@ class AuthServiceTest {
 
         val result = authService.updateUserAdmin(userId, user)
         assertNull(result)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun test_updateUserSelf_badRoles() {
+        val request = AppUser(
+                userName = USER_NAME,
+                firstName = "Craig",
+                lastName = "Miller",
+                roles = listOf(Role(name = "role"))
+        )
+        authService.updateUserSelf(request)
     }
 
     @Test

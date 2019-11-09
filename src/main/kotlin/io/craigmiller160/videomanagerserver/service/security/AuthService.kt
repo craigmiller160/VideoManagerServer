@@ -60,7 +60,6 @@ class AuthService (
         return removePassword(savedUser)
     }
 
-    // TODO update unit tests
     fun updateUserAdmin(userId: Long, user: AppUser): AppUser? {
         require(!(user.roles.isNotEmpty() && !rolesHaveIds(user.roles))) {
             "User roles are not configured properly"
@@ -83,9 +82,8 @@ class AuthService (
         }
     }
 
-    // TODO update unit tests
     fun updateUserSelf(user: AppUser): AppUser? {
-        require(!(user.roles.isEmpty() && !rolesHaveIds(user.roles))) {
+        require(!(user.roles.isNotEmpty() && !rolesHaveIds(user.roles))) {
             "User roles are not configured properly"
         }
 
