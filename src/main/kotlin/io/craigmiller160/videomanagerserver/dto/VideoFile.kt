@@ -26,6 +26,7 @@ data class VideoFile(
         var fileName: String = "",
 
         var displayName: String = "",
+        @Column(columnDefinition="TEXT")
         var description: String = "",
         var lastModified: LocalDateTime = DEFAULT_TIMESTAMP,
         var fileAdded: LocalDateTime? = null,
