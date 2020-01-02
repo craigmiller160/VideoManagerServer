@@ -18,4 +18,9 @@ class LocalFileController(private val localFileService: LocalFileService) {
         TODO("Finish this")
     }
 
+    @GetMapping("/print")
+    fun printValue() {
+        localFileService.printValue()
+    }
+
 }
