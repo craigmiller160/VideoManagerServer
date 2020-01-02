@@ -12,7 +12,7 @@ class LocalFileService (
 ) {
 
     fun getFilesFromDirectory(path: String?): List<LocalFile> {
-        val dirPath = path ?: System.getProperty("user.home")
+        val dirPath = path ?: userHome
         return File(dirPath)
                 .listFiles { file -> !file.isHidden }
                 ?.map { file -> LocalFile(file) }
