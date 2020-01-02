@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.LocalFile
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.file.LocalFileService
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,12 +16,8 @@ class LocalFileController(private val localFileService: LocalFileService) {
     @Secured(ROLE_ADMIN)
     @GetMapping("/directory")
     fun getFilesFromDirectory(path: String?): List<LocalFile> {
+        // TODO make this return a ResponseEntity
         TODO("Finish this")
-    }
-
-    @GetMapping("/print")
-    fun printValue() {
-        localFileService.printValue()
     }
 
 }
