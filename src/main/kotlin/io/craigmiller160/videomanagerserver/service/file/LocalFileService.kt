@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import java.io.File
 
 @Service
-class FileService {
+class LocalFileService {
 
     fun getFilesFromDirectory(path: String?): List<LocalFile> {
         val dirPath = path ?: System.getProperty("user.home")
