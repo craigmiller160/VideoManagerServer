@@ -4,6 +4,8 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
 
+const val SETTINGS_ID = 1L
+
 @Entity
 @Table(name = "settings")
 data class Settings (
