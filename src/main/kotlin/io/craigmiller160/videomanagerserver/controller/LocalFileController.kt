@@ -7,17 +7,21 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/files")
+@RequestMapping("/localfiles")
 class LocalFileController(private val localFileService: LocalFileService) {
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/directory")
-    fun getFilesFromDirectory(path: String?): List<LocalFile> {
-        // TODO make this return a ResponseEntity
-        TODO("Finish this")
+    fun getFilesFromDirectory(@RequestParam path: String?): ResponseEntity<List<LocalFile>> {
+        val files = localFileService.getFilesFromDirectory(path)
+        if (files.isEmpty()) {
+            return ResponseEntity.noContent().build()
+        }
+        return ResponseEntity.ok(files)
     }
 
 }
