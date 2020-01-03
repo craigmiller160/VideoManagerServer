@@ -40,7 +40,7 @@ class ControllerLoggingAdvice {
     }
 
     @AfterReturning("controllerPublicMethods()", returning = "result")
-    fun logResponseAfterReturning(joinPoint: JoinPoint, result: Any) {
+    fun logResponseAfterReturning(joinPoint: JoinPoint, result: Any?) {
         val request = getRequest()
         val responseEntity = if(result is ResponseEntity<*>) result else null
         val path = buildPath(request)
