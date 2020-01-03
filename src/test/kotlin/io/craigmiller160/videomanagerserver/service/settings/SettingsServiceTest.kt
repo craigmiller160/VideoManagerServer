@@ -67,4 +67,9 @@ class SettingsServiceTest {
                 .save(isA<Settings>())
     }
 
+    @Test
+    fun test_updateSettings() {
+        TODO("Finish this")
+    }
+
 }

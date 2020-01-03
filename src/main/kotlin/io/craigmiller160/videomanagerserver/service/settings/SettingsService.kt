@@ -19,4 +19,10 @@ class SettingsService (private val settingsRepository: SettingsRepository) {
                 }
     }
 
+    @Transactional
+    fun updateSettings(settings: Settings): Settings {
+        settings.settingsId = SETTINGS_ID
+        return settingsRepository.save(settings)
+    }
+
 }
