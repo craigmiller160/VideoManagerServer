@@ -153,12 +153,19 @@ class LocalFileControllerTest {
 
     @Test
     fun test_getFilesFromDirectory_unauthorized() {
-        TODO("Finish this")
+        val response = mockMvcHandler.doGet("/api/localfiles/directory")
+        assertThat(response, hasProperty("status", equalTo(401)))
     }
 
     @Test
     fun test_getFilesFromDirectory_missingRole() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName"
+        )
+
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val response = mockMvcHandler.doGet("/api/localfiles/directory")
+        assertThat(response, hasProperty("status", equalTo(403)))
     }
 
 }
