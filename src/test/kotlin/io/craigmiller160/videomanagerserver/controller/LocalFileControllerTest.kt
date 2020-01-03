@@ -110,12 +110,45 @@ class LocalFileControllerTest {
 
     @Test
     fun test_getFilesFromDirectory_noFiles() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_ADMIN))
+        )
+
+        val path = "dir"
+        `when`(localFileService.getFilesFromDirectory(path))
+                .thenReturn(listOf())
+
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204))
+        ))
     }
 
     @Test
     fun test_getFilesFromDirectory_noPath() {
-        TODO("Finish this")
+        val user = AppUser(
+                userName = "userName",
+                roles = listOf(Role(name = ROLE_ADMIN))
+        )
+
+        val files = mockFiles()
+        `when`(localFileService.getFilesFromDirectory(null))
+                .thenReturn(files)
+
+        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        var response = mockMvcHandler.doGet("/api/localfiles/directory")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonLocalFileList.write(files).json))
+        ))
+
+        response = mockMvcHandler.doGet("/api/localfiles/directory?path=")
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(200)),
+                responseBody(equalTo(jacksonLocalFileList.write(files).json))
+        ))
     }
 
     @Test
