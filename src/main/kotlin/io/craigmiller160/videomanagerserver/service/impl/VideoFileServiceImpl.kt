@@ -74,16 +74,25 @@ class VideoFileServiceImpl @Autowired constructor(
         return videoFileOptional
     }
 
+    // TODO update unit tests for exception while scanning
     override fun startVideoFileScan(): FileScanStatus {
         if (fileScanRunning.get()) {
             return createScanAlreadyRunningStatus()
         }
         fileScanRunning.set(true)
         lastScanSuccess.set(true)
-        fileScanner.scanForFiles { result ->
-            fileScanRunning.set(false)
-            lastScanSuccess.set(result)
+        try {
+            fileScanner.scanForFiles { result ->
+                fileScanRunning.set(false)
+                lastScanSuccess.set(result)
+            }
         }
+        catch (ex: Exception) {
+            fileScanRunning.set(false)
+            lastScanSuccess.set(false)
+            throw ex
+        }
+
         return createScanRunningStatus()
     }
 
