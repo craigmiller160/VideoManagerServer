@@ -16,7 +16,7 @@ class LocalFileService (
         return File(dirPath)
                 .listFiles { file ->
                     if (onlyDirectories) {
-                        !file.isHidden && file.isDirectory
+                        return@listFiles !file.isHidden && file.isDirectory
                     }
                     !file.isHidden
                 }

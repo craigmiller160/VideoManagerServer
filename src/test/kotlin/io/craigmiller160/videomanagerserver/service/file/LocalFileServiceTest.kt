@@ -29,6 +29,7 @@ class LocalFileServiceTest {
         private const val FILE_4_NAME = "file4"
         private const val FILE_5_NAME = "file5"
         private const val DIR_1_NAME = "dir1"
+        private const val DIR_2_NAME = "dir2"
         private const val TEXT = "Hello World"
     }
 
@@ -45,6 +46,7 @@ class LocalFileServiceTest {
         Files.write(File(targetDir, FILE_1_NAME).toPath(), TEXT.toByteArray())
         Files.write(File(targetDir, FILE_2_NAME).toPath(), TEXT.toByteArray())
         Files.write(File(targetDir, FILE_3_NAME).toPath(), TEXT.toByteArray())
+        File(targetDir, DIR_2_NAME).mkdirs()
 
         homeDir = tempFolder.newFolder(HOME_DIR_NAME)
         Files.write(File(homeDir, FILE_4_NAME).toPath(), TEXT.toByteArray())
@@ -58,7 +60,7 @@ class LocalFileServiceTest {
     fun test_getFilesFromDirectory() {
         val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, false)
         assertThat(files, allOf(
-                hasSize(3),
+                hasSize(4),
                 containsInAnyOrder<LocalFile>(
                         allOf(
                                 hasProperty("fileName", equalTo(FILE_1_NAME)),
@@ -74,6 +76,11 @@ class LocalFileServiceTest {
                                 hasProperty("fileName", equalTo(FILE_3_NAME)),
                                 hasProperty("filePath", containsString(TARGET_DIR_NAME)),
                                 hasProperty("directory", equalTo(false))
+                        ),
+                        allOf(
+                                hasProperty("fileName", equalTo(DIR_2_NAME)),
+                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                hasProperty("directory", equalTo(true))
                         )
                 )
         ))
@@ -81,7 +88,17 @@ class LocalFileServiceTest {
 
     @Test
     fun test_getFilesFromDirectory_onlyDirectories() {
-        TODO("Finish this")
+        val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, true)
+        assertThat(files, allOf(
+                hasSize(1),
+                containsInAnyOrder<LocalFile>(
+                        allOf(
+                                hasProperty("fileName", equalTo(DIR_2_NAME)),
+                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                hasProperty("directory", equalTo(true))
+                        )
+                )
+        ))
     }
 
     @Test
