@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.file
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
@@ -30,7 +31,7 @@ class FileScanner @Autowired constructor(
     fun scanForFiles(done: (Boolean) -> Unit = {}): Job {
         val settings = settingsService.getOrCreateSettings()
         if (settings.rootDir.isEmpty()) {
-            // TODO throw exception
+            throw InvalidSettingException("No root directory is set")
         }
 
         val filePathRoot = ensureTrailingSlash(settings.rootDir)

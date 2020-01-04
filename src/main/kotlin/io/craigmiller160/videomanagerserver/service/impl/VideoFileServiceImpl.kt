@@ -9,6 +9,7 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
@@ -104,7 +105,7 @@ class VideoFileServiceImpl @Autowired constructor(
     override fun playVideo(fileId: Long): UrlResource {
         val settings = settingsService.getOrCreateSettings()
         if (settings.rootDir.isEmpty()) {
-            // TODO throw exception here
+            throw InvalidSettingException("No root directory is set")
         }
 
         val dbVideoFile = videoFileRepo.findById(fileId)
