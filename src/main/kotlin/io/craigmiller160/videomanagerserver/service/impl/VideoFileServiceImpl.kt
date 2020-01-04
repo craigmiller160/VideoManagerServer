@@ -12,6 +12,8 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
+import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
@@ -31,7 +33,8 @@ class VideoFileServiceImpl @Autowired constructor(
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
         private val fileScanner: FileScanner,
-        private val entityManager: EntityManager
+        private val entityManager: EntityManager,
+        private val settingsService: SettingsService
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -97,10 +100,16 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanErrorStatus()
     }
 
+    // TODO update tests
     override fun playVideo(fileId: Long): UrlResource {
+        val settings = settingsService.getOrCreateSettings()
+        if (settings.rootDir.isEmpty()) {
+            // TODO throw exception here
+        }
+
         val dbVideoFile = videoFileRepo.findById(fileId)
                 .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
-        val fullPath = "${videoConfig.filePathRoot}/${dbVideoFile.fileName}"
+        val fullPath = "${ensureTrailingSlash(settings.rootDir)}${dbVideoFile.fileName}"
         return UrlResource(File(fullPath).toURI())
     }
 

@@ -11,8 +11,6 @@ import javax.validation.constraints.NotBlank
 @ConfigurationProperties(prefix = "video")
 data class VideoConfiguration (
         var vlcCommand: String = "",
-        @field:NotBlank
-        var filePathRoot: String = "",
         var apiPageSize: Int = 0,
         var fileExts: String = ""
 ) {

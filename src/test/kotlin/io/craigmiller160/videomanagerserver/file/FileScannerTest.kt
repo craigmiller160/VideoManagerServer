@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.hamcrest.Matchers.`is`
@@ -47,14 +48,16 @@ class FileScannerTest {
 
     private lateinit var fileScanner: FileScanner
 
+    @Mock
+    private lateinit var settingsService: SettingsService
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
         videoConfig = VideoConfiguration()
-        videoConfig.filePathRoot = rootPath
         videoConfig.fileExts = "txt,csv"
-        fileScanner = FileScanner(videoConfig, videoFileRepo)
+        fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService)
     }
 
     @Test

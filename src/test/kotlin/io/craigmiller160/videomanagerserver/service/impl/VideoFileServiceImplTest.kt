@@ -13,6 +13,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
@@ -38,6 +39,7 @@ import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.lang.Exception
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -70,12 +72,13 @@ class VideoFileServiceImplTest {
     private lateinit var fileScanner: FileScanner
     @Mock
     private lateinit var entityManager: EntityManager
+    @Mock
+    private lateinit var settingsService: SettingsService
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        videoConfig.filePathRoot = "/home/craig/Videos"
-        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, entityManager)
+        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, entityManager, settingsService)
 
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         fileScanRunning.set(false)
@@ -227,7 +230,9 @@ class VideoFileServiceImplTest {
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
+        throw Exception("Finish this")
+
+//        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
     }
 
     @Test

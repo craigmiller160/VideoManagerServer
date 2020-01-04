@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.file
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,13 +20,20 @@ import java.time.ZoneOffset
 @Component
 class FileScanner @Autowired constructor(
         private val videoConfig: VideoConfiguration,
-        private val videoFileRepo: VideoFileRepository
+        private val videoFileRepo: VideoFileRepository,
+        private val settingsService: SettingsService
 ) {
 
     private val logger = LoggerFactory.getLogger(FileScanner::class.java)
 
+    // TODO update tests
     fun scanForFiles(done: (Boolean) -> Unit = {}): Job {
-        val filePathRoot = ensureTrailingSlash(videoConfig.filePathRoot)
+        val settings = settingsService.getOrCreateSettings()
+        if (settings.rootDir.isEmpty()) {
+            // TODO throw exception
+        }
+
+        val filePathRoot = ensureTrailingSlash(settings.rootDir)
         val fileExts = videoConfig.splitFileExts()
         val scanTimestamp = LocalDateTime.now()
 
