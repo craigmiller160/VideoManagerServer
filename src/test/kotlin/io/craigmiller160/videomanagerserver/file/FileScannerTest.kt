@@ -4,7 +4,10 @@ import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
+import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.dto.Settings
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import kotlinx.coroutines.runBlocking
@@ -22,6 +25,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
@@ -60,8 +64,27 @@ class FileScannerTest {
         fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService)
     }
 
+    @Test(expected = InvalidSettingException::class)
+    fun test_scanForFiles_noRootDir() {
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(Settings())
+
+        val done = AtomicBoolean(false)
+
+        fileScanner.scanForFiles {
+            done.set(true)
+        }
+    }
+
     @Test
-    fun testScanForFiles() {
+    fun test_scanForFiles() {
+        val settings = Settings(
+                settingsId = SETTINGS_ID,
+                rootDir = rootPath
+        )
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(settings)
+
         runBlocking {
             val start = LocalDateTime.now()
 

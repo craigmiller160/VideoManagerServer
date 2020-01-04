@@ -27,7 +27,6 @@ class FileScanner @Autowired constructor(
 
     private val logger = LoggerFactory.getLogger(FileScanner::class.java)
 
-    // TODO update tests
     fun scanForFiles(done: (Boolean) -> Unit = {}): Job {
         val settings = settingsService.getOrCreateSettings()
         if (settings.rootDir.isEmpty()) {
