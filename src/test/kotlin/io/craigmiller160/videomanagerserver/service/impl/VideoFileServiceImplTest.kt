@@ -8,16 +8,21 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
+import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.dto.Settings
 import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
@@ -38,6 +43,7 @@ import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.lang.Exception
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -50,6 +56,7 @@ class VideoFileServiceImplTest {
         private const val FIRST_NAME = "FirstName"
         private const val SECOND_NAME = "SecondName"
         private const val THIRD_NAME = "ThirdName"
+        private const val ROOT_DIR = "rootDir"
 
         private val expectedFiles = listOf(
                 VideoFile(fileId = 1, fileName = FIRST_NAME),
@@ -70,12 +77,13 @@ class VideoFileServiceImplTest {
     private lateinit var fileScanner: FileScanner
     @Mock
     private lateinit var entityManager: EntityManager
+    @Mock
+    private lateinit var settingsService: SettingsService
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        videoConfig.filePathRoot = "/home/craig/Videos"
-        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, entityManager)
+        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, entityManager, settingsService)
 
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         fileScanRunning.set(false)
@@ -187,6 +195,28 @@ class VideoFileServiceImplTest {
     }
 
     @Test
+    fun test_startVideoFileScan_scanError() {
+        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
+        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+
+        `when`(fileScanner.scanForFiles(any()))
+                .thenThrow(InvalidSettingException())
+
+        var exception: Exception? = null
+
+        try {
+            videoFileService.startVideoFileScan()
+        }
+        catch (ex: Exception) {
+            exception = ex
+        }
+
+        assertNotNull(exception)
+        assertFalse(fileScanRunning.get())
+        assertFalse(lastScanSuccess.get())
+    }
+
+    @Test
     fun testIsVideoFileScanRunning() {
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
@@ -221,13 +251,30 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun testPlayVideo() {
+    fun test_playVideo() {
+        val settings = Settings(
+                settingsId = SETTINGS_ID,
+                rootDir = ROOT_DIR
+        )
+
         `when`(videoFileRepo.findById(1))
                 .thenReturn(Optional.of(expectedFiles[0]))
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(settings)
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
+        assertThat(video.file.absolutePath, containsString("$ROOT_DIR/${expectedFiles[0].fileName}"))
+    }
+
+    @Test(expected = InvalidSettingException::class)
+    fun test_playVideo_noRootDir() {
+        `when`(videoFileRepo.findById(1))
+                .thenReturn(Optional.of(expectedFiles[0]))
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(Settings())
+
+        videoFileService.playVideo(expectedFiles[0].fileId)
     }
 
     @Test

@@ -21,11 +21,6 @@ class VideoConfigurationIntegrationTest {
     private lateinit var videoConfig: VideoConfiguration
 
     @Test
-    fun testFilePathRoot() {
-        assertEquals(FILE_PATH_ROOT, videoConfig.filePathRoot)
-    }
-
-    @Test
     fun testApiPageSize() {
         assertEquals(PAGE_SIZE, videoConfig.apiPageSize)
     }

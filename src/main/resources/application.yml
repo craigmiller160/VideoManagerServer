@@ -41,7 +41,6 @@ logging:
 
 video:
   vlcCommand: vlc
-  filePathRoot: ${VIDEO_MANAGER_DIR:}
   apiPageSize: 10
   fileExts: mp4,m4v
   security:
