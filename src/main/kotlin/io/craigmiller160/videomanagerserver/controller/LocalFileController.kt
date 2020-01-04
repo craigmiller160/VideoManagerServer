@@ -16,7 +16,10 @@ class LocalFileController(private val localFileService: LocalFileService) {
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/directory")
-    fun getFilesFromDirectory(@RequestParam path: String?): ResponseEntity<List<LocalFile>> {
+    fun getFilesFromDirectory(
+            @RequestParam(required = false) path: String?,
+            @RequestParam(required = false, defaultValue = "false") onlyDirectories: Boolean
+    ): ResponseEntity<List<LocalFile>> {
         val actualPath = if (path == null || path.isEmpty()) null else path
         val files = localFileService.getFilesFromDirectory(actualPath)
         if (files.isEmpty()) {

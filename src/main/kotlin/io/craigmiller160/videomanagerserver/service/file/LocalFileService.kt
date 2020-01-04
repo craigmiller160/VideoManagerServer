@@ -11,10 +11,15 @@ class LocalFileService (
         private val userHome: String
 ) {
 
-    fun getFilesFromDirectory(path: String?): List<LocalFile> {
+    fun getFilesFromDirectory(path: String?, onlyDirectories: Boolean): List<LocalFile> {
         val dirPath = path ?: userHome
         return File(dirPath)
-                .listFiles { file -> !file.isHidden }
+                .listFiles { file ->
+                    if (onlyDirectories) {
+                        !file.isHidden && file.isDirectory
+                    }
+                    !file.isHidden
+                }
                 ?.map { file -> LocalFile(file) }
                 ?: listOf()
     }
