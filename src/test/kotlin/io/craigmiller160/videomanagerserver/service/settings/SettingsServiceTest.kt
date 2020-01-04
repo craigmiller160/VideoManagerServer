@@ -19,6 +19,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.Optional
+import kotlin.test.assertEquals
 
 @RunWith(MockitoJUnitRunner::class)
 class SettingsServiceTest {
@@ -69,7 +70,19 @@ class SettingsServiceTest {
 
     @Test
     fun test_updateSettings() {
-        TODO("Finish this")
+        val settingsArg = Settings(
+                settingsId = 2L,
+                rootDir = ROOT_DIR
+        )
+        val settingsResult = Settings(
+                settingsId = SETTINGS_ID,
+                rootDir = ROOT_DIR
+        )
+        `when`(settingsRepository.save(settingsResult))
+                .thenReturn(settingsResult)
+
+        val result = settingsService.updateSettings(settingsArg)
+        assertEquals(settingsResult, result)
     }
 
 }
