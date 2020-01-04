@@ -8,6 +8,8 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
+import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.dto.Settings
 import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
@@ -20,6 +22,7 @@ import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
@@ -53,6 +56,7 @@ class VideoFileServiceImplTest {
         private const val FIRST_NAME = "FirstName"
         private const val SECOND_NAME = "SecondName"
         private const val THIRD_NAME = "ThirdName"
+        private const val ROOT_DIR = "rootDir"
 
         private val expectedFiles = listOf(
                 VideoFile(fileId = 1, fileName = FIRST_NAME),
@@ -247,15 +251,30 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun testPlayVideo() {
+    fun test_playVideo() {
+        val settings = Settings(
+                settingsId = SETTINGS_ID,
+                rootDir = ROOT_DIR
+        )
+
         `when`(videoFileRepo.findById(1))
                 .thenReturn(Optional.of(expectedFiles[0]))
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(settings)
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-        throw Exception("Finish this")
+        assertThat(video.file.absolutePath, containsString("$ROOT_DIR/${expectedFiles[0].fileName}"))
+    }
 
-//        assertEquals("${videoConfig.filePathRoot}/${expectedFiles[0].fileName}", video.file.absolutePath)
+    @Test(expected = InvalidSettingException::class)
+    fun test_playVideo_noRootDir() {
+        `when`(videoFileRepo.findById(1))
+                .thenReturn(Optional.of(expectedFiles[0]))
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(Settings())
+
+        videoFileService.playVideo(expectedFiles[0].fileId)
     }
 
     @Test

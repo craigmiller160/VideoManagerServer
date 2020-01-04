@@ -109,7 +109,6 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanErrorStatus()
     }
 
-    // TODO update tests
     override fun playVideo(fileId: Long): UrlResource {
         val settings = settingsService.getOrCreateSettings()
         if (settings.rootDir.isEmpty()) {
