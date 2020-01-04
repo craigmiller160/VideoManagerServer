@@ -74,7 +74,6 @@ class VideoFileServiceImpl @Autowired constructor(
         return videoFileOptional
     }
 
-    // TODO update unit tests for exception while scanning
     override fun startVideoFileScan(): FileScanStatus {
         if (fileScanRunning.get()) {
             return createScanAlreadyRunningStatus()

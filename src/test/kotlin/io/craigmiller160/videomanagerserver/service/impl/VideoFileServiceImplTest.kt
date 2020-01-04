@@ -11,6 +11,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
@@ -187,6 +188,28 @@ class VideoFileServiceImplTest {
         ))
 
         verify(fileScanner, times(1)).scanForFiles(any())
+    }
+
+    @Test
+    fun test_startVideoFileScan_scanError() {
+        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
+        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+
+        `when`(fileScanner.scanForFiles(any()))
+                .thenThrow(InvalidSettingException())
+
+        var exception: Exception? = null
+
+        try {
+            videoFileService.startVideoFileScan()
+        }
+        catch (ex: Exception) {
+            exception = ex
+        }
+
+        assertNotNull(exception)
+        assertFalse(fileScanRunning.get())
+        assertFalse(lastScanSuccess.get())
     }
 
     @Test
