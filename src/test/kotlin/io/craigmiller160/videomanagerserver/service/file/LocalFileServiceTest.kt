@@ -56,7 +56,7 @@ class LocalFileServiceTest {
 
     @Test
     fun test_getFilesFromDirectory() {
-        val files = localFileService.getFilesFromDirectory(targetDir.absolutePath)
+        val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, false)
         assertThat(files, allOf(
                 hasSize(3),
                 containsInAnyOrder<LocalFile>(
@@ -80,8 +80,13 @@ class LocalFileServiceTest {
     }
 
     @Test
+    fun test_getFilesFromDirectory_onlyDirectories() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_getFilesFromDirectory_noPath() {
-        val files = localFileService.getFilesFromDirectory(null)
+        val files = localFileService.getFilesFromDirectory(null, false)
         assertThat(files, allOf(
                 hasSize(3),
                 containsInAnyOrder<LocalFile>(

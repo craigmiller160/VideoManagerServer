@@ -21,7 +21,7 @@ class LocalFileController(private val localFileService: LocalFileService) {
             @RequestParam(required = false, defaultValue = "false") onlyDirectories: Boolean
     ): ResponseEntity<List<LocalFile>> {
         val actualPath = if (path == null || path.isEmpty()) null else path
-        val files = localFileService.getFilesFromDirectory(actualPath)
+        val files = localFileService.getFilesFromDirectory(actualPath, onlyDirectories)
         if (files.isEmpty()) {
             return ResponseEntity.noContent().build()
         }

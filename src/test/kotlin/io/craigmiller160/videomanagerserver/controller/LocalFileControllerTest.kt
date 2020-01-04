@@ -97,7 +97,7 @@ class LocalFileControllerTest {
 
         val path = "dir"
         val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(path))
+        `when`(localFileService.getFilesFromDirectory(path, false))
                 .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
@@ -116,7 +116,7 @@ class LocalFileControllerTest {
         )
 
         val path = "dir"
-        `when`(localFileService.getFilesFromDirectory(path))
+        `when`(localFileService.getFilesFromDirectory(path, false))
                 .thenReturn(listOf())
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
@@ -134,7 +134,7 @@ class LocalFileControllerTest {
         )
 
         val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(null))
+        `when`(localFileService.getFilesFromDirectory(null, false))
                 .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
