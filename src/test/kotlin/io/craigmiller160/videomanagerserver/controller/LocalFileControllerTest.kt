@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.dto.AppUser
 import io.craigmiller160.videomanagerserver.dto.LocalFile
+import io.craigmiller160.videomanagerserver.dto.LocalFileList
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
@@ -15,7 +16,6 @@ import org.hamcrest.Matchers.hasProperty
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -55,7 +55,7 @@ class LocalFileControllerTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    private lateinit var jacksonLocalFileList: JacksonTester<List<LocalFile>>
+    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileList>
 
     @Before
     fun setup() {
@@ -69,7 +69,7 @@ class LocalFileControllerTest {
         JacksonTester.initFields(this, objectMapper)
     }
 
-    private fun mockFiles(): List<LocalFile> {
+    private fun mockFiles(): LocalFileList {
         val file1 = LocalFile(
                 fileName = "file1",
                 filePath = "dir/file1",
@@ -85,12 +85,15 @@ class LocalFileControllerTest {
                 filePath = "dir/dir1",
                 isDirectory = true
         )
-        return listOf(file1, file2, dir1)
+        val files = listOf(file1, file2, dir1)
+        return LocalFileList(
+                rootPath = "dir",
+                files = files
+        )
     }
 
     @Test
     fun test_getFilesFromDirectory() {
-        TODO("Fix this")
         val user = AppUser(
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
@@ -98,8 +101,8 @@ class LocalFileControllerTest {
 
         val path = "dir"
         val files = mockFiles()
-//        `when`(localFileService.getFilesFromDirectory(path, false))
-//                .thenReturn(files)
+        `when`(localFileService.getFilesFromDirectory(path, false))
+                .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
@@ -110,35 +113,15 @@ class LocalFileControllerTest {
     }
 
     @Test
-    fun test_getFilesFromDirectory_noFiles() {
-        TODO("Fix this")
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
-
-        val path = "dir"
-//        `when`(localFileService.getFilesFromDirectory(path, false))
-//                .thenReturn(listOf())
-
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
-        val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(204))
-        ))
-    }
-
-    @Test
     fun test_getFilesFromDirectory_noPath() {
-        TODO("Fix this")
         val user = AppUser(
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
 
         val files = mockFiles()
-//        `when`(localFileService.getFilesFromDirectory(null, false))
-//                .thenReturn(files)
+        `when`(localFileService.getFilesFromDirectory(null, false))
+                .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         var response = mockMvcHandler.doGet("/api/localfiles/directory")
