@@ -3,9 +3,9 @@ package io.craigmiller160.videomanagerserver.dto
 import java.io.File
 
 data class LocalFile (
-        val fileName: String,
-        val filePath: String,
-        val isDirectory: Boolean
+        var fileName: String,
+        var filePath: String,
+        var isDirectory: Boolean
 ) {
     constructor(file: File) : this(
             file.name,
