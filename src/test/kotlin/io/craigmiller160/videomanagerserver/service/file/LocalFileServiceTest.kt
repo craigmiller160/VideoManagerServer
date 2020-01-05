@@ -60,29 +60,32 @@ class LocalFileServiceTest {
     fun test_getFilesFromDirectory() {
         val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, false)
         assertThat(files, allOf(
-                hasSize(4),
-                containsInAnyOrder<LocalFile>(
-                        allOf(
-                                hasProperty("fileName", equalTo(FILE_1_NAME)),
-                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
-                                hasProperty("directory", equalTo(false))
-                        ),
-                        allOf(
-                                hasProperty("fileName", equalTo(FILE_2_NAME)),
-                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
-                                hasProperty("directory", equalTo(false))
-                        ),
-                        allOf(
-                                hasProperty("fileName", equalTo(FILE_3_NAME)),
-                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
-                                hasProperty("directory", equalTo(false))
-                        ),
-                        allOf(
-                                hasProperty("fileName", equalTo(DIR_2_NAME)),
-                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
-                                hasProperty("directory", equalTo(true))
+                hasProperty("rootPath", equalTo(targetDir.absolutePath)),
+                hasProperty("files", allOf<List<LocalFile>>(
+                        hasSize(4),
+                        containsInAnyOrder<LocalFile>(
+                                allOf(
+                                        hasProperty("fileName", equalTo(FILE_1_NAME)),
+                                        hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                        hasProperty("directory", equalTo(false))
+                                ),
+                                allOf(
+                                        hasProperty("fileName", equalTo(FILE_2_NAME)),
+                                        hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                        hasProperty("directory", equalTo(false))
+                                ),
+                                allOf(
+                                        hasProperty("fileName", equalTo(FILE_3_NAME)),
+                                        hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                        hasProperty("directory", equalTo(false))
+                                ),
+                                allOf(
+                                        hasProperty("fileName", equalTo(DIR_2_NAME)),
+                                        hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                        hasProperty("directory", equalTo(true))
+                                )
                         )
-                )
+                ))
         ))
     }
 
@@ -90,14 +93,17 @@ class LocalFileServiceTest {
     fun test_getFilesFromDirectory_onlyDirectories() {
         val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, true)
         assertThat(files, allOf(
-                hasSize(1),
-                containsInAnyOrder<LocalFile>(
-                        allOf(
-                                hasProperty("fileName", equalTo(DIR_2_NAME)),
-                                hasProperty("filePath", containsString(TARGET_DIR_NAME)),
-                                hasProperty("directory", equalTo(true))
+                hasProperty("rootPath", equalTo(targetDir.absolutePath)),
+                hasProperty("files", allOf<List<LocalFile>>(
+                        hasSize(1),
+                        containsInAnyOrder<LocalFile>(
+                                allOf(
+                                        hasProperty("fileName", equalTo(DIR_2_NAME)),
+                                        hasProperty("filePath", containsString(TARGET_DIR_NAME)),
+                                        hasProperty("directory", equalTo(true))
+                                )
                         )
-                )
+                ))
         ))
     }
 
@@ -105,24 +111,27 @@ class LocalFileServiceTest {
     fun test_getFilesFromDirectory_noPath() {
         val files = localFileService.getFilesFromDirectory(null, false)
         assertThat(files, allOf(
-                hasSize(3),
-                containsInAnyOrder<LocalFile>(
-                        allOf(
-                                hasProperty("fileName", equalTo(FILE_4_NAME)),
-                                hasProperty("filePath", containsString(HOME_DIR_NAME)),
-                                hasProperty("directory", equalTo(false))
-                        ),
-                        allOf(
-                                hasProperty("fileName", equalTo(FILE_5_NAME)),
-                                hasProperty("filePath", containsString(HOME_DIR_NAME)),
-                                hasProperty("directory", equalTo(false))
-                        ),
-                        allOf(
-                                hasProperty("fileName", equalTo(DIR_1_NAME)),
-                                hasProperty("filePath", containsString(HOME_DIR_NAME)),
-                                hasProperty("directory", equalTo(true))
+                hasProperty("rootPath", equalTo(homeDir.absolutePath)),
+                hasProperty("files", allOf<List<LocalFile>>(
+                        hasSize(3),
+                        containsInAnyOrder<LocalFile>(
+                                allOf(
+                                        hasProperty("fileName", equalTo(FILE_4_NAME)),
+                                        hasProperty("filePath", containsString(HOME_DIR_NAME)),
+                                        hasProperty("directory", equalTo(false))
+                                ),
+                                allOf(
+                                        hasProperty("fileName", equalTo(FILE_5_NAME)),
+                                        hasProperty("filePath", containsString(HOME_DIR_NAME)),
+                                        hasProperty("directory", equalTo(false))
+                                ),
+                                allOf(
+                                        hasProperty("fileName", equalTo(DIR_1_NAME)),
+                                        hasProperty("filePath", containsString(HOME_DIR_NAME)),
+                                        hasProperty("directory", equalTo(true))
+                                )
                         )
-                )
+                ))
         ))
     }
 

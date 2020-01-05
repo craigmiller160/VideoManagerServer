@@ -90,6 +90,7 @@ class LocalFileControllerTest {
 
     @Test
     fun test_getFilesFromDirectory() {
+        TODO("Fix this")
         val user = AppUser(
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
@@ -97,8 +98,8 @@ class LocalFileControllerTest {
 
         val path = "dir"
         val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(path, false))
-                .thenReturn(files)
+//        `when`(localFileService.getFilesFromDirectory(path, false))
+//                .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
@@ -110,14 +111,15 @@ class LocalFileControllerTest {
 
     @Test
     fun test_getFilesFromDirectory_noFiles() {
+        TODO("Fix this")
         val user = AppUser(
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
 
         val path = "dir"
-        `when`(localFileService.getFilesFromDirectory(path, false))
-                .thenReturn(listOf())
+//        `when`(localFileService.getFilesFromDirectory(path, false))
+//                .thenReturn(listOf())
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
@@ -128,14 +130,15 @@ class LocalFileControllerTest {
 
     @Test
     fun test_getFilesFromDirectory_noPath() {
+        TODO("Fix this")
         val user = AppUser(
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
 
         val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(null, false))
-                .thenReturn(files)
+//        `when`(localFileService.getFilesFromDirectory(null, false))
+//                .thenReturn(files)
 
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         var response = mockMvcHandler.doGet("/api/localfiles/directory")
