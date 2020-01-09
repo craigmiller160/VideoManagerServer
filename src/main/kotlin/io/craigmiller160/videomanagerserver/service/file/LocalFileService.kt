@@ -23,8 +23,10 @@ class LocalFileService (
                 }
                 ?.map { file -> LocalFile(file) }
                 ?: listOf()
+        val parentPath = File(dirPath).parentFile?.absolutePath ?: ""
         return LocalFileList(
                 rootPath = dirPath,
+                parentPath = parentPath,
                 files = files
         )
     }
