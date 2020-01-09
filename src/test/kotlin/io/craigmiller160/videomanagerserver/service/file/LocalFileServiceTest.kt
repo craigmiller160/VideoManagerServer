@@ -61,6 +61,7 @@ class LocalFileServiceTest {
         val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, false)
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(targetDir.absolutePath)),
+                hasProperty("parentPath", equalTo(targetDir.parentFile.absolutePath)),
                 hasProperty("files", allOf<List<LocalFile>>(
                         hasSize(4),
                         containsInAnyOrder<LocalFile>(
@@ -94,6 +95,7 @@ class LocalFileServiceTest {
         val files = localFileService.getFilesFromDirectory(targetDir.absolutePath, true)
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(targetDir.absolutePath)),
+                hasProperty("parentPath", equalTo(targetDir.parentFile.absolutePath)),
                 hasProperty("files", allOf<List<LocalFile>>(
                         hasSize(1),
                         containsInAnyOrder<LocalFile>(
@@ -112,6 +114,7 @@ class LocalFileServiceTest {
         val files = localFileService.getFilesFromDirectory(null, false)
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(homeDir.absolutePath)),
+                hasProperty("parentPath", equalTo(homeDir.parentFile.absolutePath)),
                 hasProperty("files", allOf<List<LocalFile>>(
                         hasSize(3),
                         containsInAnyOrder<LocalFile>(

@@ -23,8 +23,10 @@ class LocalFileService (
                 }
                 ?.map { file -> LocalFile(file) }
                 ?: listOf()
+        val parentPath = File(dirPath).parentFile.absolutePath // TODO if no parentFile, then NPE
         return LocalFileList(
                 rootPath = dirPath,
+                parentPath = parentPath,
                 files = files
         )
     }
