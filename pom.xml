@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.1.RELEASE</version>
+        <version>2.2.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.craigmiller160</groupId>
@@ -16,8 +16,11 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <kotlin.version>1.3.41</kotlin.version>
-        <hamcrest.version>2.1</hamcrest.version>
+        <kotlin.version>1.3.61</kotlin.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <postgres.version>42.2.5</postgres.version>
+        <mockito.kotlin.version>1.6.0</mockito.kotlin.version>
+        <nimbus.jose.version>7.9</nimbus.jose.version>
         <start-class>io.craigmiller160.videomanagerserver.VideoManagerServerApplicationKt</start-class>
     </properties>
 
@@ -63,21 +66,21 @@
         <dependency>
             <groupId>com.nhaarman</groupId>
             <artifactId>mockito-kotlin</artifactId>
-            <version>1.6.0</version>
+            <version>${mockito.kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-            <version>7.9</version>
+            <version>${nimbus.jose.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
+            <version>${postgres.version}</version>
         </dependency>
 
         <dependency>
