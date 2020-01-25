@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import org.junit.Assert.assertEquals
 import org.springframework.mock.web.MockHttpServletResponse
 
-const val CONTENT_TYPE_JSON = "application/json;charset=UTF-8"
+const val CONTENT_TYPE_JSON = "application/json"
 
 fun assertOkResponse(response: MockHttpServletResponse, content: String) {
     assertEquals(200, response.status)
