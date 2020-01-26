@@ -50,18 +50,19 @@ class AuthenticationFilter (
                         SecurityContextHolder.getContext().authentication = auth
                         chain.doFilter(req, resp)
                     }
-                    else -> unauthenticated(req, resp, chain)
+                    else -> unauthenticated(req, resp, chain, status)
                 }
             }
             catch (ex: Exception) {
                 logger.error("Error handling token", ex)
-                unauthenticated(req, resp, chain)
+                unauthenticated(req, resp, chain, TokenValidationStatus.VALIDATION_ERROR)
             }
-        } ?: unauthenticated(req, resp, chain)
+        } ?: unauthenticated(req, resp, chain, TokenValidationStatus.NO_TOKEN)
     }
 
-    private fun unauthenticated(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
-        logger.error("Attempted unauthenticated access") // TODO make this better and more robust
+    private fun unauthenticated(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain, status: TokenValidationStatus) {
+        val request = "${req.method} ${getPathUri(req)}"
+        logger.error("Attempted unauthenticated access. Request: $request Status: $status")
         SecurityContextHolder.clearContext()
         chain.doFilter(req, resp)
     }
