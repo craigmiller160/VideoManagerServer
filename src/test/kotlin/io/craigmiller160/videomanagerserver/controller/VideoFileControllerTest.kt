@@ -52,9 +52,8 @@ import java.util.Optional
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class VideoFileControllerTest {
+class VideoFileControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
 
     @MockBean
@@ -78,9 +77,6 @@ class VideoFileControllerTest {
     private lateinit var scanRunning: FileScanStatus
     private lateinit var scanNotRunning: FileScanStatus
     private lateinit var scanAlreadyRunning: FileScanStatus
-
-    @Autowired
-    private lateinit var webAppContext: WebApplicationContext
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -112,12 +108,7 @@ class VideoFileControllerTest {
         scanNotRunning = createScanNotRunningStatus()
         scanAlreadyRunning = createScanAlreadyRunningStatus()
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler = buildMockMvcHandler()
 
         JacksonTester.initFields(this, objectMapper)
     }
