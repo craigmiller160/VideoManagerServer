@@ -13,34 +13,25 @@ import org.hamcrest.Matchers.hasProperty
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.util.ReflectionTestUtils
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class CategoryControllerTest {
+class CategoryControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
 
-    @Mock
+    @MockBean
     private lateinit var categoryService: CategoryService
 
     @Autowired
@@ -56,9 +47,6 @@ class CategoryControllerTest {
     private lateinit var categoryList: List<Category>
 
     @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
-    @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
@@ -69,17 +57,9 @@ class CategoryControllerTest {
         category3 = Category(3, "ThirdCategory")
         categoryList = listOf(category1, category2, category3)
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler = buildMockMvcHandler()
 
         JacksonTester.initFields(this, ObjectMapper())
-        MockitoAnnotations.initMocks(this)
-
-        ReflectionTestUtils.setField(categoryController, "categoryService", categoryService)
     }
 
     @Test

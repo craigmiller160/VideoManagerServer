@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -35,12 +36,11 @@ import java.util.Optional
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class StarControllerTest {
+class StarControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
 
-    @Mock
+    @MockBean
     private lateinit var starService: StarService
 
     @Autowired
@@ -56,9 +56,6 @@ class StarControllerTest {
     private lateinit var starList: List<Star>
 
     @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
-    @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
@@ -69,16 +66,8 @@ class StarControllerTest {
         star3 = Star(3, "ThirdStar")
         starList = listOf(star1, star2, star3)
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
-
-        MockitoAnnotations.initMocks(this)
+        mockMvcHandler = buildMockMvcHandler()
         JacksonTester.initFields(this, ObjectMapper())
-        ReflectionTestUtils.setField(starController, "starService", starService)
     }
 
     @Test

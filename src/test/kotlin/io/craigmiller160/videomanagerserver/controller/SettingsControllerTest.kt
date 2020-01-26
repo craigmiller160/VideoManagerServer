@@ -35,7 +35,7 @@ import org.springframework.web.context.WebApplicationContext
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class SettingsControllerTest {
+class SettingsControllerTest : AbstractControllerTest() {
 
     companion object {
         private const val ROOT_DIR = "rootDir"
@@ -63,12 +63,7 @@ class SettingsControllerTest {
 
     @Before
     fun setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler = buildMockMvcHandler()
 
         JacksonTester.initFields(this, objectMapper)
     }
