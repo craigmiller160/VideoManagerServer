@@ -9,6 +9,7 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenPro
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -56,6 +57,11 @@ class AuthenticationFilterTest {
     @Before
     fun setup() {
         SecurityContextHolder.setContext(securityContext)
+    }
+
+    @After
+    fun after() {
+        SecurityContextHolder.clearContext()
     }
 
     private fun setupRequest(path: String) {
