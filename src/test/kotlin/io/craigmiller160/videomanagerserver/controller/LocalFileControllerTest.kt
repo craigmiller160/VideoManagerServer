@@ -35,7 +35,7 @@ import org.springframework.web.context.WebApplicationContext
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class LocalFileControllerTest {
+class LocalFileControllerTest : AbstractControllerTest() {
 
     @MockBean
     private lateinit var localFileService: LocalFileService
@@ -46,7 +46,6 @@ class LocalFileControllerTest {
     @Autowired
     private lateinit var webAppContext: WebApplicationContext
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
 
     @Autowired
@@ -59,13 +58,7 @@ class LocalFileControllerTest {
 
     @Before
     fun setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
-
+        mockMvcHandler = buildMockMvcHandler()
         JacksonTester.initFields(this, objectMapper)
     }
 

@@ -21,22 +21,14 @@ import org.hamcrest.Matchers.matchesPattern
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.util.ReflectionTestUtils
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 import java.time.Duration
 
 
@@ -44,7 +36,7 @@ import java.time.Duration
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class AuthControllerTest {
+class AuthControllerTest : AbstractControllerTest() {
 
     companion object {
         private const val ROLE = "MyRole"
@@ -52,7 +44,7 @@ class AuthControllerTest {
         private const val PASSWORD = "password"
     }
 
-    @Mock
+    @MockBean
     private lateinit var authService: AuthService
 
     @Autowired
@@ -63,11 +55,7 @@ class AuthControllerTest {
     private lateinit var jacksonUserList: JacksonTester<List<AppUser>>
     private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
-
-    @Autowired
-    private lateinit var webAppContext: WebApplicationContext
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -77,16 +65,9 @@ class AuthControllerTest {
 
     @Before
     fun setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler = buildMockMvcHandler()
 
         JacksonTester.initFields(this, objectMapper)
-        MockitoAnnotations.initMocks(this)
-        ReflectionTestUtils.setField(authController, "authService", authService)
     }
 
     @Test

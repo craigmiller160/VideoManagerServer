@@ -28,40 +28,35 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.UrlResource
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.io.File
-import java.net.URLEncoder
-import java.util.Base64
 import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
-class VideoFileControllerTest {
+class VideoFileControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvc: MockMvc
     private lateinit var mockMvcHandler: MockMvcHandler
 
-    @Mock
+    @MockBean
     private lateinit var videoFileService: VideoFileService
 
     @Autowired
@@ -82,9 +77,6 @@ class VideoFileControllerTest {
     private lateinit var scanRunning: FileScanStatus
     private lateinit var scanNotRunning: FileScanStatus
     private lateinit var scanAlreadyRunning: FileScanStatus
-
-    @Autowired
-    private lateinit var webAppContext: WebApplicationContext
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -116,16 +108,9 @@ class VideoFileControllerTest {
         scanNotRunning = createScanNotRunningStatus()
         scanAlreadyRunning = createScanAlreadyRunningStatus()
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webAppContext)
-                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
-                .alwaysDo<DefaultMockMvcBuilder>(MockMvcResultHandlers.print())
-                .build()
-        mockMvcHandler = MockMvcHandler(mockMvc)
+        mockMvcHandler = buildMockMvcHandler()
 
-        MockitoAnnotations.initMocks(this)
         JacksonTester.initFields(this, objectMapper)
-        ReflectionTestUtils.setField(videoFileController, "videoFileService", videoFileService)
     }
 
     @Test
