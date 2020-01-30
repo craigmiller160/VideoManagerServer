@@ -31,6 +31,7 @@ data class VideoFile(
         var lastModified: LocalDateTime = DEFAULT_TIMESTAMP,
         var fileAdded: LocalDateTime? = null,
         var lastViewed: LocalDateTime? = null,
+        var active: Boolean = false,
 
         @JsonIgnore
         var lastScanTimestamp: LocalDateTime = DEFAULT_TIMESTAMP,
