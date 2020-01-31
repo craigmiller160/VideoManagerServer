@@ -465,4 +465,10 @@ class VideoFileServiceImplTest {
         assertThat(argumentCaptor.allValues, contains<Any>(1L))
     }
 
+    @Test
+    fun test_searchForVideos() {
+        // TODO also add the WHERE clause to all the query builder tests
+        TODO("Finish this")
+    }
+
 }

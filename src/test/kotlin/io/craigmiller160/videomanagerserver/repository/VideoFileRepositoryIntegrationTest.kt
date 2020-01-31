@@ -138,4 +138,16 @@ class VideoFileRepositoryIntegrationTest {
         assertEquals(FILE_NAME_3, file.get().fileName)
     }
 
+    @Test
+    fun test_setOldFilesInactive() {
+        val timestamp = LocalDateTime.now()
+        val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp)).fileId
+
+        TODO("Finish this")
+    }
+
+    fun test_getActiveFiles() {
+        TODO("Finish this")
+    }
+
 }

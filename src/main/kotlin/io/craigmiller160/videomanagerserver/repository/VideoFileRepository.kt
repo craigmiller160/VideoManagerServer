@@ -16,4 +16,10 @@ interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long> {
     @Transactional
     fun deleteOldFiles(scanTimestamp: LocalDateTime)
 
+    @Query("UPDATE VideoFile vf SET vf.active = false WHERE vf.lastScanTimestamp IS NULL OR vf.lastScanTimestamp <= :scanTimestamp")
+    @Modifying
+    fun setOldFilesInactive(scanTimestamp: LocalDateTime)
+
+
+
 }
