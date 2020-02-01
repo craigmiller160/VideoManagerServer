@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
@@ -13,7 +14,9 @@ import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
+import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -49,23 +52,9 @@ class VideoFileServiceIntegrationTest {
 
     @Autowired
     private lateinit var videoFileService: VideoFileService
-    @Autowired
-    private lateinit var dataSource: DataSource
 
     @Autowired
-    private lateinit var videoFileRepo: VideoFileRepository
-    @Autowired
-    private lateinit var categoryRepo: CategoryRepository
-    @Autowired
-    private lateinit var seriesRepo: SeriesRepository
-    @Autowired
-    private lateinit var starRepo: StarRepository
-    @Autowired
-    private lateinit var fileCategoryRepo: FileCategoryRepository
-    @Autowired
-    private lateinit var fileSeriesRepo: FileSeriesRepository
-    @Autowired
-    private lateinit var fileStarRepo: FileStarRepository
+    private lateinit var dbTestUtils: DbTestUtils
 
     private lateinit var file1: VideoFile
     private lateinit var file2: VideoFile
@@ -97,44 +86,41 @@ class VideoFileServiceIntegrationTest {
 
     @After
     fun clean() {
-        fileCategoryRepo.deleteAll()
-        fileSeriesRepo.deleteAll()
-        fileStarRepo.deleteAll()
-
-        categoryRepo.deleteAll()
-        starRepo.deleteAll()
-        seriesRepo.deleteAll()
-        videoFileRepo.deleteAll()
-
-        dataSource.connection.use { conn ->
-            conn.createStatement().use { stmt ->
-                stmt.executeUpdate("ALTER TABLE categories ALTER COLUMN category_id RESTART WITH 1")
-                stmt.executeUpdate("ALTER TABLE series ALTER COLUMN series_id RESTART WITH 1")
-                stmt.executeUpdate("ALTER TABLE stars ALTER COLUMN star_id RESTART WITH 1")
-                stmt.executeUpdate("ALTER TABLE video_files ALTER COLUMN file_id RESTART WITH 1")
-            }
-            conn.commit()
-        }
+        dbTestUtils.cleanDb()
     }
 
     @Test
-    fun testSortOrderAsc() {
-        val files = videoFileService.getAllVideoFiles(0, Sort.Direction.ASC.toString())
-        assertNotNull(files)
-        assertEquals(3, files.size)
-        assertEquals(file1, files[0])
-        assertEquals(file3, files[1])
-        assertEquals(file2, files[2])
+    fun test_searchForVideos_sortAsc() {
+        val search = VideoSearch(
+                sortBy = SortBy.NAME,
+                sortDir = Sort.Direction.ASC
+        )
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", equalTo(3L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", contains(
+                        file1, file3, file2
+                ))
+        ))
     }
 
     @Test
-    fun testSortOrderDesc() {
-        val files = videoFileService.getAllVideoFiles(0, Sort.Direction.DESC.toString())
-        assertNotNull(files)
-        assertEquals(3, files.size)
-        assertEquals(file2, files[0])
-        assertEquals(file3, files[1])
-        assertEquals(file1, files[2])
+    fun test_searchForVideos_sortDesc() {
+        val search = VideoSearch(
+                sortBy = SortBy.NAME,
+                sortDir = Sort.Direction.DESC
+        )
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", equalTo(3L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(0)),
+                hasProperty("videoList", contains(
+                        file2, file3, file1
+                ))
+        ))
     }
 
     @Test

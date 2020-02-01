@@ -25,7 +25,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_noCriteria() {
         val expected = """
-            ORDER BY vf.displayName ASC
+            ORDER BY vf.displayName ASC, vf.fileName ASC
         """.trimIndent()
         val search = VideoSearch()
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -35,7 +35,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_descOrder() {
         val expected = """
-            ORDER BY vf.displayName DESC
+            ORDER BY vf.displayName DESC, vf.fileName DESC
         """.trimIndent()
         val search = VideoSearch(sortDir = Sort.Direction.DESC)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -225,7 +225,7 @@ class SearchQueryBuilderTest {
         val expected = """
             SELECT vf FROM VideoFile vf
             WHERE vf.active = true
-            ORDER BY vf.displayName ASC
+            ORDER BY vf.displayName ASC, vf.fileName ASC
         """.trimIndent()
         val actual = searchQueryBuilder.buildEntitySearchQuery(VideoSearch())
         assertEquals(expected, actual)

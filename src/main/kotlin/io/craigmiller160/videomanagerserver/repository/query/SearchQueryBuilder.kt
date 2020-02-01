@@ -40,7 +40,12 @@ class SearchQueryBuilder {
     }
 
     internal fun buildQueryOrderBy(search: VideoSearch): String {
-        return "ORDER BY ${search.sortBy.orderByClause} ${search.sortDir}"
+        val builder = StringBuilder()
+                .append("ORDER BY ")
+        val columns = search.sortBy.orderByClause
+                .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
+        builder.append(columns)
+        return builder.toString().trim()
     }
 
     internal fun buildQueryCriteria(search: VideoSearch): String {
