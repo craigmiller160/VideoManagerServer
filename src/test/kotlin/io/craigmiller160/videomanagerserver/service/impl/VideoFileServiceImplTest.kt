@@ -43,7 +43,6 @@ import org.mockito.Spy
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import java.lang.Exception
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -297,9 +296,13 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_noCriteria() {
+        val expected = """
+            WHERE vf.active = true
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
         val search = VideoSearch()
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.displayName ASC\n", query)
+        assertEquals(expected, query)
     }
 
     @Test
@@ -326,9 +329,13 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_sortByLastViewed() {
+        val expected = """
+            WHERE vf.active = true
+            ORDER BY vf.lastViewed ASC
+        """.trimIndent()
         val search = VideoSearch(sortBy = SortBy.LAST_VIEWED)
         val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.lastViewed ASC\n", query)
+        assertEquals(expected, query)
     }
 
     @Test
@@ -355,15 +362,18 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_allCriteria() {
-        val expected = "LEFT JOIN vf.categories ca\n" +
-                "LEFT JOIN vf.series se\n" +
-                "LEFT JOIN vf.stars st\n" +
-                "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
-                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
-                "AND ca.categoryId = :categoryId\n" +
-                "AND se.seriesId = :seriesId\n" +
-                "AND st.starId = :starId\n" +
-                "ORDER BY vf.displayName ASC\n"
+        val expected = """
+            LEFT JOIN vf.categories ca
+            LEFT JOIN vf.series se
+            LEFT JOIN vf.stars st
+            WHERE vf.active = true
+            AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
+            OR LOWER(vf.displayName) LIKE LOWER(:searchText))
+            AND ca.categoryId = :categoryId
+            AND se.seriesId = :seriesId
+            AND st.starId = :starId
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
 
         val search = VideoSearch("Hello", 1, 1, 1)
         val query = videoFileService.buildQueryCriteria(search, true)
@@ -372,9 +382,12 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlySearchText() {
-        val expected = "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
-                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
-                "ORDER BY vf.displayName ASC\n"
+        val expected = """
+            WHERE vf.active = true
+            AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
+            OR LOWER(vf.displayName) LIKE LOWER(:searchText))
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
         val search = VideoSearch("Hello")
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
@@ -382,9 +395,12 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlyCategory() {
-        val expected = "LEFT JOIN vf.categories ca\n" +
-                "WHERE ca.categoryId = :categoryId\n" +
-                "ORDER BY vf.displayName ASC\n"
+        val expected = """
+            LEFT JOIN vf.categories ca
+            WHERE vf.active = true
+            AND ca.categoryId = :categoryId
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
         val search = VideoSearch(categoryId = 1)
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
@@ -392,9 +408,12 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_buildQueryCriteria_onlyStar() {
-        val expected = "LEFT JOIN vf.stars st\n" +
-                "WHERE st.starId = :starId\n" +
-                "ORDER BY vf.displayName ASC\n"
+        val expected = """
+            LEFT JOIN vf.stars st
+            WHERE vf.active = true
+            AND st.starId = :starId
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
         val search = VideoSearch(starId = 1)
         val query = videoFileService.buildQueryCriteria(search, true)
         assertEquals(expected, query)
