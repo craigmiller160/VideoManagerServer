@@ -1,6 +1,8 @@
 package io.craigmiller160.videomanagerserver.dto.id
 
-class FileSeriesId {
+import java.io.Serializable
+
+class FileSeriesId : Serializable {
     var fileId: Long = 0
     var seriesId: Long = 0
 }
