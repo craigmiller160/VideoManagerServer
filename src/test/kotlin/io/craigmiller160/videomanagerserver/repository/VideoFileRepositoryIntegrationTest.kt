@@ -5,6 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.getFirst
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -20,7 +21,6 @@ import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@Transactional
 class VideoFileRepositoryIntegrationTest {
 
     companion object {
@@ -52,10 +52,16 @@ class VideoFileRepositoryIntegrationTest {
 
     @Before
     fun setup() {
-        val category = Category(categoryName = CATEGORY_NAME)
-        val category2 = Category(categoryName = "${CATEGORY_NAME}2")
-        val series = Series(seriesName = SERIES_NAME)
-        val star = Star(starName = STAR_NAME)
+        var category = Category(categoryName = CATEGORY_NAME)
+        var category2 = Category(categoryName = "${CATEGORY_NAME}2")
+        var series = Series(seriesName = SERIES_NAME)
+        var star = Star(starName = STAR_NAME)
+
+        category = categoryRepo.save(category)
+        category2 = categoryRepo.save(category2)
+        series = seriesRepo.save(series)
+        star = starRepo.save(star)
+
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME, active = true).apply {
             categories.add(category)
             categories.add(category2)
@@ -64,22 +70,19 @@ class VideoFileRepositoryIntegrationTest {
             lastModified = DATE_2
         }
 
-        categoryRepo.save(category)
-        categoryRepo.save(category2)
-        seriesRepo.save(series)
-        starRepo.save(star)
+
         videoFile = videoFileRepo.save(videoFile)
         videoFile2 = VideoFile(fileName = FILE_NAME_2, active = true)
         videoFile2 = videoFileRepo.save(videoFile2)
     }
 
-//    @After
-//    fun clean() {
-//        categoryRepo.deleteAll()
-//        seriesRepo.deleteAll()
-//        starRepo.deleteAll()
-//        videoFileRepo.deleteAll()
-//    }
+    @After
+    fun clean() {
+        categoryRepo.deleteAll()
+        seriesRepo.deleteAll()
+        starRepo.deleteAll()
+        videoFileRepo.deleteAll()
+    }
 
     @Test
     fun testInsertAll() {
@@ -141,18 +144,14 @@ class VideoFileRepositoryIntegrationTest {
     @Test
     fun test_setOldFilesInactive() {
         val timestamp = LocalDateTime.now()
-        val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp, active = true)).fileId
+        videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp, active = true)).fileId
 
         val result = videoFileRepo.setOldFilesInactive(timestamp)
-        println(result)
-        videoFileRepo.flush()
+        assertEquals(2, result)
 
         val fileMap = videoFileRepo.findAll()
                 .groupBy { file -> file.active }
 
-        videoFileRepo.findAll().forEach { file -> println(file.active) }
-
-        println(fileMap) // TODO delete this
         assertEquals(1, fileMap[true]?.size)
         assertEquals(2, fileMap[false]?.size)
     }
