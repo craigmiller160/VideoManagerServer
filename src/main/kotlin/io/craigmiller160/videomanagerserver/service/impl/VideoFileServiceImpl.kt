@@ -136,7 +136,7 @@ class VideoFileServiceImpl @Autowired constructor(
         val pageSize = videoConfig.apiPageSize
 
         val searchQueryString = searchQueryBuilder.buildEntitySearchQuery(search)
-        val countQueryString = searchQueryBuilder.buildEntityCountQuery(search)
+        val countQueryString = searchQueryBuilder.buildCountSearchQuery(search)
 
         val searchQuery = entityManager.createQuery(searchQueryString)
         val countQuery = entityManager.createQuery(countQueryString)

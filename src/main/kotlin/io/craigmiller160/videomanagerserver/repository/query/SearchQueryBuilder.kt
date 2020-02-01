@@ -7,7 +7,6 @@ import javax.persistence.Query
 @Component
 class SearchQueryBuilder {
 
-    // TODO need a simple unit test for the base method
     fun buildEntitySearchQuery(search: VideoSearch): String {
         return StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
@@ -17,8 +16,7 @@ class SearchQueryBuilder {
                 .trim()
     }
 
-    // TODO need a simple unit test for the base method
-    fun buildEntityCountQuery(search: VideoSearch): String {
+    fun buildCountSearchQuery(search: VideoSearch): String {
         return StringBuilder()
                 .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
                 .appendln(buildQueryCriteria(search))

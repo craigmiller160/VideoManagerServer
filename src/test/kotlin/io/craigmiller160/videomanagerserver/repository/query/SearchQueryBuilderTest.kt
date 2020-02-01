@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.test_util.isA
+import junit.framework.Assert.assertEquals
 import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Test
@@ -217,6 +218,27 @@ class SearchQueryBuilderTest {
                 .setParameter(isA(String::class.java), argumentCaptor.capture())
         Assert.assertEquals(1, argumentCaptor.allValues.size)
         Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
+    }
+
+    @Test
+    fun test_buildEntitySearchQuery() {
+        val expected = """
+            SELECT vf FROM VideoFile vf
+            WHERE vf.active = true
+            ORDER BY vf.displayName ASC
+        """.trimIndent()
+        val actual = searchQueryBuilder.buildEntitySearchQuery(VideoSearch())
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun test_buildCountSearchQuery() {
+        val expected = """
+            SELECT COUNT(vf) AS video_file_count FROM VideoFile vf
+            WHERE vf.active = true
+        """.trimIndent()
+        val actual = searchQueryBuilder.buildCountSearchQuery(VideoSearch())
+        assertEquals(expected, actual)
     }
 
 }
