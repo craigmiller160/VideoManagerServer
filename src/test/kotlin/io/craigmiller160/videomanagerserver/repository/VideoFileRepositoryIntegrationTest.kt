@@ -58,6 +58,12 @@ class VideoFileRepositoryIntegrationTest {
     @Autowired
     private lateinit var fileCategoryRepo: FileCategoryRepository
 
+    @Autowired
+    private lateinit var fileStarRepository: FileStarRepository
+
+    @Autowired
+    private lateinit var fileSeriesRepository: FileSeriesRepository
+
     private lateinit var videoFile: VideoFile
     private lateinit var videoFile2: VideoFile
 
@@ -93,6 +99,8 @@ class VideoFileRepositoryIntegrationTest {
     @After
     fun clean() {
         fileCategoryRepo.deleteAll()
+        fileSeriesRepository.deleteAll()
+        fileStarRepository.deleteAll()
         categoryRepo.deleteAll()
         seriesRepo.deleteAll()
         starRepo.deleteAll()
