@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
 import javax.persistence.Query
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class VideoFileServiceImplTest {
 
     companion object {
