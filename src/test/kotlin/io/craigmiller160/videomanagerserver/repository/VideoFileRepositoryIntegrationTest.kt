@@ -56,7 +56,7 @@ class VideoFileRepositoryIntegrationTest {
         val category2 = Category(categoryName = "${CATEGORY_NAME}2")
         val series = Series(seriesName = SERIES_NAME)
         val star = Star(starName = STAR_NAME)
-        videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
+        videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME, active = true).apply {
             categories.add(category)
             categories.add(category2)
             this.series.add(series)
@@ -69,7 +69,7 @@ class VideoFileRepositoryIntegrationTest {
         seriesRepo.save(series)
         starRepo.save(star)
         videoFile = videoFileRepo.save(videoFile)
-        videoFile2 = VideoFile(fileName = FILE_NAME_2)
+        videoFile2 = VideoFile(fileName = FILE_NAME_2, active = true)
         videoFile2 = videoFileRepo.save(videoFile2)
     }
 
@@ -141,13 +141,20 @@ class VideoFileRepositoryIntegrationTest {
     @Test
     fun test_setOldFilesInactive() {
         val timestamp = LocalDateTime.now()
-        val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp)).fileId
+        val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp, active = true)).fileId
 
-        TODO("Finish this")
-    }
+        val result = videoFileRepo.setOldFilesInactive(timestamp)
+        println(result)
+        videoFileRepo.flush()
 
-    fun test_getActiveFiles() {
-        TODO("Finish this")
+        val fileMap = videoFileRepo.findAll()
+                .groupBy { file -> file.active }
+
+        videoFileRepo.findAll().forEach { file -> println(file.active) }
+
+        println(fileMap) // TODO delete this
+        assertEquals(1, fileMap[true]?.size)
+        assertEquals(2, fileMap[false]?.size)
     }
 
 }
