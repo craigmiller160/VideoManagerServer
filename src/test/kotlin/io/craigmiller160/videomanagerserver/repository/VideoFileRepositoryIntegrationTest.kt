@@ -5,10 +5,17 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.getFirst
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsInAnyOrder
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -25,6 +32,7 @@ class VideoFileRepositoryIntegrationTest {
 
     companion object {
         private const val CATEGORY_NAME = "MyCategory"
+        private const val CATEGORY_2_NAME = "MyCategory2"
         private const val SERIES_NAME = "MySeries"
         private const val STAR_NAME = "MyStar"
         private const val FILE_NAME = "MyFile"
@@ -53,7 +61,7 @@ class VideoFileRepositoryIntegrationTest {
     @Before
     fun setup() {
         var category = Category(categoryName = CATEGORY_NAME)
-        var category2 = Category(categoryName = "${CATEGORY_NAME}2")
+        var category2 = Category(categoryName = CATEGORY_2_NAME)
         var series = Series(seriesName = SERIES_NAME)
         var star = Star(starName = STAR_NAME)
 
@@ -63,14 +71,17 @@ class VideoFileRepositoryIntegrationTest {
         star = starRepo.save(star)
 
         videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME, active = true).apply {
-            categories.add(category)
-            categories.add(category2)
-            this.series.add(series)
-            stars.add(star)
             lastModified = DATE_2
         }
 
 
+        videoFile = videoFileRepo.save(videoFile)
+        videoFile.apply {
+            categories.add(category)
+            categories.add(category2)
+            this.series.add(series)
+            stars.add(star)
+        }
         videoFile = videoFileRepo.save(videoFile)
         videoFile2 = VideoFile(fileName = FILE_NAME_2, active = true)
         videoFile2 = videoFileRepo.save(videoFile2)
@@ -78,9 +89,9 @@ class VideoFileRepositoryIntegrationTest {
 
     @After
     fun clean() {
-        categoryRepo.deleteAll()
-        seriesRepo.deleteAll()
-        starRepo.deleteAll()
+//        categoryRepo.deleteAll()
+//        seriesRepo.deleteAll()
+//        starRepo.deleteAll()
         videoFileRepo.deleteAll()
     }
 
@@ -92,18 +103,29 @@ class VideoFileRepositoryIntegrationTest {
         assertTrue(fileOptional.isPresent)
 
         val file = fileOptional.get()
-        assertNotNull(file)
-        assertEquals(FILE_NAME, file.fileName)
-        assertEquals(FILE_DISPLAY_NAME, file.displayName)
-
-        assertEquals(2, file.categories.size)
-        assertEquals(CATEGORY_NAME, getFirst(file.categories).categoryName)
-
-        assertEquals(1, file.series.size)
-        assertEquals(SERIES_NAME, getFirst(file.series).seriesName)
-
-        assertEquals(1, file.stars.size)
-        assertEquals(STAR_NAME, getFirst(file.stars).starName)
+        assertThat(file, allOf(
+                hasProperty("fileName", equalTo(FILE_NAME)),
+                hasProperty("displayName", equalTo(FILE_DISPLAY_NAME)),
+                hasProperty("categories", allOf<List<Category>>(
+                        hasSize(2),
+                        containsInAnyOrder(
+                                hasProperty("categoryName", equalTo(CATEGORY_NAME)),
+                                hasProperty("categoryName", equalTo(CATEGORY_2_NAME))
+                        )
+                )),
+                hasProperty("series", allOf<List<Series>>(
+                        hasSize(1),
+                        containsInAnyOrder(
+                                hasProperty("seriesName", equalTo(SERIES_NAME))
+                        )
+                )),
+                hasProperty("stars", allOf<List<Star>>(
+                        hasSize(1),
+                        containsInAnyOrder(
+                                hasProperty("starName", equalTo(STAR_NAME))
+                        )
+                ))
+        ))
     }
 
     @Test
