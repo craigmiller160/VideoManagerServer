@@ -93,7 +93,6 @@ class SearchQueryBuilderTest {
             AND ca.categoryId = :categoryId
             AND se.seriesId = :seriesId
             AND st.starId = :starId
-            ORDER BY vf.displayName ASC
         """.trimIndent()
 
         val search = VideoSearch("Hello", 1, 1, 1)
@@ -107,7 +106,6 @@ class SearchQueryBuilderTest {
             WHERE vf.active = true
             AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
             OR LOWER(vf.displayName) LIKE LOWER(:searchText))
-            ORDER BY vf.displayName ASC
         """.trimIndent()
         val search = VideoSearch("Hello")
         val query = searchQueryBuilder.buildQueryCriteria(search)
@@ -120,7 +118,6 @@ class SearchQueryBuilderTest {
             LEFT JOIN vf.categories ca
             WHERE vf.active = true
             AND ca.categoryId = :categoryId
-            ORDER BY vf.displayName ASC
         """.trimIndent()
         val search = VideoSearch(categoryId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
@@ -133,7 +130,6 @@ class SearchQueryBuilderTest {
             LEFT JOIN vf.stars st
             WHERE vf.active = true
             AND st.starId = :starId
-            ORDER BY vf.displayName ASC
         """.trimIndent()
         val search = VideoSearch(starId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
@@ -146,7 +142,6 @@ class SearchQueryBuilderTest {
             LEFT JOIN vf.series se
             WHERE vf.active = true
             AND se.seriesId = :seriesId
-            ORDER BY vf.displayName ASC
         """.trimIndent()
         val search = VideoSearch(seriesId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
