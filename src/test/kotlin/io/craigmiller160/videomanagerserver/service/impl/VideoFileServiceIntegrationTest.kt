@@ -5,6 +5,13 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.repository.CategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
+import io.craigmiller160.videomanagerserver.repository.FileStarRepository
+import io.craigmiller160.videomanagerserver.repository.SeriesRepository
+import io.craigmiller160.videomanagerserver.repository.StarRepository
+import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -26,7 +33,6 @@ import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@Transactional
 class VideoFileServiceIntegrationTest {
 
     companion object {
@@ -37,6 +43,8 @@ class VideoFileServiceIntegrationTest {
         private const val FILE_DISPLAY_NAME_2 = "MyDisplayFile2"
 
         private const val FILE_NAME_3 = "MyFile2"
+
+        private const val FILE_NAME_4 = "MyFile4"
     }
 
     @Autowired
@@ -44,9 +52,25 @@ class VideoFileServiceIntegrationTest {
     @Autowired
     private lateinit var dataSource: DataSource
 
+    @Autowired
+    private lateinit var videoFileRepo: VideoFileRepository
+    @Autowired
+    private lateinit var categoryRepo: CategoryRepository
+    @Autowired
+    private lateinit var seriesRepo: SeriesRepository
+    @Autowired
+    private lateinit var starRepo: StarRepository
+    @Autowired
+    private lateinit var fileCategoryRepo: FileCategoryRepository
+    @Autowired
+    private lateinit var fileSeriesRepo: FileSeriesRepository
+    @Autowired
+    private lateinit var fileStarRepo: FileStarRepository
+
     private lateinit var file1: VideoFile
     private lateinit var file2: VideoFile
     private lateinit var file3: VideoFile
+    private lateinit var file4: VideoFile
 
     @Before
     fun setup() {
@@ -58,18 +82,30 @@ class VideoFileServiceIntegrationTest {
             categories.add(category)
             this.series.add(series)
             stars.add(star)
+            active = true
         }
         file1 = videoFileService.addVideoFile(file1)
 
-        file2 = VideoFile(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2)
+        file2 = VideoFile(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2, active = true)
         file3 = videoFileService.addVideoFile(file2)
 
-        file3 = VideoFile(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2)
+        file3 = VideoFile(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2, active = true)
         file3 = videoFileService.addVideoFile(file3)
+
+        file4 = VideoFile(fileName = FILE_NAME_4, active = true)
     }
 
     @After
     fun clean() {
+        fileCategoryRepo.deleteAll()
+        fileSeriesRepo.deleteAll()
+        fileStarRepo.deleteAll()
+
+        categoryRepo.deleteAll()
+        starRepo.deleteAll()
+        seriesRepo.deleteAll()
+        videoFileRepo.deleteAll()
+
         dataSource.connection.use { conn ->
             conn.createStatement().use { stmt ->
                 stmt.executeUpdate("ALTER TABLE categories ALTER COLUMN category_id RESTART WITH 1")
