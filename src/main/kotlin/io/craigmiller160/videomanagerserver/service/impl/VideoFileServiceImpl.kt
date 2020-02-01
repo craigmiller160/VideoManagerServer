@@ -141,7 +141,7 @@ class VideoFileServiceImpl @Autowired constructor(
             queryBuilder.appendln("LEFT JOIN vf.stars st")
         }
 
-        queryBuilder.append("WHERE vf.active = true")
+        queryBuilder.appendln("WHERE vf.active = true")
 
         search.searchText?.let {
             queryBuilder.appendln("AND (LOWER(vf.fileName) LIKE LOWER(:searchText)")
@@ -161,7 +161,7 @@ class VideoFileServiceImpl @Autowired constructor(
             queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir}")
         }
 
-        return queryBuilder.toString()
+        return queryBuilder.toString().trim()
     }
 
     internal fun addParamsToQuery(search: VideoSearch, query: Query) {
