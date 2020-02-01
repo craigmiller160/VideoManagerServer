@@ -37,6 +37,8 @@ class FileScanner @Autowired constructor(
         val fileExts = videoConfig.splitFileExts()
         val scanTimestamp = LocalDateTime.now()
 
+        TODO("Update this to mark as inactive rather than delete")
+
         return GlobalScope.launch(Dispatchers.IO) {
             try {
                 logger.info("Starting scan of directory: $filePathRoot")
