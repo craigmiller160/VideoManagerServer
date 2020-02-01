@@ -11,6 +11,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.dto.Settings
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
@@ -24,7 +25,6 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -36,6 +36,7 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
@@ -45,6 +46,7 @@ import org.springframework.data.domain.Sort
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
+import javax.persistence.Query
 
 @RunWith(MockitoJUnitRunner::class)
 class VideoFileServiceImplTest {
@@ -87,6 +89,8 @@ class VideoFileServiceImplTest {
         fileScanRunning.set(false)
         val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
         lastScanSuccess.set(true)
+
+        videoConfig.apiPageSize = 10
     }
 
     @Test
@@ -295,8 +299,51 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_searchForVideos() {
-        // TODO also add the WHERE clause to all the query builder tests
-        TODO("Finish this")
+        val search = VideoSearch(
+                page = 1
+        )
+        val searchQueryString = "searchQueryString"
+        val countQueryString = "countQueryString"
+        `when`(searchQueryBuilder.buildEntitySearchQuery(search))
+                .thenReturn(searchQueryString)
+        `when`(searchQueryBuilder.buildCountSearchQuery(search))
+                .thenReturn(countQueryString)
+
+        val searchQuery = mock(Query::class.java)
+        val countQuery = mock(Query::class.java)
+
+        `when`(entityManager.createQuery(searchQueryString))
+                .thenReturn(searchQuery)
+        `when`(entityManager.createQuery(countQueryString))
+                .thenReturn(countQuery)
+
+        `when`(searchQuery.setFirstResult(10))
+                .thenReturn(searchQuery)
+        `when`(searchQuery.setMaxResults(10))
+                .thenReturn(searchQuery)
+
+        val resultList = listOf(VideoFile())
+        `when`(searchQuery.resultList)
+                .thenReturn(resultList)
+
+        `when`(countQuery.singleResult)
+                .thenReturn(10L)
+
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", equalTo(10L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(1)),
+                hasProperty("videoList", equalTo(resultList))
+        ))
+        verify(searchQueryBuilder, times(1))
+                .buildEntitySearchQuery(search)
+        verify(searchQueryBuilder, times(1))
+                .buildCountSearchQuery(search)
+        verify(searchQueryBuilder, times(1))
+                .addParamsToQuery(search, searchQuery)
+        verify(searchQueryBuilder, times(1))
+                .addParamsToQuery(search, countQuery)
     }
 
 }
