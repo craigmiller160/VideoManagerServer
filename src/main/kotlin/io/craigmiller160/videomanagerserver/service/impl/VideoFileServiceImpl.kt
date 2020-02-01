@@ -141,39 +141,24 @@ class VideoFileServiceImpl @Autowired constructor(
             queryBuilder.appendln("LEFT JOIN vf.stars st")
         }
 
-        if (search.hasCriteria()) {
-            queryBuilder.append("WHERE ")
-        }
+        queryBuilder.append("WHERE vf.active = true")
 
-        var needsAnd = false
         search.searchText?.let {
-            queryBuilder.appendln("(LOWER(vf.fileName) LIKE LOWER(:searchText)")
+            queryBuilder.appendln("AND (LOWER(vf.fileName) LIKE LOWER(:searchText)")
                     .appendln("OR LOWER(vf.displayName) LIKE LOWER(:searchText))")
-            needsAnd = true
         }
         search.categoryId?.let {
-            if (needsAnd) {
-                queryBuilder.append("AND ")
-            }
-            queryBuilder.appendln("ca.categoryId = :categoryId")
-            needsAnd = true
+            queryBuilder.appendln("AND ca.categoryId = :categoryId")
         }
         search.seriesId?.let {
-            if (needsAnd) {
-                queryBuilder.append("AND ")
-            }
-            queryBuilder.appendln("se.seriesId = :seriesId")
-            needsAnd = true
+            queryBuilder.appendln("AND se.seriesId = :seriesId")
         }
         search.starId?.let {
-            if (needsAnd) {
-                queryBuilder.append("AND ")
-            }
-            queryBuilder.appendln("st.starId = :starId")
+            queryBuilder.appendln("AND st.starId = :starId")
         }
 
         if (useOrderBy) {
-            queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir.toString()}")
+            queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir}")
         }
 
         return queryBuilder.toString()
