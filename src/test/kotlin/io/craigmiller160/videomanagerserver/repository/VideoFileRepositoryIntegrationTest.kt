@@ -89,9 +89,9 @@ class VideoFileRepositoryIntegrationTest {
 
     @After
     fun clean() {
-//        categoryRepo.deleteAll()
-//        seriesRepo.deleteAll()
-//        starRepo.deleteAll()
+        categoryRepo.deleteAll()
+        seriesRepo.deleteAll()
+        starRepo.deleteAll()
         videoFileRepo.deleteAll()
     }
 
