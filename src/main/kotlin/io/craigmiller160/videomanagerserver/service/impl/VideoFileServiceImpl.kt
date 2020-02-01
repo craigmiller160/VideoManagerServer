@@ -12,6 +12,7 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
@@ -35,7 +36,8 @@ class VideoFileServiceImpl @Autowired constructor(
         private val videoConfig: VideoConfiguration,
         private val fileScanner: FileScanner,
         private val entityManager: EntityManager,
-        private val settingsService: SettingsService
+        private val settingsService: SettingsService,
+        private val searchQueryBuilder: SearchQueryBuilder
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -129,26 +131,17 @@ class VideoFileServiceImpl @Autowired constructor(
         videoFileRepo.save(dbVideoFile)
     }
 
-
-
-
     override fun searchForVideos(search: VideoSearch): VideoSearchResults {
         val page = search.page
         val pageSize = videoConfig.apiPageSize
 
-        val searchQueryString = StringBuilder()
-                .appendln("SELECT vf FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, true))
-                .toString()
-        val countQueryString = StringBuilder()
-                .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
-                .appendln(buildQueryCriteria(search, false))
-                .toString()
+        val searchQueryString = searchQueryBuilder.buildEntitySearchQuery(search)
+        val countQueryString = searchQueryBuilder.buildEntityCountQuery(search)
 
         val searchQuery = entityManager.createQuery(searchQueryString)
         val countQuery = entityManager.createQuery(countQueryString)
-        addParamsToQuery(search, searchQuery)
-        addParamsToQuery(search, countQuery)
+        searchQueryBuilder.addParamsToQuery(search, searchQuery)
+        searchQueryBuilder.addParamsToQuery(search, countQuery)
 
         val videoList = searchQuery
                 .setFirstResult(page * pageSize)
