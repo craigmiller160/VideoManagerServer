@@ -49,7 +49,7 @@ class VideoFileServiceImpl @Autowired constructor(
     }
 
     override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
-        val sort = getVideoFileSort(Sort.Direction.valueOf(sortDirection))
+        val sort = getVideoFileSort(Sort.Direction.valueOf(value = sortDirection))
         val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
         return videoFileRepo.findAll(pageable).toList()
     }
@@ -129,55 +129,7 @@ class VideoFileServiceImpl @Autowired constructor(
         videoFileRepo.save(dbVideoFile)
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch, useOrderBy: Boolean): String {
-        val queryBuilder = StringBuilder()
-        search.categoryId?.let {
-            queryBuilder.appendln("LEFT JOIN vf.categories ca")
-        }
-        search.seriesId?.let {
-            queryBuilder.appendln("LEFT JOIN vf.series se")
-        }
-        search.starId?.let {
-            queryBuilder.appendln("LEFT JOIN vf.stars st")
-        }
 
-        queryBuilder.appendln("WHERE vf.active = true")
-
-        search.searchText?.let {
-            queryBuilder.appendln("AND (LOWER(vf.fileName) LIKE LOWER(:searchText)")
-                    .appendln("OR LOWER(vf.displayName) LIKE LOWER(:searchText))")
-        }
-        search.categoryId?.let {
-            queryBuilder.appendln("AND ca.categoryId = :categoryId")
-        }
-        search.seriesId?.let {
-            queryBuilder.appendln("AND se.seriesId = :seriesId")
-        }
-        search.starId?.let {
-            queryBuilder.appendln("AND st.starId = :starId")
-        }
-
-        if (useOrderBy) {
-            queryBuilder.appendln("ORDER BY ${search.sortBy.orderByClause} ${search.sortDir}")
-        }
-
-        return queryBuilder.toString().trim()
-    }
-
-    internal fun addParamsToQuery(search: VideoSearch, query: Query) {
-        search.searchText?.let {
-            query.setParameter("searchText", "%$it%")
-        }
-        search.categoryId?.let {
-            query.setParameter("categoryId", it)
-        }
-        search.seriesId?.let {
-            query.setParameter("seriesId", it)
-        }
-        search.starId?.let {
-            query.setParameter("starId", it)
-        }
-    }
 
 
     override fun searchForVideos(search: VideoSearch): VideoSearchResults {
