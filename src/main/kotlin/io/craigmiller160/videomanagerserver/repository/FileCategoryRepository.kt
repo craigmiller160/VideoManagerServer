@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.videomanagerserver.dto.FileCategory
-import io.craigmiller160.videomanagerserver.dto.id.FileCategoryId
+import io.craigmiller160.videomanagerserver.entity.FileCategory
+import io.craigmiller160.videomanagerserver.entity.id.FileCategoryId
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.stereotype.Repository

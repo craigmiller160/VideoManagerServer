@@ -1,6 +1,6 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
-import io.craigmiller160.videomanagerserver.dto.id.FileCategoryId
+import io.craigmiller160.videomanagerserver.entity.id.FileCategoryId
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id

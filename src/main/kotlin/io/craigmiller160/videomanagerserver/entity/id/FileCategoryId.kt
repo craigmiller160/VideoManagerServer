@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.dto.id
+package io.craigmiller160.videomanagerserver.entity.id
 
 import java.io.Serializable
 
