@@ -52,13 +52,14 @@ class FileScanner @Autowired constructor(
                             val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
                             videoFile.lastModified = lastModified
                             videoFile.lastScanTimestamp = scanTimestamp
+                            videoFile.active = true
                             if (videoFile.fileAdded == null) {
                                 videoFile.fileAdded = lastModified
                             }
                             if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
                             videoFileRepo.save(videoFile)
                         }
-                videoFileRepo.deleteOldFiles(scanTimestamp)
+                videoFileRepo.setOldFilesInactive(scanTimestamp)
                 logger.info("Scan completed successfully")
                 done(true)
             }

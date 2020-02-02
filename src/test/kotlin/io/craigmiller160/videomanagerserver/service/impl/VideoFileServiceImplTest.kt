@@ -10,18 +10,17 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.dto.Settings
-import io.craigmiller160.videomanagerserver.dto.SortBy
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.greaterThan
@@ -33,22 +32,23 @@ import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentCaptor
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
-import org.mockito.MockitoAnnotations
 import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import java.lang.Exception
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
 import javax.persistence.Query
 
+@RunWith(MockitoJUnitRunner.Silent::class)
 class VideoFileServiceImplTest {
 
     companion object {
@@ -67,8 +67,11 @@ class VideoFileServiceImplTest {
 
     }
 
+    @InjectMocks
     private lateinit var videoFileService: VideoFileServiceImpl
 
+    @Mock
+    private lateinit var searchQueryBuilder: SearchQueryBuilder
     @Mock
     private lateinit var videoFileRepo: VideoFileRepository
     @Spy
@@ -82,13 +85,12 @@ class VideoFileServiceImplTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-        videoFileService = VideoFileServiceImpl(videoFileRepo, videoConfig, fileScanner, entityManager, settingsService)
-
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         fileScanRunning.set(false)
         val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
         lastScanSuccess.set(true)
+
+        videoConfig.apiPageSize = 10
     }
 
     @Test
@@ -296,173 +298,52 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun test_buildQueryCriteria_noCriteria() {
-        val search = VideoSearch()
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.displayName ASC\n", query)
-    }
+    fun test_searchForVideos() {
+        val search = VideoSearch(
+                page = 1
+        )
+        val searchQueryString = "searchQueryString"
+        val countQueryString = "countQueryString"
+        `when`(searchQueryBuilder.buildEntitySearchQuery(search))
+                .thenReturn(searchQueryString)
+        `when`(searchQueryBuilder.buildCountSearchQuery(search))
+                .thenReturn(countQueryString)
 
-    @Test
-    fun test_buildQueryCriteria_descOrder() {
-        val search = VideoSearch(sortDir = Sort.Direction.DESC)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.displayName DESC\n", query)
-    }
+        val searchQuery = mock(Query::class.java)
+        val countQuery = mock(Query::class.java)
 
-    @Test
-    fun test_buildQueryCriteria_sortByViewCount() {
-        val search = VideoSearch(sortBy = SortBy.VIEW_COUNT)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.viewCount ASC\n", query)
-    }
+        `when`(entityManager.createQuery(searchQueryString))
+                .thenReturn(searchQuery)
+        `when`(entityManager.createQuery(countQueryString))
+                .thenReturn(countQuery)
 
-    @Test
-    fun test_buildQueryCriteria_sortByLastViewed() {
-        val search = VideoSearch(sortBy = SortBy.LAST_VIEWED)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.lastViewed ASC\n", query)
-    }
+        `when`(searchQuery.setFirstResult(10))
+                .thenReturn(searchQuery)
+        `when`(searchQuery.setMaxResults(10))
+                .thenReturn(searchQuery)
 
-    @Test
-    fun test_buildQueryCriteria_sortByLastModified() {
-        val search = VideoSearch(sortBy = SortBy.LAST_MODIFIED)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.lastModified ASC\n", query)
-    }
+        val resultList = listOf(VideoFile())
+        `when`(searchQuery.resultList)
+                .thenReturn(resultList)
 
-    @Test
-    fun test_buildQueryCriteria_sortByFileAdded() {
-        val search = VideoSearch(sortBy = SortBy.FILE_ADDED)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals("ORDER BY vf.fileAdded ASC\n", query)
-    }
+        `when`(countQuery.singleResult)
+                .thenReturn(10L)
 
-    @Test
-    fun test_buildQueryCriteria_allCriteria() {
-        val expected = "LEFT JOIN vf.categories ca\n" +
-                "LEFT JOIN vf.series se\n" +
-                "LEFT JOIN vf.stars st\n" +
-                "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
-                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
-                "AND ca.categoryId = :categoryId\n" +
-                "AND se.seriesId = :seriesId\n" +
-                "AND st.starId = :starId\n" +
-                "ORDER BY vf.displayName ASC\n"
-
-        val search = VideoSearch("Hello", 1, 1, 1)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals(expected, query)
-    }
-
-    @Test
-    fun test_buildQueryCriteria_onlySearchText() {
-        val expected = "WHERE (LOWER(vf.fileName) LIKE LOWER(:searchText)\n" +
-                "OR LOWER(vf.displayName) LIKE LOWER(:searchText))\n" +
-                "ORDER BY vf.displayName ASC\n"
-        val search = VideoSearch("Hello")
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals(expected, query)
-    }
-
-    @Test
-    fun test_buildQueryCriteria_onlyCategory() {
-        val expected = "LEFT JOIN vf.categories ca\n" +
-                "WHERE ca.categoryId = :categoryId\n" +
-                "ORDER BY vf.displayName ASC\n"
-        val search = VideoSearch(categoryId = 1)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals(expected, query)
-    }
-
-    @Test
-    fun test_buildQueryCriteria_onlyStar() {
-        val expected = "LEFT JOIN vf.stars st\n" +
-                "WHERE st.starId = :starId\n" +
-                "ORDER BY vf.displayName ASC\n"
-        val search = VideoSearch(starId = 1)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals(expected, query)
-    }
-
-    @Test
-    fun test_buildQueryCriteria_onlySeries() {
-        val expected = "LEFT JOIN vf.series se\n" +
-                "WHERE se.seriesId = :seriesId\n" +
-                "ORDER BY vf.displayName ASC\n"
-        val search = VideoSearch(seriesId = 1)
-        val query = videoFileService.buildQueryCriteria(search, true)
-        assertEquals(expected, query)
-    }
-
-    @Test
-    fun test_addParamsToQuery_noParams() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch()
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(0))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(0, argumentCaptor.allValues.size)
-    }
-
-    @Test
-    fun test_addParamsToQuery_allParams() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch("Hello", 1, 1, 1)
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(4))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(4, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>("%Hello%", 1L, 1L, 1L))
-    }
-
-    @Test
-    fun test_addParamsToQuery_onlyText() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch("Hello")
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(1))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(1, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>("%Hello%"))
-    }
-
-    @Test
-    fun test_addParamsToQuery_onlyCategory() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(categoryId = 1)
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(1))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(1, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>(1L))
-    }
-
-    @Test
-    fun test_addParamsToQuery_onlySeries() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(seriesId = 1)
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(1))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(1, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>(1L))
-    }
-
-    @Test
-    fun test_addParamsToQuery_onlyStar() {
-        val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(starId = 1)
-        videoFileService.addParamsToQuery(search, query)
-        val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
-        verify(query, times(1))
-                .setParameter(isA(String::class.java), argumentCaptor.capture())
-        assertEquals(1, argumentCaptor.allValues.size)
-        assertThat(argumentCaptor.allValues, contains<Any>(1L))
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", equalTo(10L)),
+                hasProperty("filesPerPage", equalTo(10)),
+                hasProperty("currentPage", equalTo(1)),
+                hasProperty("videoList", equalTo(resultList))
+        ))
+        verify(searchQueryBuilder, times(1))
+                .buildEntitySearchQuery(search)
+        verify(searchQueryBuilder, times(1))
+                .buildCountSearchQuery(search)
+        verify(searchQueryBuilder, times(1))
+                .addParamsToQuery(search, searchQuery)
+        verify(searchQueryBuilder, times(1))
+                .addParamsToQuery(search, countQuery)
     }
 
 }

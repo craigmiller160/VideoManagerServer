@@ -9,10 +9,7 @@ services:
     networks:
       - videoManagerNetwork
       - pgNetwork
-    environment:
-      - VIDEO_MANAGER_DIR=/opt/videos
     volumes:
-      - ${VIDEO_MANAGER_DIR_PROD}:/opt/videos
       - ~/video-manager/server-logs:/opt/video-manager/server-logs
 
 networks:

@@ -22,6 +22,7 @@ class LocalFileService (
                     !file.isHidden
                 }
                 ?.map { file -> LocalFile(file) }
+                ?.sortedBy { localFile -> localFile.fileName }
                 ?: listOf()
         val parentPath = File(dirPath).parentFile?.absolutePath ?: ""
         return LocalFileList(

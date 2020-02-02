@@ -5,9 +5,17 @@ import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.getFirst
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsInAnyOrder
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -20,11 +28,11 @@ import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-@Transactional
 class VideoFileRepositoryIntegrationTest {
 
     companion object {
         private const val CATEGORY_NAME = "MyCategory"
+        private const val CATEGORY_2_NAME = "MyCategory2"
         private const val SERIES_NAME = "MySeries"
         private const val STAR_NAME = "MyStar"
         private const val FILE_NAME = "MyFile"
@@ -47,39 +55,57 @@ class VideoFileRepositoryIntegrationTest {
     @Autowired
     private lateinit var starRepo: StarRepository
 
+    @Autowired
+    private lateinit var fileCategoryRepo: FileCategoryRepository
+
+    @Autowired
+    private lateinit var fileStarRepository: FileStarRepository
+
+    @Autowired
+    private lateinit var fileSeriesRepository: FileSeriesRepository
+
     private lateinit var videoFile: VideoFile
     private lateinit var videoFile2: VideoFile
 
     @Before
     fun setup() {
-        val category = Category(categoryName = CATEGORY_NAME)
-        val category2 = Category(categoryName = "${CATEGORY_NAME}2")
-        val series = Series(seriesName = SERIES_NAME)
-        val star = Star(starName = STAR_NAME)
-        videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
+        var category = Category(categoryName = CATEGORY_NAME)
+        var category2 = Category(categoryName = CATEGORY_2_NAME)
+        var series = Series(seriesName = SERIES_NAME)
+        var star = Star(starName = STAR_NAME)
+
+        category = categoryRepo.save(category)
+        category2 = categoryRepo.save(category2)
+        series = seriesRepo.save(series)
+        star = starRepo.save(star)
+
+        videoFile = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME, active = true).apply {
+            lastModified = DATE_2
+        }
+
+
+        videoFile = videoFileRepo.save(videoFile)
+        videoFile.apply {
             categories.add(category)
             categories.add(category2)
             this.series.add(series)
             stars.add(star)
-            lastModified = DATE_2
         }
-
-        categoryRepo.save(category)
-        categoryRepo.save(category2)
-        seriesRepo.save(series)
-        starRepo.save(star)
         videoFile = videoFileRepo.save(videoFile)
-        videoFile2 = VideoFile(fileName = FILE_NAME_2)
+        videoFile2 = VideoFile(fileName = FILE_NAME_2, active = true)
         videoFile2 = videoFileRepo.save(videoFile2)
     }
 
-//    @After
-//    fun clean() {
-//        categoryRepo.deleteAll()
-//        seriesRepo.deleteAll()
-//        starRepo.deleteAll()
-//        videoFileRepo.deleteAll()
-//    }
+    @After
+    fun clean() {
+        fileCategoryRepo.deleteAll()
+        fileSeriesRepository.deleteAll()
+        fileStarRepository.deleteAll()
+        categoryRepo.deleteAll()
+        seriesRepo.deleteAll()
+        starRepo.deleteAll()
+        videoFileRepo.deleteAll()
+    }
 
     @Test
     fun testInsertAll() {
@@ -89,18 +115,29 @@ class VideoFileRepositoryIntegrationTest {
         assertTrue(fileOptional.isPresent)
 
         val file = fileOptional.get()
-        assertNotNull(file)
-        assertEquals(FILE_NAME, file.fileName)
-        assertEquals(FILE_DISPLAY_NAME, file.displayName)
-
-        assertEquals(2, file.categories.size)
-        assertEquals(CATEGORY_NAME, getFirst(file.categories).categoryName)
-
-        assertEquals(1, file.series.size)
-        assertEquals(SERIES_NAME, getFirst(file.series).seriesName)
-
-        assertEquals(1, file.stars.size)
-        assertEquals(STAR_NAME, getFirst(file.stars).starName)
+        assertThat(file, allOf(
+                hasProperty("fileName", equalTo(FILE_NAME)),
+                hasProperty("displayName", equalTo(FILE_DISPLAY_NAME)),
+                hasProperty("categories", allOf<List<Category>>(
+                        hasSize(2),
+                        containsInAnyOrder(
+                                hasProperty("categoryName", equalTo(CATEGORY_NAME)),
+                                hasProperty("categoryName", equalTo(CATEGORY_2_NAME))
+                        )
+                )),
+                hasProperty("series", allOf<List<Series>>(
+                        hasSize(1),
+                        containsInAnyOrder(
+                                hasProperty("seriesName", equalTo(SERIES_NAME))
+                        )
+                )),
+                hasProperty("stars", allOf<List<Star>>(
+                        hasSize(1),
+                        containsInAnyOrder(
+                                hasProperty("starName", equalTo(STAR_NAME))
+                        )
+                ))
+        ))
     }
 
     @Test
@@ -136,6 +173,21 @@ class VideoFileRepositoryIntegrationTest {
         val file = videoFileRepo.findById(id)
         assertTrue(file.isPresent)
         assertEquals(FILE_NAME_3, file.get().fileName)
+    }
+
+    @Test
+    fun test_setOldFilesInactive() {
+        val timestamp = LocalDateTime.now()
+        videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp, active = true)).fileId
+
+        val result = videoFileRepo.setOldFilesInactive(timestamp)
+        assertEquals(2, result)
+
+        val fileMap = videoFileRepo.findAll()
+                .groupBy { file -> file.active }
+
+        assertEquals(1, fileMap[true]?.size)
+        assertEquals(2, fileMap[false]?.size)
     }
 
 }

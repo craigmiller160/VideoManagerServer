@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.file
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
@@ -24,8 +25,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
@@ -105,6 +108,9 @@ class FileScannerTest {
                 verify(videoFileRepo, times(4)).save(capture())
             }
 
+            verify(videoFileRepo, times(1))
+                    .setOldFilesInactive(any())
+
             val allValues = argumentCaptor.allValues
             val allValuesSorted = allValues.sortedBy { it.fileName }
             assertThat(allValuesSorted, allOf(
@@ -112,19 +118,23 @@ class FileScannerTest {
                     contains(
                             allOf(
                                     hasProperty("fileName", `is`("myFile.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("myFile2.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("otherExt.csv")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("subdir/subDirFile.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             )
                     )
             ))
