@@ -2,6 +2,8 @@ package io.craigmiller160.videomanagerserver.dto
 
 import org.springframework.data.domain.Sort
 
+// TODO refactor
+
 data class VideoSearch (
         var searchText: String? = null,
         var seriesId: Long? = null,

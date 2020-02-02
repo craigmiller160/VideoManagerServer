@@ -7,6 +7,8 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
+// TODO refactor
+
 @Entity
 @Table(name = "categories")
 data class Category (

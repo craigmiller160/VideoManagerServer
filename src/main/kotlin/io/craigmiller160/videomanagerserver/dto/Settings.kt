@@ -6,6 +6,8 @@ import javax.persistence.Table
 
 const val SETTINGS_ID = 1L
 
+// TODO refactor
+
 @Entity
 @Table(name = "settings")
 data class Settings (

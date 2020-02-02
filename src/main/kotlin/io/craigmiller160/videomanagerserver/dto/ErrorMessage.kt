@@ -1,5 +1,7 @@
 package io.craigmiller160.videomanagerserver.dto
 
+// TODO refactor
+
 data class ErrorMessage (
         var timestamp: String = "",
         var status: Int = 0,

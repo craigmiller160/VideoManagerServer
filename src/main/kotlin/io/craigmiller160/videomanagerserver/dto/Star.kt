@@ -6,6 +6,8 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
+// TODO refactor
+
 @Entity
 @Table(name = "stars")
 data class Star (

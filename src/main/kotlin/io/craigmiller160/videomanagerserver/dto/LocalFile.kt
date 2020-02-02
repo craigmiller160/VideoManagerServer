@@ -2,6 +2,8 @@ package io.craigmiller160.videomanagerserver.dto
 
 import java.io.File
 
+// TODO refactor
+
 data class LocalFile (
         var fileName: String,
         var filePath: String,
