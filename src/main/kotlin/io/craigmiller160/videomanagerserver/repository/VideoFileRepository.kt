@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import javax.transaction.Transactional
 
+@Repository
 interface VideoFileRepository : PagingAndSortingRepository<VideoFile,Long>, JpaRepository<VideoFile,Long> {
 
     fun findByFileName(fileName: String): VideoFile?
