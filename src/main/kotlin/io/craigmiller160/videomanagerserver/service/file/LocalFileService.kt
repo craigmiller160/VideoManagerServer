@@ -8,7 +8,7 @@ import java.io.File
 
 @Service
 class LocalFileService (
-         @Value("\${user.home}")
+         @Value("\${localfile.homeDir}")
         private val userHome: String
 ) {
 
