@@ -14,6 +14,9 @@ import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
+import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
@@ -82,6 +85,12 @@ class VideoFileServiceImplTest {
     private lateinit var entityManager: EntityManager
     @Mock
     private lateinit var settingsService: SettingsService
+    @Mock
+    private lateinit var fileCategoryRepo: FileCategoryRepository
+    @Mock
+    private lateinit var fileStarRepo: FileStarRepository
+    @Mock
+    private lateinit var fileSeriesRepo: FileSeriesRepository
 
     @Before
     fun setup() {
@@ -157,7 +166,7 @@ class VideoFileServiceImplTest {
     }
 
     @Test
-    fun testDeleteVideoFile() {
+    fun test_deleteVideoFile() {
         `when`(videoFileRepo.findById(1))
                 .thenReturn(Optional.of(expectedFiles[0]))
                 .thenReturn(Optional.empty())
@@ -168,6 +177,15 @@ class VideoFileServiceImplTest {
 
         actualFile = videoFileService.deleteVideoFile(1)
         assertFalse(actualFile.isPresent)
+
+        verify(videoFileRepo, times(2))
+                .deleteById(1)
+        verify(fileCategoryRepo, times(2))
+                .deleteAllByFileId(1)
+        verify(fileStarRepo, times(2))
+                .deleteAllByFileId(1)
+        verify(fileSeriesRepo, times(2))
+                .deleteAllBySeriesId(1)
     }
 
     @Test

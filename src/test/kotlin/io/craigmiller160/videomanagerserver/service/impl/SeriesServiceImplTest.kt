@@ -1,6 +1,8 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
+import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -8,13 +10,18 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.isA
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
 
+@RunWith(MockitoJUnitRunner::class)
 class SeriesServiceImplTest {
 
     companion object {
@@ -30,16 +37,13 @@ class SeriesServiceImplTest {
 
     }
 
+    @InjectMocks
     private lateinit var seriesService: SeriesServiceImpl
 
     @Mock
     private lateinit var seriesRepo: SeriesRepository
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-        seriesService = SeriesServiceImpl(seriesRepo)
-    }
+    @Mock
+    private lateinit var fileSeriesRepo: FileSeriesRepository
 
     @Test
     fun testGetAllSeries() {
@@ -101,7 +105,7 @@ class SeriesServiceImplTest {
     }
 
     @Test
-    fun testDeleteSeries() {
+    fun test_deleteSeries() {
         `when`(seriesRepo.findById(1))
                 .thenReturn(Optional.of(expectedSeries[0]))
                 .thenReturn(Optional.empty())
@@ -112,6 +116,11 @@ class SeriesServiceImplTest {
 
         actualSeries = seriesService.deleteSeries(1)
         assertFalse(actualSeries.isPresent)
+
+        verify(seriesRepo, times(2))
+                .deleteById(1)
+        verify(fileSeriesRepo, times(2))
+                .deleteAllBySeriesId(1)
     }
 
 }

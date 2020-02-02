@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -8,13 +9,19 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.isA
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
 
+@RunWith(MockitoJUnitRunner::class)
 class StarServiceImplTest {
 
     companion object {
@@ -30,16 +37,13 @@ class StarServiceImplTest {
 
     }
 
+    @InjectMocks
     private lateinit var starService: StarServiceImpl
 
     @Mock
     private lateinit var starRepo: StarRepository
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-        starService = StarServiceImpl(starRepo)
-    }
+    @Mock
+    private lateinit var fileStarRepo: FileStarRepository
 
     @Test
     fun testGetAllStars() {
@@ -102,7 +106,7 @@ class StarServiceImplTest {
     }
 
     @Test
-    fun testDeleteStar() {
+    fun test_deleteStar() {
         `when`(starRepo.findById(1))
                 .thenReturn(Optional.of(expectedStars[0]))
                 .thenReturn(Optional.empty())
@@ -113,6 +117,11 @@ class StarServiceImplTest {
 
         actualStar = starService.deleteStar(1)
         assertFalse(actualStar.isPresent)
+
+        verify(starRepo, times(2))
+                .deleteById(1)
+        verify(fileStarRepo, times(2))
+                .deleteAllByStarId(1)
     }
 
 }

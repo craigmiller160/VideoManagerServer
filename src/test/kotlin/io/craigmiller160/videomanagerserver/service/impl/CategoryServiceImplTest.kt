@@ -2,19 +2,26 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.isA
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
 
+@RunWith(MockitoJUnitRunner::class)
 class CategoryServiceImplTest {
 
     companion object {
@@ -30,16 +37,13 @@ class CategoryServiceImplTest {
 
     }
 
+    @InjectMocks
     private lateinit var categoryService: CategoryServiceImpl
 
     @Mock
     private lateinit var categoryRepo: CategoryRepository
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-        categoryService = CategoryServiceImpl(categoryRepo)
-    }
+    @Mock
+    private lateinit var fileCategoryRepo: FileCategoryRepository
 
     @Test
     fun testGetAllCategories() {
@@ -102,7 +106,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    fun testDeleteCategory() {
+    fun test_deleteCategory() {
         `when`(categoryRepo.findById(1))
                 .thenReturn(Optional.of(expectedCategories[0]))
                 .thenReturn(Optional.empty())
@@ -113,6 +117,11 @@ class CategoryServiceImplTest {
 
         actualCategory = categoryService.deleteCategory(1)
         assertFalse(actualCategory.isPresent)
+
+        verify(categoryRepo, times(2))
+                .deleteById(1)
+        verify(fileCategoryRepo, times(2))
+                .deleteAllByCategoryId(1)
     }
 
 }
