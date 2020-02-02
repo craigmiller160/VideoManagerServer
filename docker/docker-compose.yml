@@ -10,6 +10,7 @@ services:
       - videoManagerNetwork
       - pgNetwork
     volumes:
+      - ~:/opt/video-manager/homeDir
       - ~/video-manager/server-logs:/opt/video-manager/server-logs
 
 networks:

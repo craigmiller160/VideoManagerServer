@@ -10,4 +10,4 @@ logging:
   file: /opt/${logging.file.path}
 
 localfile:
-  homeDir: ${DOCKER_HOME_DIR}
+  homeDir: /opt/video-manager/homeDir
