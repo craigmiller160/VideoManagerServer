@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.service.CategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
@@ -12,7 +13,8 @@ import javax.transaction.Transactional
 @Service
 @Transactional
 class CategoryServiceImpl @Autowired constructor(
-        private val categoryRepo: CategoryRepository
+        private val categoryRepo: CategoryRepository,
+        private val fileCategoryRepo: FileCategoryRepository
 ) : CategoryService {
 
     override fun getAllCategories(): List<Category> {
@@ -38,6 +40,7 @@ class CategoryServiceImpl @Autowired constructor(
 
     override fun deleteCategory(categoryId: Long): Optional<Category> {
         val categoryOptional = categoryRepo.findById(categoryId)
+        fileCategoryRepo.deleteAllByCategoryId(categoryId)
         categoryRepo.deleteById(categoryId)
         return categoryOptional
     }
