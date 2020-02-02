@@ -11,6 +11,9 @@ import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
+import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
+import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.VideoFileService
@@ -37,7 +40,10 @@ class VideoFileServiceImpl @Autowired constructor(
         private val fileScanner: FileScanner,
         private val entityManager: EntityManager,
         private val settingsService: SettingsService,
-        private val searchQueryBuilder: SearchQueryBuilder
+        private val searchQueryBuilder: SearchQueryBuilder,
+        private val fileCategoryRepo: FileCategoryRepository,
+        private val fileSeriesRepo: FileSeriesRepository,
+        private val fileStarRepo: FileStarRepository
 ): VideoFileService {
 
     private val fileScanRunning = AtomicBoolean(false)
@@ -72,6 +78,9 @@ class VideoFileServiceImpl @Autowired constructor(
 
     override fun deleteVideoFile(fileId: Long): Optional<VideoFile> {
         val videoFileOptional = videoFileRepo.findById(fileId)
+        fileCategoryRepo.deleteAllByFileId(fileId)
+        fileStarRepo.deleteAllByFileId(fileId)
+        fileSeriesRepo.deleteAllByFileId(fileId)
         videoFileRepo.deleteById(fileId)
         return videoFileOptional
     }
