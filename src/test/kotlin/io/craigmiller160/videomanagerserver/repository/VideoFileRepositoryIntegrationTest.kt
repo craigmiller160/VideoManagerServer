@@ -57,15 +57,6 @@ class VideoFileRepositoryIntegrationTest {
     private lateinit var starRepo: StarRepository
 
     @Autowired
-    private lateinit var fileCategoryRepo: FileCategoryRepository
-
-    @Autowired
-    private lateinit var fileStarRepository: FileStarRepository
-
-    @Autowired
-    private lateinit var fileSeriesRepository: FileSeriesRepository
-
-    @Autowired
     private lateinit var dbTestUtils: DbTestUtils
 
     private lateinit var videoFile: VideoFile
