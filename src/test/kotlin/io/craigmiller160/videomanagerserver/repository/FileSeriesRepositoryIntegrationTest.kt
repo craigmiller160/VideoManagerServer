@@ -3,6 +3,13 @@ package io.craigmiller160.videomanagerserver.repository
 import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +25,9 @@ class FileSeriesRepositoryIntegrationTest {
 
     companion object {
         private const val SERIES_NAME = "seriesName"
+        private const val SERIES_2_NAME = "series2Name"
         private const val FILE_NAME = "fileName"
+        private const val FILE_2_NAME = "file2Name"
     }
 
     @Autowired
@@ -42,6 +51,11 @@ class FileSeriesRepositoryIntegrationTest {
 
         fileId = file.fileId
         seriesId = series.seriesId
+
+        val series2 = Series(seriesName = SERIES_2_NAME)
+        val file2 = VideoFile(fileName = FILE_2_NAME)
+        file2.series.add(series2)
+        videoFileRepo.save(file2)
     }
 
     @After
@@ -50,23 +64,31 @@ class FileSeriesRepositoryIntegrationTest {
     }
 
     private fun validateRecordsExist() {
-        assertEquals(1, videoFileRepo.count())
-        assertEquals(1, seriesRepo.count())
-        assertEquals(1, fileSeriesRepo.count())
+        assertEquals(2, videoFileRepo.count())
+        assertEquals(2, seriesRepo.count())
+        assertEquals(2, fileSeriesRepo.count())
     }
 
     @Test
     fun test_deleteAllByStarId() {
         validateRecordsExist()
         fileSeriesRepo.deleteAllBySeriesId(seriesId)
-        assertEquals(0, fileSeriesRepo.count())
+        val results = fileSeriesRepo.findAll()
+        MatcherAssert.assertThat(results, Matchers.allOf(
+                hasSize(1),
+                contains(hasProperty("seriesId", not(equalTo(seriesId))))
+        ))
     }
 
     @Test
     fun test_deleteAllByFileId() {
         validateRecordsExist()
         fileSeriesRepo.deleteAllByFileId(fileId)
-        assertEquals(0, fileSeriesRepo.count())
+        val results = fileSeriesRepo.findAll()
+        MatcherAssert.assertThat(results, Matchers.allOf(
+                hasSize(1),
+                contains(hasProperty("fileId", not(equalTo(fileId))))
+        ))
     }
 
 }

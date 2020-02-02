@@ -87,7 +87,7 @@ class FileCategoryRepositoryIntegrationTest {
         val results = fileCategoryRepository.findAll()
         assertThat(results, allOf(
                 hasSize(1),
-                contains(hasProperty("categoryId", not(equalTo(categoryId))))
+                contains(hasProperty("fileId", not(equalTo(fileId))))
         ))
     }
 
