@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import io.craigmiller160.videomanagerserver.service.SeriesService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +13,8 @@ import javax.transaction.Transactional
 @Service
 @Transactional
 class SeriesServiceImpl @Autowired constructor(
-        private val seriesRepo: SeriesRepository
+        private val seriesRepo: SeriesRepository,
+        private val fileSeriesRepo: FileSeriesRepository
 ) : SeriesService {
 
     override fun getAllSeries(): List<Series> {
@@ -38,6 +40,7 @@ class SeriesServiceImpl @Autowired constructor(
 
     override fun deleteSeries(seriesId: Long): Optional<Series> {
         val seriesOptional = seriesRepo.findById(seriesId)
+        fileSeriesRepo.deleteAllBySeriesId(seriesId)
         seriesRepo.deleteById(seriesId)
         return seriesOptional
     }

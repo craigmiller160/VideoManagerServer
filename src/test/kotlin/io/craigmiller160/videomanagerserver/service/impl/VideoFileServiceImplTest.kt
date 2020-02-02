@@ -185,7 +185,7 @@ class VideoFileServiceImplTest {
         verify(fileStarRepo, times(2))
                 .deleteAllByFileId(1)
         verify(fileSeriesRepo, times(2))
-                .deleteAllBySeriesId(1)
+                .deleteAllByFileId(1)
     }
 
     @Test
