@@ -6,4 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FileCategoryRepository : JpaRepository<FileCategory,FileCategoryId>
+interface FileCategoryRepository : JpaRepository<FileCategory,FileCategoryId> {
+
+    fun deleteAllByCategoryId(categoryId: Long): Int
+
+    fun deleteAllByFileId(fileId: Long): Int
+
+}
