@@ -1,5 +1,6 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
+import io.craigmiller160.videomanagerserver.dto.Role
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
