@@ -51,3 +51,6 @@ video:
       refreshExpSecs: 1200
       keySizeBits: 256
       videoExpSecs: 21600
+
+localfile:
+  homeDir: ${user.home}

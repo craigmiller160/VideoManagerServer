@@ -30,3 +30,6 @@ video:
       videoExpSecs: 10000
     password:
       hashRounds: 12
+
+localfile:
+  homeDir: ${user.home}
