@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.dto.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import io.craigmiller160.videomanagerserver.test_util.getFirst
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
@@ -64,6 +65,9 @@ class VideoFileRepositoryIntegrationTest {
     @Autowired
     private lateinit var fileSeriesRepository: FileSeriesRepository
 
+    @Autowired
+    private lateinit var dbTestUtils: DbTestUtils
+
     private lateinit var videoFile: VideoFile
     private lateinit var videoFile2: VideoFile
 
@@ -98,13 +102,7 @@ class VideoFileRepositoryIntegrationTest {
 
     @After
     fun clean() {
-        fileCategoryRepo.deleteAll()
-        fileSeriesRepository.deleteAll()
-        fileStarRepository.deleteAll()
-        categoryRepo.deleteAll()
-        seriesRepo.deleteAll()
-        starRepo.deleteAll()
-        videoFileRepo.deleteAll()
+        dbTestUtils.cleanDb()
     }
 
     @Test
