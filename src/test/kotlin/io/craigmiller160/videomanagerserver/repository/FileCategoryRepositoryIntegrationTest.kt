@@ -3,6 +3,13 @@ package io.craigmiller160.videomanagerserver.repository
 import io.craigmiller160.videomanagerserver.dto.Category
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +25,9 @@ class FileCategoryRepositoryIntegrationTest {
 
     companion object {
         private const val CATEGORY_NAME = "categoryName";
+        private const val CATEGORY_2_NAME = "category2Name";
         private const val FILE_NAME = "fileName"
+        private const val FILE_2_NAME = "file2Name";
     }
 
     @Autowired
@@ -42,6 +51,11 @@ class FileCategoryRepositoryIntegrationTest {
 
         fileId = file.fileId
         categoryId = category.categoryId
+
+        val category2 = Category(categoryName = CATEGORY_2_NAME)
+        val file2 = VideoFile(fileName = FILE_2_NAME)
+        file2.categories.add(category2)
+        videoFileRepository.save(file2)
     }
 
     @After
@@ -50,23 +64,31 @@ class FileCategoryRepositoryIntegrationTest {
     }
 
     private fun validateRecordsExist() {
-        assertEquals(1, videoFileRepository.count())
-        assertEquals(1, categoryRepository.count())
-        assertEquals(1, fileCategoryRepository.count())
+        assertEquals(2, videoFileRepository.count())
+        assertEquals(2, categoryRepository.count())
+        assertEquals(2, fileCategoryRepository.count())
     }
 
     @Test
     fun test_deleteAllByCategoryId() {
         validateRecordsExist()
         fileCategoryRepository.deleteAllByCategoryId(categoryId)
-        assertEquals(0, fileCategoryRepository.count())
+        val results = fileCategoryRepository.findAll()
+        assertThat(results, allOf(
+                hasSize(1),
+                contains(hasProperty("categoryId", not(equalTo(categoryId))))
+        ))
     }
 
     @Test
     fun test_deleteAllByFileId() {
         validateRecordsExist()
         fileCategoryRepository.deleteAllByFileId(fileId)
-        assertEquals(0, fileCategoryRepository.count())
+        val results = fileCategoryRepository.findAll()
+        assertThat(results, allOf(
+                hasSize(1),
+                contains(hasProperty("categoryId", not(equalTo(categoryId))))
+        ))
     }
 
 }
