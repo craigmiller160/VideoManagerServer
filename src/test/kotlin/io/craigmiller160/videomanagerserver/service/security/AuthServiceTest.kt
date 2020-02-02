@@ -88,41 +88,44 @@ class AuthServiceTest {
 
     @Test
     fun test_login() {
-        mockLogin()
-        val request = AppUser().apply {
-            userName = USER_NAME
-            password = PASSWORD
-        }
-
-        val result = authService.login(request)
-        assertEquals(TOKEN, result)
-
-        val captor = ArgumentCaptor.forClass(AppUser::class.java)
-
-        verify(appUserRepository, times(1))
-                .save(captor.capture())
-
-        assertThat(captor.value, hasProperty("lastAuthenticated", notNullValue()))
+        TODO("Fix this")
+//        mockLogin()
+//        val request = AppUser().apply {
+//            userName = USER_NAME
+//            password = PASSWORD
+//        }
+//
+//        val result = authService.login(request)
+//        assertEquals(TOKEN, result)
+//
+//        val captor = ArgumentCaptor.forClass(AppUser::class.java)
+//
+//        verify(appUserRepository, times(1))
+//                .save(captor.capture())
+//
+//        assertThat(captor.value, hasProperty("lastAuthenticated", notNullValue()))
     }
 
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_cantFindUser() {
-        mockLogin()
-        val request = AppUser().apply {
-            userName = "Bob"
-            password = PASSWORD
-        }
-        authService.login(request)
+        TODO("Fix this")
+//        mockLogin()
+//        val request = AppUser().apply {
+//            userName = "Bob"
+//            password = PASSWORD
+//        }
+//        authService.login(request)
     }
 
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_wrongPassword() {
-        mockLogin()
-        val request = AppUser().apply {
-            userName = USER_NAME
-            password = "FooBar"
-        }
-        authService.login(request)
+        TODO("Fix this")
+//        mockLogin()
+//        val request = AppUser().apply {
+//            userName = USER_NAME
+//            password = "FooBar"
+//        }
+//        authService.login(request)
     }
 
     @Test
@@ -137,45 +140,48 @@ class AuthServiceTest {
 
     @Test
     fun test_createUser() {
-        val user = AppUser().apply {
-            userName = USER_NAME
-            password = PASSWORD
-            roles = listOf(Role(1, ROLE))
-        }
-        val userWithId = user.copy(userId = 1L)
-
-        `when`(appUserRepository.save(user))
-                .thenReturn(userWithId)
-        `when`(passwordEncoder.encode(PASSWORD))
-                .thenReturn(ENCODED_PASSWORD)
-
-        val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
-
-        val result = authService.createUser(user)
-
-        verify(appUserRepository, times(1))
-                .save(userCaptor.capture())
-
-        assertThat(userCaptor.value, hasProperty("password", equalTo(ENCODED_PASSWORD)))
-        assertEquals(userWithId, result)
+        TODO("Fix this")
+//        val user = AppUser().apply {
+//            userName = USER_NAME
+//            password = PASSWORD
+//            roles = listOf(Role(1, ROLE))
+//        }
+//        val userWithId = user.copy(userId = 1L)
+//
+//        `when`(appUserRepository.save(user))
+//                .thenReturn(userWithId)
+//        `when`(passwordEncoder.encode(PASSWORD))
+//                .thenReturn(ENCODED_PASSWORD)
+//
+//        val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
+//
+//        val result = authService.createUser(user)
+//
+//        verify(appUserRepository, times(1))
+//                .save(userCaptor.capture())
+//
+//        assertThat(userCaptor.value, hasProperty("password", equalTo(ENCODED_PASSWORD)))
+//        assertEquals(userWithId, result)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun test_createUser_missingPass() {
-        val user = AppUser().apply {
-            userName = "Bob"
-        }
-        authService.createUser(user)
+        TODO("Fix this")
+//        val user = AppUser().apply {
+//            userName = "Bob"
+//        }
+//        authService.createUser(user)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun test_createUser_badRoles() {
-        val user = AppUser(
-                userName = "Bob",
-                password = "pass",
-                roles = listOf(Role(name = "Foo"))
-        )
-        authService.createUser(user)
+        TODO("Fix this")
+//        val user = AppUser(
+//                userName = "Bob",
+//                password = "pass",
+//                roles = listOf(Role(name = "Foo"))
+//        )
+//        authService.createUser(user)
     }
 
     @Test
@@ -194,372 +200,386 @@ class AuthServiceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun test_updateUserAdmin_badRoles() {
-        val userId = 1L
-        val request = AppUser().apply {
-            userName = USER_NAME
-            roles = listOf(Role(name = ROLE))
-        }
-        authService.updateUserAdmin(userId, request)
+        TODO("Fix this")
+//        val userId = 1L
+//        val request = AppUser().apply {
+//            userName = USER_NAME
+//            roles = listOf(Role(name = ROLE))
+//        }
+//        authService.updateUserAdmin(userId, request)
     }
 
     @Test
     fun test_updateUserAdmin() {
-        val lastAuth = LocalDateTime.now()
-        val userId = 1L
-        val request = AppUser().apply {
-            userName = USER_NAME
-            roles = listOf(Role(roleId = 1, name = ROLE))
-        }
-        val response = request.copy(
-                userId = userId,
-                password = PASSWORD,
-                lastAuthenticated = lastAuth
-        )
-        val existing = request.copy(
-                userId = userId,
-                roles = listOf(),
-                password = PASSWORD,
-                lastAuthenticated = lastAuth
-        )
-        val expected = response.copy(password = "")
-
-        `when`(appUserRepository.save(response))
-                .thenReturn(response)
-        `when`(appUserRepository.findById(userId))
-                .thenReturn(Optional.of(existing))
-
-        val result = authService.updateUserAdmin(userId, request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val lastAuth = LocalDateTime.now()
+//        val userId = 1L
+//        val request = AppUser().apply {
+//            userName = USER_NAME
+//            roles = listOf(Role(roleId = 1, name = ROLE))
+//        }
+//        val response = request.copy(
+//                userId = userId,
+//                password = PASSWORD,
+//                lastAuthenticated = lastAuth
+//        )
+//        val existing = request.copy(
+//                userId = userId,
+//                roles = listOf(),
+//                password = PASSWORD,
+//                lastAuthenticated = lastAuth
+//        )
+//        val expected = response.copy(password = "")
+//
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(response)
+//        `when`(appUserRepository.findById(userId))
+//                .thenReturn(Optional.of(existing))
+//
+//        val result = authService.updateUserAdmin(userId, request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserAdmin_noUpdateUsername() {
-        val userId = 1L
-        val request = AppUser().apply {
-            userName = "userName2"
-            roles = listOf(Role(roleId = 1, name = ROLE))
-        }
-        val response = request.copy(
-                userId = userId,
-                userName = USER_NAME,
-                password = PASSWORD
-        )
-        val existing = request.copy(
-                userId = userId,
-                userName = USER_NAME,
-                roles = listOf(),
-                password = PASSWORD
-        )
-        val expected = response.copy(password = "")
-
-        `when`(appUserRepository.save(response))
-                .thenReturn(response)
-        `when`(appUserRepository.findById(userId))
-                .thenReturn(Optional.of(existing))
-
-        val result = authService.updateUserAdmin(userId, request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val userId = 1L
+//        val request = AppUser().apply {
+//            userName = "userName2"
+//            roles = listOf(Role(roleId = 1, name = ROLE))
+//        }
+//        val response = request.copy(
+//                userId = userId,
+//                userName = USER_NAME,
+//                password = PASSWORD
+//        )
+//        val existing = request.copy(
+//                userId = userId,
+//                userName = USER_NAME,
+//                roles = listOf(),
+//                password = PASSWORD
+//        )
+//        val expected = response.copy(password = "")
+//
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(response)
+//        `when`(appUserRepository.findById(userId))
+//                .thenReturn(Optional.of(existing))
+//
+//        val result = authService.updateUserAdmin(userId, request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserAdmin_withPassword() {
-        val userId = 1L
-        val request = AppUser().apply {
-            userName = USER_NAME
-            roles = listOf(Role(roleId = 1, name = ROLE))
-            password = PASSWORD
-        }
-        val response = request.copy(
-                userId = userId
-        )
-        val existing = request.copy(
-                userId = userId,
-                roles = listOf(),
-                password = "${PASSWORD}2"
-        )
-        val toSave = response.copy(
-                password = ENCODED_PASSWORD
-        )
-        val expected = toSave.copy(password = "")
-
-        `when`(appUserRepository.save(toSave))
-                .thenReturn(toSave)
-        `when`(appUserRepository.findById(userId))
-                .thenReturn(Optional.of(existing))
-        `when`(passwordEncoder.encode(PASSWORD))
-                .thenReturn(ENCODED_PASSWORD)
-
-        val result = authService.updateUserAdmin(userId, request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val userId = 1L
+//        val request = AppUser().apply {
+//            userName = USER_NAME
+//            roles = listOf(Role(roleId = 1, name = ROLE))
+//            password = PASSWORD
+//        }
+//        val response = request.copy(
+//                userId = userId
+//        )
+//        val existing = request.copy(
+//                userId = userId,
+//                roles = listOf(),
+//                password = "${PASSWORD}2"
+//        )
+//        val toSave = response.copy(
+//                password = ENCODED_PASSWORD
+//        )
+//        val expected = toSave.copy(password = "")
+//
+//        `when`(appUserRepository.save(toSave))
+//                .thenReturn(toSave)
+//        `when`(appUserRepository.findById(userId))
+//                .thenReturn(Optional.of(existing))
+//        `when`(passwordEncoder.encode(PASSWORD))
+//                .thenReturn(ENCODED_PASSWORD)
+//
+//        val result = authService.updateUserAdmin(userId, request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserAdmin_notFound() {
-        val userId = 1L
-        val user = AppUser().apply {
-            userName = USER_NAME
-            roles = listOf(Role(roleId = 1, name = ROLE))
-        }
-        val expected = user.copy(userId = userId)
-
-        `when`(appUserRepository.save(expected))
-                .thenReturn(expected)
-
-        val result = authService.updateUserAdmin(userId, user)
-        assertNull(result)
+        TODO("Fix this")
+//        val userId = 1L
+//        val user = AppUser().apply {
+//            userName = USER_NAME
+//            roles = listOf(Role(roleId = 1, name = ROLE))
+//        }
+//        val expected = user.copy(userId = userId)
+//
+//        `when`(appUserRepository.save(expected))
+//                .thenReturn(expected)
+//
+//        val result = authService.updateUserAdmin(userId, user)
+//        assertNull(result)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun test_updateUserSelf_badRoles() {
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                roles = listOf(Role(name = "role"))
-        )
-        authService.updateUserSelf(request)
+        TODO("Fix this")
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                roles = listOf(Role(name = "role"))
+//        )
+//        authService.updateUserSelf(request)
     }
 
     @Test
     fun test_updateUserSelf() {
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller"
-        )
-
-        val existing = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Bob",
-                lastName = "Saget",
-                password = PASSWORD
-        )
-
-        val response = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = PASSWORD
-        )
-
-        val expected = response.copy(password = "")
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(existing)
-        `when`(appUserRepository.save(response))
-                .thenReturn(expected)
-
-        val result = authService.updateUserSelf(request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller"
+//        )
+//
+//        val existing = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Bob",
+//                lastName = "Saget",
+//                password = PASSWORD
+//        )
+//
+//        val response = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = PASSWORD
+//        )
+//
+//        val expected = response.copy(password = "")
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(existing)
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(expected)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_skipsRoles() {
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                roles = listOf(Role(1, ROLE_ADMIN))
-        )
-
-        val existing = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Bob",
-                lastName = "Saget",
-                password = PASSWORD
-        )
-
-        val response = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = PASSWORD
-        )
-
-        val expected = response.copy(password = "")
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(existing)
-        `when`(appUserRepository.save(response))
-                .thenReturn(expected)
-
-        val result = authService.updateUserSelf(request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                roles = listOf(Role(1, ROLE_ADMIN))
+//        )
+//
+//        val existing = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Bob",
+//                lastName = "Saget",
+//                password = PASSWORD
+//        )
+//
+//        val response = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = PASSWORD
+//        )
+//
+//        val expected = response.copy(password = "")
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(existing)
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(expected)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_adminCanUpdateRoles() {
-        val roles = listOf(Role(1, ROLE_ADMIN), Role(2, ROLE_EDIT))
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                roles = roles
-        )
-
-        val existing = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Bob",
-                lastName = "Saget",
-                password = PASSWORD,
-                roles = listOf(Role(1, ROLE_ADMIN))
-        )
-
-        val response = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = PASSWORD,
-                roles = roles
-        )
-
-        val expected = response.copy(password = "")
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(existing)
-        `when`(appUserRepository.save(response))
-                .thenReturn(expected)
-
-        val result = authService.updateUserSelf(request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val roles = listOf(Role(1, ROLE_ADMIN), Role(2, ROLE_EDIT))
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                roles = roles
+//        )
+//
+//        val existing = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Bob",
+//                lastName = "Saget",
+//                password = PASSWORD,
+//                roles = listOf(Role(1, ROLE_ADMIN))
+//        )
+//
+//        val response = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = PASSWORD,
+//                roles = roles
+//        )
+//
+//        val expected = response.copy(password = "")
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(existing)
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(expected)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_updateUserSelf_notFound() {
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller"
-        )
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(null)
-
-        val result = authService.updateUserSelf(request)
-        assertNull(result)
+        TODO("Fix this")
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller"
+//        )
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(null)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertNull(result)
     }
 
     @Test
     fun test_updateUserSelf_withPassword() {
-        val newPassword = "newPassword"
-        val request = AppUser(
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = newPassword
-        )
-
-        val existing = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Bob",
-                lastName = "Saget",
-                password = PASSWORD
-        )
-
-        val response = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = newPassword
-        )
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(existing)
-        `when`(appUserRepository.save(response))
-                .thenReturn(response)
-        `when`(passwordEncoder.encode(newPassword))
-                .thenReturn(newPassword)
-
-        val result = authService.updateUserSelf(request)
-        assertEquals(response, result)
+        TODO("Fix this")
+//        val newPassword = "newPassword"
+//        val request = AppUser(
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = newPassword
+//        )
+//
+//        val existing = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Bob",
+//                lastName = "Saget",
+//                password = PASSWORD
+//        )
+//
+//        val response = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = newPassword
+//        )
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(existing)
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(response)
+//        `when`(passwordEncoder.encode(newPassword))
+//                .thenReturn(newPassword)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertEquals(response, result)
     }
 
     @Test
     fun test_updateUserSelf_noUpdateUsername() {
-        val request = AppUser(
-                userName = "userName2",
-                firstName = "Craig",
-                lastName = "Miller"
-        )
-
-        val existing = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Bob",
-                lastName = "Saget",
-                password = PASSWORD
-        )
-
-        val response = AppUser(
-                userId = 1L,
-                userName = USER_NAME,
-                firstName = "Craig",
-                lastName = "Miller",
-                password = PASSWORD
-        )
-
-        val expected = response.copy(password = "")
-
-        `when`(securityContextService.getUserName())
-                .thenReturn(USER_NAME)
-        `when`(appUserRepository.findByUserName(USER_NAME))
-                .thenReturn(existing)
-        `when`(appUserRepository.save(response))
-                .thenReturn(expected)
-
-        val result = authService.updateUserSelf(request)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val request = AppUser(
+//                userName = "userName2",
+//                firstName = "Craig",
+//                lastName = "Miller"
+//        )
+//
+//        val existing = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Bob",
+//                lastName = "Saget",
+//                password = PASSWORD
+//        )
+//
+//        val response = AppUser(
+//                userId = 1L,
+//                userName = USER_NAME,
+//                firstName = "Craig",
+//                lastName = "Miller",
+//                password = PASSWORD
+//        )
+//
+//        val expected = response.copy(password = "")
+//
+//        `when`(securityContextService.getUserName())
+//                .thenReturn(USER_NAME)
+//        `when`(appUserRepository.findByUserName(USER_NAME))
+//                .thenReturn(existing)
+//        `when`(appUserRepository.save(response))
+//                .thenReturn(expected)
+//
+//        val result = authService.updateUserSelf(request)
+//        assertEquals(expected, result)
     }
 
     @Test
     fun test_getAllUsers() {
-        val user = AppUser().apply {
-            userName = USER_NAME
-            password = PASSWORD
-            roles = listOf(Role(name = ROLE))
-        }
-        val expected = user.copy(password = "")
-        val userList = listOf(user)
-        val expectedList = listOf(expected)
-
-        `when`(appUserRepository.findAll())
-                .thenReturn(userList)
-
-        val result = authService.getAllUsers()
-        assertEquals(expectedList, result)
+        TODO("Fix this")
+//        val user = AppUser().apply {
+//            userName = USER_NAME
+//            password = PASSWORD
+//            roles = listOf(Role(name = ROLE))
+//        }
+//        val expected = user.copy(password = "")
+//        val userList = listOf(user)
+//        val expectedList = listOf(expected)
+//
+//        `when`(appUserRepository.findAll())
+//                .thenReturn(userList)
+//
+//        val result = authService.getAllUsers()
+//        assertEquals(expectedList, result)
     }
 
     @Test
     fun test_getUser() {
-        val user = AppUser().apply {
-            userName = USER_NAME
-            password = PASSWORD
-            roles = listOf(Role(name = ROLE))
-        }
-        val expected = user.copy(password = "")
-        `when`(appUserRepository.findById(1L))
-                .thenReturn(Optional.of(user))
-
-        val result = authService.getUser(1L)
-        assertEquals(expected, result)
+        TODO("Fix this")
+//        val user = AppUser().apply {
+//            userName = USER_NAME
+//            password = PASSWORD
+//            roles = listOf(Role(name = ROLE))
+//        }
+//        val expected = user.copy(password = "")
+//        `when`(appUserRepository.findById(1L))
+//                .thenReturn(Optional.of(user))
+//
+//        val result = authService.getUser(1L)
+//        assertEquals(expected, result)
     }
 
     @Test
