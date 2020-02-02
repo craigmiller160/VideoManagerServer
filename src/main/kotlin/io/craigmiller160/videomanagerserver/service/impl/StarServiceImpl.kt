@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.service.StarService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +13,8 @@ import javax.transaction.Transactional
 @Service
 @Transactional
 class StarServiceImpl @Autowired constructor(
-        private val starRepo: StarRepository
+        private val starRepo: StarRepository,
+        private val fileStarRepo: FileStarRepository
 ): StarService {
 
     override fun getAllStars(): List<Star> {
@@ -38,6 +40,7 @@ class StarServiceImpl @Autowired constructor(
 
     override fun deleteStar(starId: Long): Optional<Star> {
         val starOptional = starRepo.findById(starId)
+        fileStarRepo.deleteAllByStarId(starId)
         starRepo.deleteById(starId)
         return starOptional
     }
