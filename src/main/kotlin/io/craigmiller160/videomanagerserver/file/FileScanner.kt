@@ -52,7 +52,7 @@ class FileScanner @Autowired constructor(
                             val videoFile = videoFileRepo.findByFileName(name) ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
                             videoFile.lastModified = lastModified
                             videoFile.lastScanTimestamp = scanTimestamp
-                            videoFile.active = true // TODO add this to unit tests
+                            videoFile.active = true
                             if (videoFile.fileAdded == null) {
                                 videoFile.fileAdded = lastModified
                             }

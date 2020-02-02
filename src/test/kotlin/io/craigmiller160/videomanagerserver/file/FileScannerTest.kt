@@ -118,19 +118,23 @@ class FileScannerTest {
                     contains(
                             allOf(
                                     hasProperty("fileName", `is`("myFile.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("myFile2.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("otherExt.csv")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             ),
                             allOf(
                                     hasProperty("fileName", `is`("subdir/subDirFile.txt")),
-                                    hasProperty("fileAdded", greaterThan(start))
+                                    hasProperty("fileAdded", greaterThan(start)),
+                                    hasProperty("active", equalTo(true))
                             )
                     )
             ))
