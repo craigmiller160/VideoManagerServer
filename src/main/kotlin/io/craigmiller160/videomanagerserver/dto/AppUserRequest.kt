@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.dto
 
-data class UpdateAppUser (
+data class AppUserRequest (
         var userId: Long = 0,
         var userName: String = "",
         var firstName: String = "",
