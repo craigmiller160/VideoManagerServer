@@ -1,6 +1,9 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import com.nhaarman.mockito_kotlin.times
+import io.craigmiller160.videomanagerserver.dto.AppUserRequest
+import io.craigmiller160.videomanagerserver.dto.AppUserResponse
+import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.VideoToken
@@ -8,8 +11,6 @@ import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
-import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -88,44 +89,41 @@ class AuthServiceTest {
 
     @Test
     fun test_login() {
-        TODO("Fix this")
-//        mockLogin()
-//        val request = AppUser().apply {
-//            userName = USER_NAME
-//            password = PASSWORD
-//        }
-//
-//        val result = authService.login(request)
-//        assertEquals(TOKEN, result)
-//
-//        val captor = ArgumentCaptor.forClass(AppUser::class.java)
-//
-//        verify(appUserRepository, times(1))
-//                .save(captor.capture())
-//
-//        assertThat(captor.value, hasProperty("lastAuthenticated", notNullValue()))
+        mockLogin()
+        val request = LoginRequest(
+                userName = USER_NAME,
+                password = PASSWORD
+        )
+
+        val result = authService.login(request)
+        assertEquals(TOKEN, result)
+
+        val captor = ArgumentCaptor.forClass(AppUser::class.java)
+
+        verify(appUserRepository, times(1))
+                .save(captor.capture())
+
+        assertThat(captor.value, hasProperty("lastAuthenticated", notNullValue()))
     }
 
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_cantFindUser() {
-        TODO("Fix this")
-//        mockLogin()
-//        val request = AppUser().apply {
-//            userName = "Bob"
-//            password = PASSWORD
-//        }
-//        authService.login(request)
+        mockLogin()
+        val request = LoginRequest(
+                userName = "Bob",
+                password = PASSWORD
+        )
+        authService.login(request)
     }
 
     @Test(expected = ApiUnauthorizedException::class)
     fun test_login_wrongPassword() {
-        TODO("Fix this")
-//        mockLogin()
-//        val request = AppUser().apply {
-//            userName = USER_NAME
-//            password = "FooBar"
-//        }
-//        authService.login(request)
+        mockLogin()
+        val request = LoginRequest(
+                userName = USER_NAME,
+                password = "FooBar"
+        )
+        authService.login(request)
     }
 
     @Test
@@ -140,28 +138,38 @@ class AuthServiceTest {
 
     @Test
     fun test_createUser() {
-        TODO("Fix this")
-//        val user = AppUser().apply {
-//            userName = USER_NAME
-//            password = PASSWORD
-//            roles = listOf(Role(1, ROLE))
-//        }
-//        val userWithId = user.copy(userId = 1L)
-//
-//        `when`(appUserRepository.save(user))
-//                .thenReturn(userWithId)
-//        `when`(passwordEncoder.encode(PASSWORD))
-//                .thenReturn(ENCODED_PASSWORD)
-//
-//        val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
-//
-//        val result = authService.createUser(user)
-//
-//        verify(appUserRepository, times(1))
-//                .save(userCaptor.capture())
-//
-//        assertThat(userCaptor.value, hasProperty("password", equalTo(ENCODED_PASSWORD)))
-//        assertEquals(userWithId, result)
+        val roles = listOf(Role(1, ROLE))
+        val userRequest = AppUserRequest(
+            userName = USER_NAME,
+            password = PASSWORD,
+            roles = roles
+        )
+        val user = AppUser(
+                userName = USER_NAME,
+                password = ENCODED_PASSWORD,
+                roles = roles
+        )
+        val userWithId = user.copy(userId = 1L)
+        val userResponse = AppUserResponse(
+                userName = USER_NAME,
+                roles = roles,
+                userId = 1L
+        )
+
+        `when`(appUserRepository.save(user))
+                .thenReturn(userWithId)
+        `when`(passwordEncoder.encode(PASSWORD))
+                .thenReturn(ENCODED_PASSWORD)
+
+        val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
+
+        val result = authService.createUser(userRequest)
+
+        verify(appUserRepository, times(1))
+                .save(userCaptor.capture())
+
+        assertThat(userCaptor.value, hasProperty("password", equalTo(ENCODED_PASSWORD)))
+        assertEquals(userResponse, result)
     }
 
     @Test(expected = IllegalArgumentException::class)
