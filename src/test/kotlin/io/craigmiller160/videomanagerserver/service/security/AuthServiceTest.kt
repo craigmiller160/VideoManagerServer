@@ -174,22 +174,20 @@ class AuthServiceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun test_createUser_missingPass() {
-        TODO("Fix this")
-//        val user = AppUser().apply {
-//            userName = "Bob"
-//        }
-//        authService.createUser(user)
+        val request = AppUserRequest(
+                userName = "Bob"
+        )
+        authService.createUser(request)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun test_createUser_badRoles() {
-        TODO("Fix this")
-//        val user = AppUser(
-//                userName = "Bob",
-//                password = "pass",
-//                roles = listOf(Role(name = "Foo"))
-//        )
-//        authService.createUser(user)
+        val request = AppUserRequest(
+                userName = "Bob",
+                password = "pass",
+                roles = listOf(Role(name = "Foo"))
+        )
+        authService.createUser(request)
     }
 
     @Test
@@ -208,44 +206,45 @@ class AuthServiceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun test_updateUserAdmin_badRoles() {
-        TODO("Fix this")
-//        val userId = 1L
-//        val request = AppUser().apply {
-//            userName = USER_NAME
-//            roles = listOf(Role(name = ROLE))
-//        }
-//        authService.updateUserAdmin(userId, request)
+        val userId = 1L
+        val request = AppUserRequest(
+                userName = USER_NAME,
+                roles = listOf(Role(name = ROLE))
+        )
+        authService.updateUserAdmin(userId, request)
     }
 
     @Test
     fun test_updateUserAdmin() {
-        TODO("Fix this")
-//        val lastAuth = LocalDateTime.now()
-//        val userId = 1L
-//        val request = AppUser().apply {
-//            userName = USER_NAME
-//            roles = listOf(Role(roleId = 1, name = ROLE))
-//        }
-//        val response = request.copy(
-//                userId = userId,
-//                password = PASSWORD,
-//                lastAuthenticated = lastAuth
-//        )
-//        val existing = request.copy(
-//                userId = userId,
-//                roles = listOf(),
-//                password = PASSWORD,
-//                lastAuthenticated = lastAuth
-//        )
-//        val expected = response.copy(password = "")
-//
-//        `when`(appUserRepository.save(response))
-//                .thenReturn(response)
-//        `when`(appUserRepository.findById(userId))
-//                .thenReturn(Optional.of(existing))
-//
-//        val result = authService.updateUserAdmin(userId, request)
-//        assertEquals(expected, result)
+        val lastAuth = LocalDateTime.now()
+        val userId = 1L
+        val roles = listOf(Role(roleId = 1, name = ROLE))
+        val request = AppUserRequest(
+            userName = USER_NAME,
+            roles = roles
+        )
+        val existing = AppUser(
+                userId = userId,
+                userName = USER_NAME,
+                roles = listOf(),
+                password = PASSWORD,
+                lastAuthenticated = lastAuth
+        )
+        val updatedUser = existing.copy(roles = roles)
+        val response = AppUserResponse(
+                userId = userId,
+                userName = USER_NAME,
+                roles = roles,
+                lastAuthenticated = lastAuth
+        )
+
+        `when`(appUserRepository.save(updatedUser))
+                .thenReturn(updatedUser)
+        `when`(appUserRepository.findById(userId))
+                .thenReturn(Optional.of(existing))
+
+        val result = authService.updateUserAdmin(userId, request)
+        assertEquals(response, result)
     }
 
     @Test
