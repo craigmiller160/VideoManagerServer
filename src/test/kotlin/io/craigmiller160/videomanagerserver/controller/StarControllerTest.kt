@@ -29,8 +29,6 @@ import java.util.Optional
 @ContextConfiguration
 class StarControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var starService: StarService
 
@@ -50,7 +48,8 @@ class StarControllerTest : AbstractControllerTest() {
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         starNoId = Star(starName = "NoId")
         star1 = Star(1, "FirstStar")
         star2 = Star(2, "SecondStar")

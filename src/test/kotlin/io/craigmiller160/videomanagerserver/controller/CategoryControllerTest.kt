@@ -29,8 +29,6 @@ import java.util.Optional
 @ContextConfiguration
 class CategoryControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var categoryService: CategoryService
 
@@ -50,16 +48,13 @@ class CategoryControllerTest : AbstractControllerTest() {
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         categoryNoId = Category(categoryName = "NoId")
         category1 = Category(1, "FirstCategory")
         category2 = Category(2, "SecondCategory")
         category3 = Category(3, "ThirdCategory")
         categoryList = listOf(category1, category2, category3)
-
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, ObjectMapper())
     }
 
     @Test

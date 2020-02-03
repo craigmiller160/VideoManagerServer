@@ -39,23 +39,9 @@ class LocalFileControllerTest : AbstractControllerTest() {
     private lateinit var localFileController: LocalFileController
 
     @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
-    private lateinit var mockMvcHandler: MockMvcHandler
-
-    @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
     private lateinit var jacksonLocalFileList: JacksonTester<LocalFileList>
-
-    @Before
-    fun setup() {
-        mockMvcHandler = buildMockMvcHandler()
-        JacksonTester.initFields(this, objectMapper)
-    }
 
     private fun mockFiles(): LocalFileList {
         val file1 = LocalFile(

@@ -48,8 +48,6 @@ import java.util.Optional
 @ContextConfiguration
 class VideoFileControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var videoFileService: VideoFileService
 
@@ -79,13 +77,11 @@ class VideoFileControllerTest : AbstractControllerTest() {
     private lateinit var videoTokenProvider: VideoTokenProvider
 
     @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Autowired
     private lateinit var tokenConfig: TokenConfig
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         videoFileNoId = VideoFile(fileName = "NoId")
         videoFile1 = VideoFile(1, "FirstFile")
         videoFile2 = VideoFile(2, "SecondFile")
@@ -101,10 +97,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
         scanRunning = createScanRunningStatus()
         scanNotRunning = createScanNotRunningStatus()
         scanAlreadyRunning = createScanAlreadyRunningStatus()
-
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, objectMapper)
     }
 
     @Test

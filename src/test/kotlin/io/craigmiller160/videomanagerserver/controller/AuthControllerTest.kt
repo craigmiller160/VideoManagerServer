@@ -58,20 +58,8 @@ class AuthControllerTest : AbstractControllerTest() {
     private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
     private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
-
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Before
-    fun setup() {
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, objectMapper)
-    }
 
     @Test
     fun test_login() {

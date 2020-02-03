@@ -29,8 +29,6 @@ import java.util.Optional
 @ContextConfiguration
 class SeriesControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var seriesService: SeriesService
 
@@ -50,15 +48,13 @@ class SeriesControllerTest : AbstractControllerTest() {
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         seriesNoId = Series(seriesName = "NoId")
         series1 = Series(1, "FirstSeries")
         series2 = Series(2, "SecondSeries")
         series3 = Series(3, "ThirdSeries")
         seriesList = listOf(series1, series2, series3)
-
-        mockMvcHandler = buildMockMvcHandler()
-        JacksonTester.initFields(this, ObjectMapper())
     }
 
     @Test

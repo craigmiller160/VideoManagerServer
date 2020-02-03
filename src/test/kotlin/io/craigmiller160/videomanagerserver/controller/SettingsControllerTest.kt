@@ -37,9 +37,6 @@ class SettingsControllerTest : AbstractControllerTest() {
         private const val ROOT_DIR = "rootDir"
     }
 
-    private lateinit var mockMvc: MockMvc
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var settingsService: SettingsService
 
@@ -49,20 +46,7 @@ class SettingsControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
     private lateinit var jacksonSettings: JacksonTester<Settings>
-
-    @Before
-    fun setup() {
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, objectMapper)
-    }
 
     @Test
     fun test_getSettings() {
