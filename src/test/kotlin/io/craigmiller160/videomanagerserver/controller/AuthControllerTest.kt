@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.controller.AuthController.Companion.DEFAULT_MAX_AGE
+import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.VideoToken
@@ -50,10 +51,12 @@ class AuthControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var authController: AuthController
 
+    // TODO clean these up
     private lateinit var jacksonUser: JacksonTester<AppUser>
     private lateinit var jacksonRoles: JacksonTester<List<Role>>
     private lateinit var jacksonUserList: JacksonTester<List<AppUser>>
     private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
+    private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
 
     private lateinit var mockMvcHandler: MockMvcHandler
 
@@ -72,20 +75,19 @@ class AuthControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_login() {
-        TODO("Fix this")
-//        val request = AppUser().apply {
-//            userName = "userName"
-//            password = "password"
-//        }
-//        val token = "ABCDEFG"
-//        `when`(authService.login(request))
-//                .thenReturn(token)
-//
-//        val response = mockMvcHandler.doPost("/api/auth/login", jacksonUser.write(request).json)
-//        assertThat(response, allOf(
-//                hasProperty("status", equalTo(204)),
-//                header("Set-Cookie", matchesPattern("vm_token=ABCDEFG; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
-//        ))
+        val request = LoginRequest(
+            userName = "userName",
+            password = "password"
+        )
+        val token = "ABCDEFG"
+        `when`(authService.login(request))
+                .thenReturn(token)
+
+        val response = mockMvcHandler.doPost("/api/auth/login", jacksonLoginRequest.write(request).json)
+        assertThat(response, allOf(
+                hasProperty("status", equalTo(204)),
+                header("Set-Cookie", matchesPattern("vm_token=ABCDEFG; Path=/; Max-Age=1000000; Expires=.+; Secure; HttpOnly; SameSite=strict"))
+        ))
     }
 
     @Test
