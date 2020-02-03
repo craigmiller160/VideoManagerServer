@@ -103,7 +103,7 @@ class AuthService (
             user.userName = userName
             user.lastAuthenticated = existing.lastAuthenticated
             if (existing.roles.find { role -> role.name == ROLE_ADMIN } == null) {
-                userRequest.roles = existing.roles
+                user.roles = existing.roles
             }
             user.password =
                     if (userRequest.password.isEmpty()) {
