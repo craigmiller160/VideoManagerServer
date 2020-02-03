@@ -748,8 +748,14 @@ class AuthServiceTest {
                 .thenReturn(Optional.of(user))
         `when`(appUserRepository.save(ArgumentMatchers.isA(AppUser::class.java)))
                 .thenReturn(user)
+
+        val expected = AppUserResponse(
+                userName = "userName",
+                userId = 1L
+        )
+
         val result = authService.revokeAccess(1L)
-        assertThat(result, hasProperty("password", isEmptyString()))
+        assertEquals(expected, result)
 
         val userCaptor = ArgumentCaptor.forClass(AppUser::class.java)
 
