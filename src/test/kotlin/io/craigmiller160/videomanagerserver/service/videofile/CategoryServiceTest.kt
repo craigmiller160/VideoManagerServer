@@ -1,26 +1,26 @@
-package io.craigmiller160.videomanagerserver.service.impl
+package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.isA
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
+import kotlin.test.assertNull
 
 @RunWith(MockitoJUnitRunner::class)
-class CategoryServiceImplTest {
+class CategoryServiceTest {
 
     companion object {
 
@@ -33,10 +33,15 @@ class CategoryServiceImplTest {
                 Category(categoryId = 2, categoryName = SECOND_NAME)
         )
 
+        private val expectedCategoryPayloads = listOf(
+                CategoryPayload(categoryId = 1, categoryName = FIRST_NAME),
+                CategoryPayload(categoryId = 2, categoryName = SECOND_NAME)
+        )
+
     }
 
     @InjectMocks
-    private lateinit var categoryService: CategoryServiceImpl
+    private lateinit var categoryService: CategoryService
 
     @Mock
     private lateinit var categoryRepo: CategoryRepository
@@ -45,44 +50,46 @@ class CategoryServiceImplTest {
 
     @Test
     fun testGetAllCategories() {
-        `when`(categoryRepo.findAll(isA(Sort::class.java)))
+        Mockito.`when`(categoryRepo.findAll(ArgumentMatchers.isA(Sort::class.java)))
                 .thenReturn(expectedCategories)
 
         val actualCategories = categoryService.getAllCategories()
         assertNotNull(actualCategories)
-        assertEquals(expectedCategories.size, actualCategories.size)
-        assertEquals(expectedCategories, actualCategories)
+        assertEquals(expectedCategoryPayloads.size, actualCategories.size)
+        assertEquals(expectedCategoryPayloads, actualCategories)
     }
 
     @Test
     fun testGetCategory() {
-        `when`(categoryRepo.findById(1))
+        Mockito.`when`(categoryRepo.findById(1))
                 .thenReturn(Optional.of(expectedCategories[0]))
-        `when`(categoryRepo.findById(2))
+        Mockito.`when`(categoryRepo.findById(2))
                 .thenReturn(Optional.of(expectedCategories[1]))
 
         var actualCategory = categoryService.getCategory(1)
-        assertTrue(actualCategory.isPresent)
-        assertEquals(expectedCategories[0], actualCategory.get())
+        assertNotNull(actualCategory)
+        assertEquals(expectedCategoryPayloads[0], actualCategory)
 
         actualCategory = categoryService.getCategory(2)
-        assertTrue(actualCategory.isPresent)
-        assertEquals(expectedCategories[1], actualCategory.get())
+        assertNotNull(actualCategory)
+        assertEquals(expectedCategoryPayloads[1], actualCategory)
 
         actualCategory = categoryService.getCategory(3)
-        assertFalse(actualCategory.isPresent)
+        assertNull(actualCategory)
     }
 
     @Test
     fun testAddCategory() {
+        val request = CategoryPayload(categoryName = THIRD_NAME)
+        val response = CategoryPayload(categoryId = 3, categoryName = THIRD_NAME)
         val newCategory = Category(categoryName = THIRD_NAME)
         val newCategoryWithId = Category(categoryId = 3, categoryName = THIRD_NAME)
 
-        `when`(categoryRepo.save(newCategory))
+        Mockito.`when`(categoryRepo.save(newCategory))
                 .thenReturn(newCategoryWithId)
 
-        val actualCategory = categoryService.addCategory(newCategory)
-        assertEquals(newCategoryWithId, actualCategory)
+        val result = categoryService.addCategory(request)
+        assertEquals(response, result)
     }
 
     @Test
@@ -90,17 +97,20 @@ class CategoryServiceImplTest {
         val newCategory = Category(categoryName = THIRD_NAME)
         val newCategoryWithId = Category(categoryId = 1, categoryName = THIRD_NAME)
 
+        val request = CategoryPayload(categoryName = THIRD_NAME)
+        val response = CategoryPayload(categoryId = 1, categoryName = THIRD_NAME)
+
         `when`(categoryRepo.save(newCategoryWithId))
                 .thenReturn(newCategoryWithId)
         `when`(categoryRepo.findById(1))
                 .thenReturn(Optional.of(expectedCategories[0]))
 
-        var actualCategory = categoryService.updateCategory(1, newCategory)
-        assertTrue(actualCategory.isPresent)
-        assertEquals(newCategoryWithId, actualCategory.get())
+        var actualCategory = categoryService.updateCategory(1, request)
+        assertNotNull(actualCategory)
+        assertEquals(response, actualCategory)
 
-        actualCategory = categoryService.updateCategory(3, newCategory)
-        assertFalse(actualCategory.isPresent)
+        actualCategory = categoryService.updateCategory(3, request)
+        assertNull(actualCategory)
     }
 
     @Test
@@ -110,15 +120,15 @@ class CategoryServiceImplTest {
                 .thenReturn(Optional.empty())
 
         var actualCategory = categoryService.deleteCategory(1)
-        assertTrue(actualCategory.isPresent)
-        assertEquals(expectedCategories[0], actualCategory.get())
+        assertNotNull(actualCategory)
+        assertEquals(expectedCategories[0], actualCategory)
 
         actualCategory = categoryService.deleteCategory(1)
-        assertFalse(actualCategory.isPresent)
+        assertNull(actualCategory)
 
-        verify(categoryRepo, times(2))
+        Mockito.verify(categoryRepo, Mockito.times(2))
                 .deleteById(1)
-        verify(fileCategoryRepo, times(2))
+        Mockito.verify(fileCategoryRepo, Mockito.times(2))
                 .deleteAllByCategoryId(1)
     }
 
