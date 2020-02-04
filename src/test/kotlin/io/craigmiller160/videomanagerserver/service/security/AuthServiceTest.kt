@@ -633,8 +633,13 @@ class AuthServiceTest {
         `when`(appUserRepository.findById(userId))
                 .thenReturn(Optional.of(user))
 
+        val expected = AppUserResponse(
+                userId = userId,
+                userName = USER_NAME
+        )
+
         val result = authService.deleteUser(userId)
-        assertEquals(user, result)
+        assertEquals(expected, result)
 
         val userIdCaptor = ArgumentCaptor.forClass(Long::class.java)
         verify(appUserRepository, times(1))
@@ -809,11 +814,12 @@ class AuthServiceTest {
         `when`(appUserRepository.findByUserName(userName))
                 .thenReturn(user)
 
+        val expected = AppUserResponse(
+                userName = userName
+        )
+
         val result = authService.checkAuth()
-        assertThat(result, allOf(
-                hasProperty("userName", equalTo(userName)),
-                hasProperty("password", equalTo(""))
-        ))
+        assertEquals(expected, result)
     }
 
     @Test(expected = ApiUnauthorizedException::class)
