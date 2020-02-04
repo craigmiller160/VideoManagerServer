@@ -1,18 +1,21 @@
 package io.craigmiller160.videomanagerserver.service
 
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
 import java.util.Optional
 
 interface CategoryService {
 
-    fun getAllCategories(): List<Category>
+    // TODO delete this interface while im doing the refactor
 
-    fun getCategory(categoryId: Long): Optional<Category>
+    fun getAllCategories(): List<CategoryPayload>
 
-    fun addCategory(category: Category): Category
+    fun getCategory(categoryId: Long): CategoryPayload?
 
-    fun updateCategory(categoryId: Long, category: Category): Optional<Category>
+    fun addCategory(category: CategoryPayload): CategoryPayload
 
-    fun deleteCategory(categoryId: Long): Optional<Category>
+    fun updateCategory(categoryId: Long, category: CategoryPayload): CategoryPayload?
+
+    fun deleteCategory(categoryId: Long): CategoryPayload?
 
 }
