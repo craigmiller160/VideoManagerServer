@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.videomanagerserver.dto.Category
+import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.MatcherAssert.assertThat

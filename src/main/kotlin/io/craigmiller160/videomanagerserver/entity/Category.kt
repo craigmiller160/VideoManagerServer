@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
 import javax.persistence.Column
 import javax.persistence.Entity

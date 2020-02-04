@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service
 
-import io.craigmiller160.videomanagerserver.dto.Category
+import io.craigmiller160.videomanagerserver.entity.Category
 import java.util.Optional
 
 interface CategoryService {

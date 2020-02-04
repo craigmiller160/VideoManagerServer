@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import java.time.LocalDateTime
 import javax.persistence.CascadeType

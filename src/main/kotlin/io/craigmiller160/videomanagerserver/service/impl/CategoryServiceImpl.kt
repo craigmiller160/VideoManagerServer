@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
-import io.craigmiller160.videomanagerserver.dto.Category
+import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.service.CategoryService
