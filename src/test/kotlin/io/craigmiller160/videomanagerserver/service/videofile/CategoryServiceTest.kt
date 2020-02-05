@@ -121,7 +121,7 @@ class CategoryServiceTest {
 
         var actualCategory = categoryService.deleteCategory(1)
         assertNotNull(actualCategory)
-        assertEquals(expectedCategories[0], actualCategory)
+        assertEquals(expectedCategoryPayloads[0], actualCategory)
 
         actualCategory = categoryService.deleteCategory(1)
         assertNull(actualCategory)
