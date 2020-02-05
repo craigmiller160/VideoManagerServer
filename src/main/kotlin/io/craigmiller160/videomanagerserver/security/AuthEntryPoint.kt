@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.ErrorMessage
+import io.craigmiller160.videomanagerserver.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -24,7 +24,7 @@ class AuthEntryPoint : AuthenticationEntryPoint {
         resp?.status = status.value()
 
         resp?.addHeader("Content-Type", "application/json")
-        val error = ErrorMessage().apply {
+        val error = ErrorResponse().apply {
             timestamp = formatter.format(ZonedDateTime.now())
             this.status = status.value()
             error = status.name

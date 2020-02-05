@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.ErrorMessage
+import io.craigmiller160.videomanagerserver.dto.ErrorResponse
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -59,7 +59,7 @@ class AuthEntryPointTest {
         assertEquals("application/json", headerCaptor.allValues[1])
 
         val response = stringWriter.toString()
-        val error = objectMapper.readValue(response, ErrorMessage::class.java)
+        val error = objectMapper.readValue(response, ErrorResponse::class.java)
         assertThat(error, allOf(
                 hasProperty("timestamp", notNullValue()),
                 hasProperty("status", equalTo(HttpStatus.UNAUTHORIZED.value())),
