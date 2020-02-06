@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
@@ -94,7 +94,7 @@ class VideoFileController @Autowired constructor(
 
     @Secured(ROLE_SCAN)
     @PostMapping("/scanner")
-    fun startVideoFileScan(): ResponseEntity<FileScanStatus> {
+    fun startVideoFileScan(): ResponseEntity<FileScanStatusResponse> {
         val status = videoFileService.startVideoFileScan()
         if (status.alreadyRunning) {
             logger.warn("Video scanner already running, cannot start it again")
@@ -104,7 +104,7 @@ class VideoFileController @Autowired constructor(
     }
 
     @GetMapping("/scanner")
-    fun isVideoFileScanRunning(): ResponseEntity<FileScanStatus> {
+    fun isVideoFileScanRunning(): ResponseEntity<FileScanStatusResponse> {
         return ResponseEntity.ok(videoFileService.isVideoFileScanRunning())
     }
 

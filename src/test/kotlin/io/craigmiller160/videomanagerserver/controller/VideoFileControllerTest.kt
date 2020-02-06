@@ -1,9 +1,8 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
@@ -56,7 +55,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
-    private lateinit var jacksonStatus: JacksonTester<FileScanStatus>
+    private lateinit var jacksonStatus: JacksonTester<FileScanStatusResponse>
     private lateinit var jacksonSearch: JacksonTester<VideoSearch>
     private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResults>
 
@@ -66,9 +65,9 @@ class VideoFileControllerTest : AbstractControllerTest() {
     private lateinit var videoFile3: VideoFile
     private lateinit var videoFileList: List<VideoFile>
     private lateinit var videoSearchResults: VideoSearchResults
-    private lateinit var scanRunning: FileScanStatus
-    private lateinit var scanNotRunning: FileScanStatus
-    private lateinit var scanAlreadyRunning: FileScanStatus
+    private lateinit var scanRunning: FileScanStatusResponse
+    private lateinit var scanNotRunning: FileScanStatusResponse
+    private lateinit var scanAlreadyRunning: FileScanStatusResponse
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider

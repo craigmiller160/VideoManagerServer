@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service
 
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
@@ -19,9 +19,9 @@ interface VideoFileService {
 
     fun deleteVideoFile(fileId: Long): Optional<VideoFile>
 
-    fun startVideoFileScan(): FileScanStatus
+    fun startVideoFileScan(): FileScanStatusResponse
 
-    fun isVideoFileScanRunning(): FileScanStatus
+    fun isVideoFileScanRunning(): FileScanStatusResponse
 
     fun playVideo(fileId: Long): UrlResource
 

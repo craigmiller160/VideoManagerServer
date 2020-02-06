@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.FileScanStatus
+import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
@@ -29,7 +29,6 @@ import java.time.LocalDateTime
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
-import javax.persistence.Query
 import javax.transaction.Transactional
 
 @Service
@@ -85,7 +84,7 @@ class VideoFileServiceImpl @Autowired constructor(
         return videoFileOptional
     }
 
-    override fun startVideoFileScan(): FileScanStatus {
+    override fun startVideoFileScan(): FileScanStatusResponse {
         if (fileScanRunning.get()) {
             return createScanAlreadyRunningStatus()
         }
@@ -106,7 +105,7 @@ class VideoFileServiceImpl @Autowired constructor(
         return createScanRunningStatus()
     }
 
-    override fun isVideoFileScanRunning(): FileScanStatus {
+    override fun isVideoFileScanRunning(): FileScanStatusResponse {
         val scanRunning = fileScanRunning.get()
         val lastScanSuccess = lastScanSuccess.get()
         if (scanRunning) {
