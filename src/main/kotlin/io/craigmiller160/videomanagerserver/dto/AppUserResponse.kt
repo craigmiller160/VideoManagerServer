@@ -1,6 +1,5 @@
 package io.craigmiller160.videomanagerserver.dto
 
-import io.craigmiller160.videomanagerserver.entity.Role
 import java.time.LocalDateTime
 
 data class AppUserResponse (
@@ -9,5 +8,5 @@ data class AppUserResponse (
         var firstName: String = "",
         var lastName: String = "",
         var lastAuthenticated: LocalDateTime? = null,
-        var roles: List<Role> = listOf() // TODO need to refactor the Role to a DTO here
+        var roles: List<RolePayload> = listOf()
 )
