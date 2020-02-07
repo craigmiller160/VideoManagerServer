@@ -35,7 +35,7 @@ class SeriesServiceTest {
 
         private val expectedSeriesPayloads = listOf(
                 SeriesPayload(seriesId = 1, seriesName = FIRST_NAME),
-                SeriesPayload(seriesId = 1, seriesName = SECOND_NAME)
+                SeriesPayload(seriesId = 2, seriesName = SECOND_NAME)
         )
 
     }
@@ -97,16 +97,16 @@ class SeriesServiceTest {
         val newSeriesPayload = SeriesPayload(seriesName = THIRD_NAME)
         val newSeriesWithIdPayload = SeriesPayload(seriesId = 3, seriesName = THIRD_NAME)
 
-        Mockito.`when`(seriesRepo.save(newSeries))
+        Mockito.`when`(seriesRepo.save(newSeriesWithId))
                 .thenReturn(newSeriesWithId)
-        Mockito.`when`(seriesRepo.findById(1))
+        Mockito.`when`(seriesRepo.findById(3))
                 .thenReturn(Optional.of(expectedSeries[0]))
 
-        var actualSeries = seriesService.updateSeries(1, newSeriesPayload)
+        var actualSeries = seriesService.updateSeries(3, newSeriesPayload)
         assertNotNull(actualSeries)
         Assert.assertEquals(newSeriesWithIdPayload, actualSeries)
 
-        actualSeries = seriesService.updateSeries(3, newSeriesPayload)
+        actualSeries = seriesService.updateSeries(1, newSeriesPayload)
         assertNull(actualSeries)
     }
 
