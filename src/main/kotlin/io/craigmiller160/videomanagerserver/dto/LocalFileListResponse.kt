@@ -1,8 +1,6 @@
 package io.craigmiller160.videomanagerserver.dto
 
-// TODO refactor
-
-data class LocalFileList (
+data class LocalFileListResponse (
         var rootPath: String = "",
         var parentPath: String = "",
         var files: List<LocalFileResponse> = listOf()

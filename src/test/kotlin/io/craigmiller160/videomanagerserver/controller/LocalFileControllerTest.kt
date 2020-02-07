@@ -2,7 +2,7 @@ package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
-import io.craigmiller160.videomanagerserver.dto.LocalFileList
+import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
 import io.craigmiller160.videomanagerserver.dto.Role
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
@@ -38,9 +38,9 @@ class LocalFileControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileList>
+    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileListResponse>
 
-    private fun mockFiles(): LocalFileList {
+    private fun mockFiles(): LocalFileListResponse {
         val file1 = LocalFileResponse(
                 fileName = "file1",
                 filePath = "dir/file1",
@@ -57,7 +57,7 @@ class LocalFileControllerTest : AbstractControllerTest() {
                 isDirectory = true
         )
         val files = listOf(file1, file2, dir1)
-        return LocalFileList(
+        return LocalFileListResponse(
                 rootPath = "dir",
                 files = files
         )
