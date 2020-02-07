@@ -1,13 +1,12 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
-import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.isA
@@ -16,7 +15,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional

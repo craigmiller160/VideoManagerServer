@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service
 
-import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.entity.Star
 import java.util.Optional
 
 interface StarService {

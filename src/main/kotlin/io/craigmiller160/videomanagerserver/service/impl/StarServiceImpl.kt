@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
-import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
 import io.craigmiller160.videomanagerserver.service.StarService

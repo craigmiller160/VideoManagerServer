@@ -1,12 +1,10 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
-
-// TODO refactor
 
 @Entity
 @Table(name = "stars")

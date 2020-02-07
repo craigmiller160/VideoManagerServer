@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.Star
+import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.service.StarService
 import org.springframework.beans.factory.annotation.Autowired
