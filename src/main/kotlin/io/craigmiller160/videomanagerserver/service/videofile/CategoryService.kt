@@ -40,16 +40,14 @@ class CategoryService @Autowired constructor(
     }
 
     fun updateCategory(categoryId: Long, payload: CategoryPayload): CategoryPayload? {
-        val updatedCategory = categoryRepo.findById(categoryId)
+        return categoryRepo.findById(categoryId)
                 .map { _ ->
                     val category = modelMapper.map(payload, Category::class.java)
                     category.categoryId = categoryId
-                    categoryRepo.save(category)
+                    val updatedCategory = categoryRepo.save(category)
+                    modelMapper.map(updatedCategory, CategoryPayload::class.java)
                 }
                 .orElse(null)
-        return updatedCategory?.let {
-            modelMapper.map(updatedCategory, CategoryPayload::class.java)
-        }
     }
 
     fun deleteCategory(categoryId: Long): CategoryPayload? {
