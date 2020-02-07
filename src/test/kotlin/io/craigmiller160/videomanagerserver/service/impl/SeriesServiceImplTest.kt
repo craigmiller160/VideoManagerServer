@@ -22,36 +22,9 @@ import java.util.Optional
 @RunWith(MockitoJUnitRunner::class)
 class SeriesServiceImplTest {
 
-    companion object {
 
-        private const val FIRST_NAME = "FirstName"
-        private const val SECOND_NAME = "SecondName"
-        private const val THIRD_NAME = "ThirdName"
 
-        private val expectedSeries = listOf(
-                Series(seriesId = 1, seriesName = FIRST_NAME),
-                Series(seriesId = 2, seriesName = SECOND_NAME)
-        )
 
-    }
-
-    @InjectMocks
-    private lateinit var seriesService: SeriesServiceImpl
-
-    @Mock
-    private lateinit var seriesRepo: SeriesRepository
-    @Mock
-    private lateinit var fileSeriesRepo: FileSeriesRepository
-
-    @Test
-    fun testGetAllSeries() {
-        `when`(seriesRepo.findAll(isA(Sort::class.java)))
-                .thenReturn(expectedSeries)
-
-        val actualSeries = seriesService.getAllSeries()
-        assertNotNull(actualSeries)
-        assertEquals(expectedSeries, actualSeries)
-    }
 
     @Test
     fun testGetSeries() {
