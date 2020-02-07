@@ -50,7 +50,8 @@ class AuthService (
     }
 
     fun getRoles(): List<RolePayload> {
-        return roleRepository.findAll().toList()
+        return roleRepository.findAll()
+                .map { role -> modelMapper.map(role, RolePayload::class.java) }
     }
 
     fun createUser(userRequest: AppUserRequest): AppUserResponse {
@@ -173,8 +174,7 @@ class AuthService (
         return VideoToken(token)
     }
 
-    // TODO is this necessary anymore?
-    fun rolesHaveIds(roles: List<Role>) =
+    fun rolesHaveIds(roles: List<RolePayload>) =
             roles.none { role -> role.roleId == 0L }
 
 }
