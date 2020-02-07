@@ -2,9 +2,7 @@ package io.craigmiller160.videomanagerserver.dto
 
 import java.io.File
 
-// TODO refactor
-
-data class LocalFile (
+data class LocalFileResponse (
         var fileName: String,
         var filePath: String,
         var isDirectory: Boolean
