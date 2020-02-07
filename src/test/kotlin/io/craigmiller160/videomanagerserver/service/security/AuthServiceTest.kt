@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.times
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
+import io.craigmiller160.videomanagerserver.dto.RolePayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.dto.VideoToken
@@ -139,10 +140,11 @@ class AuthServiceTest {
     @Test
     fun test_createUser() {
         val roles = listOf(Role(1, ROLE))
+        val rolePayloads = listOf(RolePayload(1, ROLE))
         val userRequest = AppUserRequest(
             userName = USER_NAME,
             password = PASSWORD,
-            roles = roles
+            roles = rolePayloads
         )
         val user = AppUser(
                 userName = USER_NAME,
@@ -152,7 +154,7 @@ class AuthServiceTest {
         val userWithId = user.copy(userId = 1L)
         val userResponse = AppUserResponse(
                 userName = USER_NAME,
-                roles = roles,
+                roles = rolePayloads,
                 userId = 1L
         )
 
@@ -185,21 +187,21 @@ class AuthServiceTest {
         val request = AppUserRequest(
                 userName = "Bob",
                 password = "pass",
-                roles = listOf(Role(name = "Foo"))
+                roles = listOf(RolePayload(name = "Foo"))
         )
         authService.createUser(request)
     }
 
     @Test
     fun test_rolesHaveIds() {
-        val roles = listOf(Role(1, ROLE))
+        val roles = listOf(RolePayload(1, ROLE))
         val result = authService.rolesHaveIds(roles)
         assertTrue(result)
     }
 
     @Test
     fun test_rolesHaveIds_noIds() {
-        val roles = listOf(Role(name = ROLE))
+        val roles = listOf(RolePayload(name = ROLE))
         val result = authService.rolesHaveIds(roles)
         assertFalse(result)
     }
@@ -209,7 +211,7 @@ class AuthServiceTest {
         val userId = 1L
         val request = AppUserRequest(
                 userName = USER_NAME,
-                roles = listOf(Role(name = ROLE))
+                roles = listOf(RolePayload(name = ROLE))
         )
         authService.updateUserAdmin(userId, request)
     }
@@ -219,9 +221,10 @@ class AuthServiceTest {
         val lastAuth = LocalDateTime.now()
         val userId = 1L
         val roles = listOf(Role(roleId = 1, name = ROLE))
+        val rolePayloads = listOf(RolePayload(roleId = 1, name = ROLE))
         val request = AppUserRequest(
             userName = USER_NAME,
-            roles = roles
+            roles = rolePayloads
         )
         val existing = AppUser(
                 userId = userId,
@@ -234,7 +237,7 @@ class AuthServiceTest {
         val response = AppUserResponse(
                 userId = userId,
                 userName = USER_NAME,
-                roles = roles,
+                roles = rolePayloads,
                 lastAuthenticated = lastAuth
         )
 
@@ -251,10 +254,11 @@ class AuthServiceTest {
     fun test_updateUserAdmin_noUpdateUsername() {
         val userId = 1L
         val roles = listOf(Role(roleId = 1, name = ROLE))
+        val rolePayloads = listOf(RolePayload(roleId = 1, name = ROLE))
         val lastAuthenticated = LocalDateTime.now()
         val request = AppUserRequest(
             userName = "userName2",
-            roles = roles
+            roles = rolePayloads
         )
         val existing = AppUser(
                 userId = userId,
@@ -269,7 +273,7 @@ class AuthServiceTest {
         val expected = AppUserResponse(
                 userId = userId,
                 userName = USER_NAME,
-                roles = roles,
+                roles = rolePayloads,
                 lastAuthenticated = lastAuthenticated
         )
 
@@ -286,10 +290,11 @@ class AuthServiceTest {
     fun test_updateUserAdmin_withPassword() {
         val userId = 1L
         val roles = listOf(Role(roleId = 1, name = ROLE))
+        val rolePayloads = listOf(RolePayload(roleId = 1, name = ROLE))
         val lastAuthenticated = LocalDateTime.now()
         val request = AppUserRequest(
             userName = USER_NAME,
-            roles = roles,
+            roles = rolePayloads,
             password = PASSWORD
         )
         val existing = AppUser(
@@ -305,7 +310,7 @@ class AuthServiceTest {
         val expected = AppUserResponse(
                 userId = userId,
                 userName = USER_NAME,
-                roles = roles
+                roles = rolePayloads
         )
 
         `when`(appUserRepository.save(toSave))
@@ -324,7 +329,7 @@ class AuthServiceTest {
         val userId = 1L
         val user = AppUserRequest(
             userName = USER_NAME,
-            roles = listOf(Role(roleId = 1, name = ROLE))
+            roles = listOf(RolePayload(roleId = 1, name = ROLE))
         )
 
         val result = authService.updateUserAdmin(userId, user)
@@ -337,7 +342,7 @@ class AuthServiceTest {
                 userName = USER_NAME,
                 firstName = "Craig",
                 lastName = "Miller",
-                roles = listOf(Role(name = "role"))
+                roles = listOf(RolePayload(name = "role"))
         )
         authService.updateUserSelf(request)
     }
@@ -387,7 +392,7 @@ class AuthServiceTest {
                 userName = USER_NAME,
                 firstName = "Craig",
                 lastName = "Miller",
-                roles = listOf(Role(1, ROLE_ADMIN))
+                roles = listOf(RolePayload(1, ROLE_ADMIN))
         )
 
         val existing = AppUser(
@@ -429,12 +434,13 @@ class AuthServiceTest {
 
     @Test
     fun test_updateUserSelf_adminCanUpdateRoles() {
+        val rolePayloads = listOf(RolePayload(1, ROLE_ADMIN), RolePayload(2, ROLE_EDIT))
         val roles = listOf(Role(1, ROLE_ADMIN), Role(2, ROLE_EDIT))
         val request = AppUserRequest(
                 userName = USER_NAME,
                 firstName = "Craig",
                 lastName = "Miller",
-                roles = roles
+                roles = rolePayloads
         )
 
         val existing = AppUser(
@@ -460,7 +466,7 @@ class AuthServiceTest {
                 userName = USER_NAME,
                 firstName = "Craig",
                 lastName = "Miller",
-                roles = roles
+                roles = rolePayloads
         )
 
         `when`(securityContextService.getUserName())
@@ -589,7 +595,7 @@ class AuthServiceTest {
         val expectedList = userList.map { u ->
             AppUserResponse(
                     userName = u.userName,
-                    roles = u.roles
+                    roles = listOf(RolePayload(name = ROLE))
             )
         }
 
@@ -609,7 +615,7 @@ class AuthServiceTest {
         }
         val expected = AppUserResponse(
                 userName = USER_NAME,
-                roles = listOf(Role(name = ROLE))
+                roles = listOf(RolePayload(name = ROLE))
         )
         `when`(appUserRepository.findById(1L))
                 .thenReturn(Optional.of(user))

@@ -4,6 +4,7 @@ import io.craigmiller160.videomanagerserver.controller.AuthController.Companion.
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
+import io.craigmiller160.videomanagerserver.dto.RolePayload
 import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.entity.AppUser
@@ -51,7 +52,7 @@ class AuthControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var authController: AuthController
 
-    private lateinit var jacksonRoles: JacksonTester<List<Role>>
+    private lateinit var jacksonRoles: JacksonTester<List<RolePayload>>
     private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
     private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
     private lateinit var jacksonUserRequest: JacksonTester<AppUserRequest>
@@ -116,7 +117,7 @@ class AuthControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getRoles_unauthorized() {
-        val roles = listOf(Role(name = ROLE))
+        val roles = listOf(RolePayload(name = ROLE))
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
@@ -134,7 +135,7 @@ class AuthControllerTest : AbstractControllerTest() {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val roles = listOf(Role(name = ROLE))
+        val roles = listOf(RolePayload(name = ROLE))
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
@@ -153,7 +154,7 @@ class AuthControllerTest : AbstractControllerTest() {
         }
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
-        val roles = listOf(Role(name = ROLE))
+        val roles = listOf(RolePayload(name = ROLE))
         `when`(authService.getRoles())
                 .thenReturn(roles)
 
@@ -246,7 +247,7 @@ class AuthControllerTest : AbstractControllerTest() {
 
         val userResponse = AppUserResponse(
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
 
         val users = listOf(userResponse)
@@ -307,7 +308,7 @@ class AuthControllerTest : AbstractControllerTest() {
         val userResponse = AppUserResponse(
                 userId = userId,
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
 
@@ -362,12 +363,12 @@ class AuthControllerTest : AbstractControllerTest() {
 
         val userRequest = AppUserRequest(
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
 
         val userResponse = AppUserResponse(
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
 
         `when`(authService.updateUserAdmin(userId, userRequest))
@@ -405,7 +406,7 @@ class AuthControllerTest : AbstractControllerTest() {
         val userId = 1L
         val user = AppUserRequest(
             userName = "userName",
-            roles = listOf(Role(name = ROLE_ADMIN))
+            roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
         val response = mockMvcHandler.doPut("/api/auth/users/admin/$userId", jacksonUserRequest.write(user).json)
         assertThat(response, hasProperty("status", equalTo(401)))
@@ -488,7 +489,7 @@ class AuthControllerTest : AbstractControllerTest() {
         val userResponse = AppUserResponse(
                 userId = userId,
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
 
         `when`(authService.deleteUser(userId))
@@ -548,7 +549,7 @@ class AuthControllerTest : AbstractControllerTest() {
         val userResponse = AppUserResponse(
                 userId = 1L,
                 userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
+                roles = listOf(RolePayload(name = ROLE_ADMIN))
         )
 
         `when`(authService.revokeAccess(1L))
