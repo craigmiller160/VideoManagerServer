@@ -1,11 +1,12 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.service.SeriesService
+import io.craigmiller160.videomanagerserver.service.videofile.SeriesService
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertThat
@@ -34,14 +35,14 @@ class SeriesControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var seriesController: SeriesController
 
-    private lateinit var jacksonSeriesList: JacksonTester<List<Series>>
-    private lateinit var jacksonSeries: JacksonTester<Series>
+    private lateinit var jacksonSeriesList: JacksonTester<List<SeriesPayload>>
+    private lateinit var jacksonSeries: JacksonTester<SeriesPayload>
 
-    private lateinit var seriesNoId: Series
-    private lateinit var series1: Series
-    private lateinit var series2: Series
-    private lateinit var series3: Series
-    private lateinit var seriesList: List<Series>
+    private lateinit var seriesNoId: SeriesPayload
+    private lateinit var series1: SeriesPayload
+    private lateinit var series2: SeriesPayload
+    private lateinit var series3: SeriesPayload
+    private lateinit var seriesList: List<SeriesPayload>
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -49,10 +50,10 @@ class SeriesControllerTest : AbstractControllerTest() {
     @Before
     override fun setup() {
         super.setup()
-        seriesNoId = Series(seriesName = "NoId")
-        series1 = Series(1, "FirstSeries")
-        series2 = Series(2, "SecondSeries")
-        series3 = Series(3, "ThirdSeries")
+        seriesNoId = SeriesPayload(seriesName = "NoId")
+        series1 = SeriesPayload(1, "FirstSeries")
+        series2 = SeriesPayload(2, "SecondSeries")
+        series3 = SeriesPayload(3, "ThirdSeries")
         seriesList = listOf(series1, series2, series3)
     }
 
@@ -80,9 +81,9 @@ class SeriesControllerTest : AbstractControllerTest() {
     fun testGetSeries() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(seriesService.getSeries(1))
-                .thenReturn(Optional.of(series1))
+                .thenReturn(series1)
         `when`(seriesService.getSeries(5))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doGet("/api/series/1")
         assertOkResponse(response, jacksonSeries.write(series1).json)
@@ -138,9 +139,9 @@ class SeriesControllerTest : AbstractControllerTest() {
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedSeries = series2.copy(seriesId = 1)
         `when`(seriesService.updateSeries(1, series2))
-                .thenReturn(Optional.of(updatedSeries))
+                .thenReturn(updatedSeries)
         `when`(seriesService.updateSeries(5, series3))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doPut("/api/series/1", jacksonSeries.write(series2).json)
         assertOkResponse(response, jacksonSeries.write(updatedSeries).json)
@@ -174,8 +175,8 @@ class SeriesControllerTest : AbstractControllerTest() {
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(seriesService.deleteSeries(1))
-                .thenReturn(Optional.of(series1))
-                .thenReturn(Optional.empty())
+                .thenReturn(series1)
+                .thenReturn(null)
 
         var response = mockMvcHandler.doDelete("/api/series/1")
         assertOkResponse(response, jacksonSeries.write(series1).json)
