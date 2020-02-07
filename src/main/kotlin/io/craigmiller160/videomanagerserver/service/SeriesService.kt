@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service
 
-import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.entity.Series
 import java.util.Optional
 
 interface SeriesService {

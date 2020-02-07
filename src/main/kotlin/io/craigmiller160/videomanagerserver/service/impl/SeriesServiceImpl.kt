@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.impl
 
-import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import io.craigmiller160.videomanagerserver.service.SeriesService

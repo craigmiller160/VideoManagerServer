@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.entity.Category
-import io.craigmiller160.videomanagerserver.dto.Series
+import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.dto.Star
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
