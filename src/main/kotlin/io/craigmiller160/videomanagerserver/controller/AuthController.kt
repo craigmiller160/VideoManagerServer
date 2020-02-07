@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
-import io.craigmiller160.videomanagerserver.entity.Role
+import io.craigmiller160.videomanagerserver.dto.RolePayload
 import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
@@ -106,7 +106,7 @@ class AuthController (
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/roles")
-    fun getRoles(): ResponseEntity<List<Role>> {
+    fun getRoles(): ResponseEntity<List<RolePayload>> {
         val roles = authService.getRoles()
         if (roles.isEmpty()) {
             return ResponseEntity.noContent().build()

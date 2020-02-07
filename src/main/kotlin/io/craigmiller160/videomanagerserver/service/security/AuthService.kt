@@ -3,9 +3,10 @@ package io.craigmiller160.videomanagerserver.service.security
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
+import io.craigmiller160.videomanagerserver.dto.RolePayload
+import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
@@ -48,7 +49,7 @@ class AuthService (
         throw ApiUnauthorizedException("Invalid login")
     }
 
-    fun getRoles(): List<Role> {
+    fun getRoles(): List<RolePayload> {
         return roleRepository.findAll().toList()
     }
 
@@ -172,6 +173,7 @@ class AuthService (
         return VideoToken(token)
     }
 
+    // TODO is this necessary anymore?
     fun rolesHaveIds(roles: List<Role>) =
             roles.none { role -> role.roleId == 0L }
 
