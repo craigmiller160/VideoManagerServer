@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.dto
 
+import io.craigmiller160.videomanagerserver.entity.Role
 import java.time.LocalDateTime
 
 data class AppUserResponse (

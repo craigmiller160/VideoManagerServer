@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults

@@ -1,8 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.dto.Settings
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
@@ -13,7 +12,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -24,8 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.web.context.WebApplicationContext
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest

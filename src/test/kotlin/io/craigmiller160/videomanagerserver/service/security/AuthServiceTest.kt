@@ -5,7 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.dto.VideoToken
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
@@ -17,11 +17,9 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvi
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.isEmptyString
 import org.hamcrest.Matchers.notNullValue
 import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertEquals
