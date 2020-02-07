@@ -1,8 +1,9 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.service.StarService
+import io.craigmiller160.videomanagerserver.service.videofile.StarService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
@@ -22,7 +23,7 @@ class StarController @Autowired constructor(
 ) {
 
     @GetMapping
-    fun getAllStars(): ResponseEntity<List<Star>> {
+    fun getAllStars(): ResponseEntity<List<StarPayload>> {
         val stars = starService.getAllStars()
         if (stars.isEmpty()) {
             return ResponseEntity.noContent().build()
@@ -31,25 +32,25 @@ class StarController @Autowired constructor(
     }
 
     @GetMapping("/{starId}")
-    fun getStar(@PathVariable starId: Long): ResponseEntity<Star> {
+    fun getStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
         return okOrNoContent(starService.getStar(starId))
     }
 
     @Secured(ROLE_EDIT)
     @PostMapping
-    fun addStar(@RequestBody star: Star): ResponseEntity<Star> {
+    fun addStar(@RequestBody star: StarPayload): ResponseEntity<StarPayload> {
         return ResponseEntity.ok(starService.addStar(star))
     }
 
     @Secured(ROLE_EDIT)
     @PutMapping("/{starId}")
-    fun updateStar(@PathVariable starId: Long, @RequestBody star: Star): ResponseEntity<Star> {
+    fun updateStar(@PathVariable starId: Long, @RequestBody star: StarPayload): ResponseEntity<StarPayload> {
         return okOrNoContent(starService.updateStar(starId, star))
     }
 
     @Secured(ROLE_EDIT)
     @DeleteMapping("/{starId}")
-    fun deleteStar(@PathVariable starId: Long): ResponseEntity<Star> {
+    fun deleteStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
         return okOrNoContent(starService.deleteStar(starId))
     }
 
