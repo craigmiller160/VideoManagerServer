@@ -1,12 +1,13 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.service.StarService
+import io.craigmiller160.videomanagerserver.service.videofile.StarService
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -35,14 +36,14 @@ class StarControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var starController: StarController
 
-    private lateinit var jacksonStarList: JacksonTester<List<Star>>
-    private lateinit var jacksonStar: JacksonTester<Star>
+    private lateinit var jacksonStarList: JacksonTester<List<StarPayload>>
+    private lateinit var jacksonStar: JacksonTester<StarPayload>
 
-    private lateinit var starNoId: Star
-    private lateinit var star1: Star
-    private lateinit var star2: Star
-    private lateinit var star3: Star
-    private lateinit var starList: List<Star>
+    private lateinit var starNoId: StarPayload
+    private lateinit var star1: StarPayload
+    private lateinit var star2: StarPayload
+    private lateinit var star3: StarPayload
+    private lateinit var starList: List<StarPayload>
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
@@ -50,14 +51,11 @@ class StarControllerTest : AbstractControllerTest() {
     @Before
     override fun setup() {
         super.setup()
-        starNoId = Star(starName = "NoId")
-        star1 = Star(1, "FirstStar")
-        star2 = Star(2, "SecondStar")
-        star3 = Star(3, "ThirdStar")
+        starNoId = StarPayload(starName = "NoId")
+        star1 = StarPayload(1, "FirstStar")
+        star2 = StarPayload(2, "SecondStar")
+        star3 = StarPayload(3, "ThirdStar")
         starList = listOf(star1, star2, star3)
-
-        mockMvcHandler = buildMockMvcHandler()
-        JacksonTester.initFields(this, ObjectMapper())
     }
 
     @Test
@@ -84,9 +82,9 @@ class StarControllerTest : AbstractControllerTest() {
     fun testGetStar() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(starService.getStar(1))
-                .thenReturn(Optional.of(star1))
+                .thenReturn(star1)
         `when`(starService.getStar(5))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doGet("/api/stars/1")
         assertOkResponse(response, jacksonStar.write(star1).json)
@@ -142,9 +140,9 @@ class StarControllerTest : AbstractControllerTest() {
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedStar = star2.copy(starId = 1)
         `when`(starService.updateStar(1, star2))
-                .thenReturn(Optional.of(updatedStar))
+                .thenReturn(updatedStar)
         `when`(starService.updateStar(5, star3))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
         assertOkResponse(response, jacksonStar.write(updatedStar).json)
@@ -178,8 +176,8 @@ class StarControllerTest : AbstractControllerTest() {
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(starService.deleteStar(1))
-                .thenReturn(Optional.of(star1))
-                .thenReturn(Optional.empty())
+                .thenReturn(star1)
+                .thenReturn(null)
 
         var response = mockMvcHandler.doDelete("/api/stars/1")
         assertOkResponse(response, jacksonStar.write(star1).json)
