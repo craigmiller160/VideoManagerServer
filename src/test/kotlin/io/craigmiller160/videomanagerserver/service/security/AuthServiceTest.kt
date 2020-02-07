@@ -130,11 +130,12 @@ class AuthServiceTest {
     @Test
     fun test_getRoles() {
         val roles = listOf(Role(1, "Role1"), Role(2, "Role2"))
+        val rolePayloads = listOf(RolePayload(1, "Role1"), RolePayload(2, "Role2"))
         `when`(roleRepository.findAll())
                 .thenReturn(roles)
 
         val result = authService.getRoles()
-        assertEquals(roles, result)
+        assertEquals(rolePayloads, result)
     }
 
     @Test
