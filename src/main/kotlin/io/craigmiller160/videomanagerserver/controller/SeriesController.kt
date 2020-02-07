@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.entity.Series
+import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.service.SeriesService
+import io.craigmiller160.videomanagerserver.service.videofile.SeriesService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
@@ -22,7 +22,7 @@ class SeriesController @Autowired constructor(
 ) {
 
     @GetMapping
-    fun getAllSeries(): ResponseEntity<List<Series>> {
+    fun getAllSeries(): ResponseEntity<List<SeriesPayload>> {
         val series = seriesService.getAllSeries()
         if (series.isEmpty()) {
             return ResponseEntity.noContent().build()
@@ -31,25 +31,25 @@ class SeriesController @Autowired constructor(
     }
 
     @GetMapping("/{seriesId}")
-    fun getSeries(@PathVariable seriesId: Long): ResponseEntity<Series> {
+    fun getSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
         return okOrNoContent(seriesService.getSeries(seriesId))
     }
 
     @Secured(ROLE_EDIT)
     @PostMapping
-    fun addSeries(@RequestBody series: Series): ResponseEntity<Series> {
+    fun addSeries(@RequestBody series: SeriesPayload): ResponseEntity<SeriesPayload> {
         return ResponseEntity.ok(seriesService.addSeries(series))
     }
 
     @Secured(ROLE_EDIT)
     @PutMapping("/{seriesId}")
-    fun updateSeries(@PathVariable seriesId: Long, @RequestBody series: Series): ResponseEntity<Series> {
+    fun updateSeries(@PathVariable seriesId: Long, @RequestBody series: SeriesPayload): ResponseEntity<SeriesPayload> {
         return okOrNoContent(seriesService.updateSeries(seriesId, series))
     }
 
     @Secured(ROLE_EDIT)
     @DeleteMapping("/{seriesId}")
-    fun deleteSeries(@PathVariable seriesId: Long): ResponseEntity<Series> {
+    fun deleteSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
         return okOrNoContent(seriesService.deleteSeries(seriesId))
     }
 
