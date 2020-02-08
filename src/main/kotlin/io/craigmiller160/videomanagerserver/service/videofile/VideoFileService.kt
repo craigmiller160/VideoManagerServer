@@ -64,30 +64,44 @@ class VideoFileService (
                 .toList()
     }
 
-    override fun getVideoFile(fileId: Long): Optional<VideoFile> {
+    fun getVideoFile(fileId: Long): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
+                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+                .orElse(null)
     }
 
-    override fun addVideoFile(videoFile: VideoFile): VideoFile {
-        return videoFileRepo.save(videoFile)
+    fun addVideoFile(payload: VideoFilePayload): VideoFilePayload {
+        // TODO test active
+        val videoFile = modelMapper.map(payload, VideoFile::class.java)
+        videoFile.active = true
+        val savedVideoFile = videoFileRepo.save(videoFile)
+        return modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
     }
 
-    override fun updateVideoFile(fileId: Long, videoFile: VideoFile): Optional<VideoFile> {
-        videoFile.fileId = fileId
+    fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
-                .map { videoFileRepo.save(videoFile) }
+                .map {
+                    // TODO need to preserve fields only in VideoFile
+                    val videoFile = modelMapper.map(payload, VideoFile::class.java)
+                    videoFile.fileId = fileId
+                    val savedVideoFile = videoFileRepo.save(videoFile)
+                    modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
+                }
+                .orElse(null)
     }
 
-    override fun deleteVideoFile(fileId: Long): Optional<VideoFile> {
+    fun deleteVideoFile(fileId: Long): VideoFilePayload? {
         val videoFileOptional = videoFileRepo.findById(fileId)
         fileCategoryRepo.deleteAllByFileId(fileId)
         fileStarRepo.deleteAllByFileId(fileId)
         fileSeriesRepo.deleteAllByFileId(fileId)
         videoFileRepo.deleteById(fileId)
         return videoFileOptional
+                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+                .orElse(null)
     }
 
-    override fun startVideoFileScan(): FileScanStatusResponse {
+    fun startVideoFileScan(): FileScanStatusResponse {
         if (fileScanRunning.get()) {
             return createScanAlreadyRunningStatus()
         }
@@ -108,7 +122,7 @@ class VideoFileService (
         return createScanRunningStatus()
     }
 
-    override fun isVideoFileScanRunning(): FileScanStatusResponse {
+    fun isVideoFileScanRunning(): FileScanStatusResponse {
         val scanRunning = fileScanRunning.get()
         val lastScanSuccess = lastScanSuccess.get()
         if (scanRunning) {
@@ -122,7 +136,7 @@ class VideoFileService (
         return createScanErrorStatus()
     }
 
-    override fun playVideo(fileId: Long): UrlResource {
+    fun playVideo(fileId: Long): UrlResource {
         val settings = settingsService.getOrCreateSettings()
         if (settings.rootDir.isEmpty()) {
             throw InvalidSettingException("No root directory is set")
@@ -134,7 +148,7 @@ class VideoFileService (
         return UrlResource(File(fullPath).toURI())
     }
 
-    override fun recordNewVideoPlay(fileId: Long) {
+    fun recordNewVideoPlay(fileId: Long) {
         val dbVideoFile = videoFileRepo.findById(fileId)
                 .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
         dbVideoFile.viewCount++
@@ -142,7 +156,7 @@ class VideoFileService (
         videoFileRepo.save(dbVideoFile)
     }
 
-    override fun searchForVideos(search: VideoSearch): VideoSearchResults {
+    fun searchForVideos(search: VideoSearch): VideoSearchResults {
         val page = search.page
         val pageSize = videoConfig.apiPageSize
 
