@@ -25,7 +25,9 @@ import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.modelmapper.Converter
 import org.modelmapper.ModelMapper
+import org.modelmapper.convention.MatchingStrategies
 import org.modelmapper.spi.MappingContext
+import org.modelmapper.spi.MatchingStrategy
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -83,9 +85,11 @@ class VideoFileService (
     }
 
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
+        modelMapper.configuration.matchingStrategy = MatchingStrategies.STRICT
         return videoFileRepo.findById(fileId)
-                .map { videoFile ->
-                    modelMapper.map(payload, videoFile)
+                .map {
+                    // TODO what about existing fields?
+                    val videoFile = modelMapper.map(payload, VideoFile::class.java)
                     videoFile.fileId = fileId
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
