@@ -4,7 +4,7 @@ import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
@@ -26,7 +26,6 @@ import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.io.File
 import java.time.LocalDateTime
-import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
 import kotlin.streams.toList
@@ -154,7 +153,7 @@ class VideoFileService (
         videoFileRepo.save(dbVideoFile)
     }
 
-    fun searchForVideos(search: VideoSearch): VideoSearchResults {
+    fun searchForVideos(search: VideoSearch): VideoSearchResponse {
         val page = search.page
         val pageSize = videoConfig.apiPageSize
 
@@ -172,7 +171,7 @@ class VideoFileService (
                 .resultList as List<VideoFile>
         val totalCount = countQuery.singleResult as Long
 
-        return VideoSearchResults().apply {
+        return VideoSearchResponse().apply {
             totalFiles = totalCount
             filesPerPage = pageSize
             currentPage = page

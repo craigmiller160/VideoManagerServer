@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
@@ -126,7 +126,7 @@ class VideoFileController @Autowired constructor(
     }
 
     @PostMapping("/search")
-    fun searchForVideos(@RequestBody search: VideoSearch): ResponseEntity<VideoSearchResults> {
+    fun searchForVideos(@RequestBody search: VideoSearch): ResponseEntity<VideoSearchResponse> {
         cleanUpSearch(search)
         val videoFiles = videoFileService.searchForVideos(search)
         if (videoFiles.videoList.isEmpty()) {

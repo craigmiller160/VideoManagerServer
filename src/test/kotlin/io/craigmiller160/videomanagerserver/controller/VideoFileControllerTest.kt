@@ -4,7 +4,7 @@ import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
+import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
@@ -39,7 +39,6 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
 import java.io.File
-import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -57,14 +56,14 @@ class VideoFileControllerTest : AbstractControllerTest() {
     private lateinit var jacksonVideoFile: JacksonTester<VideoFilePayload>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatusResponse>
     private lateinit var jacksonSearch: JacksonTester<VideoSearch>
-    private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResults>
+    private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResponse>
 
     private lateinit var videoFileNoId: VideoFilePayload
     private lateinit var videoFile1: VideoFilePayload
     private lateinit var videoFile2: VideoFilePayload
     private lateinit var videoFile3: VideoFilePayload
     private lateinit var videoFileList: List<VideoFilePayload>
-    private lateinit var videoSearchResults: VideoSearchResults
+    private lateinit var videoSearchResults: VideoSearchResponse
     private lateinit var scanRunning: FileScanStatusResponse
     private lateinit var scanNotRunning: FileScanStatusResponse
     private lateinit var scanAlreadyRunning: FileScanStatusResponse
@@ -86,7 +85,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         videoFile2 = VideoFilePayload(2, "SecondFile")
         videoFile3 = VideoFilePayload(3, "ThirdFile")
         videoFileList = listOf(videoFile1, videoFile2, videoFile3)
-        videoSearchResults = VideoSearchResults().apply {
+        videoSearchResults = VideoSearchResponse().apply {
             videoList = videoFileList
             totalFiles = 3
             filesPerPage = 3
@@ -309,7 +308,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java)))
                 .thenReturn(videoSearchResults)
-                .thenReturn(VideoSearchResults())
+                .thenReturn(VideoSearchResponse())
 
         val search = VideoSearch("HelloWorld")
 
