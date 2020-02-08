@@ -1,13 +1,14 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
+import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.dto.SortBy
+import io.craigmiller160.videomanagerserver.dto.StarPayload
+import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
-import io.craigmiller160.videomanagerserver.entity.Category
-import io.craigmiller160.videomanagerserver.entity.Series
-import io.craigmiller160.videomanagerserver.entity.Star
-import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -39,32 +40,31 @@ class VideoFileServiceIntegrationTest {
     @Autowired
     private lateinit var videoFileService: VideoFileService
 
-    private lateinit var file1: VideoFile
-    private lateinit var file2: VideoFile
-    private lateinit var file3: VideoFile
-    private lateinit var file4: VideoFile
+    private lateinit var file1: VideoFilePayload
+    private lateinit var file2: VideoFilePayload
+    private lateinit var file3: VideoFilePayload
+    private lateinit var file4: VideoFilePayload
 
     @Before
     fun setup() {
-        val category = Category(categoryName = "MyCategory")
-        val series = Series(seriesName = "MySeries")
-        val star = Star(starName = "MyStar")
+        val category = CategoryPayload(categoryName = "MyCategory")
+        val series = SeriesPayload(seriesName = "MySeries")
+        val star = StarPayload(starName = "MyStar")
 
-        file1 = VideoFile(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
+        file1 = VideoFilePayload(fileName = FILE_NAME, displayName = FILE_DISPLAY_NAME).apply {
             categories.add(category)
             this.series.add(series)
             stars.add(star)
-            active = true
         }
         file1 = videoFileService.addVideoFile(file1)
 
-        file2 = VideoFile(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2, active = true)
+        file2 = VideoFilePayload(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2)
         file3 = videoFileService.addVideoFile(file2)
 
-        file3 = VideoFile(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2, active = true)
+        file3 = VideoFilePayload(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2)
         file3 = videoFileService.addVideoFile(file3)
 
-        file4 = VideoFile(fileName = FILE_NAME_4, active = true)
+        file4 = VideoFilePayload(fileName = FILE_NAME_4)
     }
 
     @After
@@ -108,26 +108,26 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_updateVideoFile_removeJoin() {
-        val file = videoFileService.getVideoFile(1L).get()
-        file.categories.clear()
-        videoFileService.updateVideoFile(1L, file)
+        val file = videoFileService.getVideoFile(1L)
+        file?.categories?.clear()
+        videoFileService.updateVideoFile(1L, file!!)
 
-        val result = videoFileService.getVideoFile(1L).get()
-        Assert.assertEquals(0, result.categories.size)
-        Assert.assertEquals(1, result.series.size)
-        Assert.assertEquals(1, result.stars.size)
+        val result = videoFileService.getVideoFile(1L)
+        Assert.assertEquals(0, result?.categories?.size)
+        Assert.assertEquals(1, result?.series?.size)
+        Assert.assertEquals(1, result?.stars?.size)
     }
 
     @Test
     fun test_updateVideoFile_addJoin() {
-        val file = videoFileService.getVideoFile(1L).get()
-        file.categories.add(Category(categoryName = "NewCat"))
-        videoFileService.updateVideoFile(1L, file)
+        val file = videoFileService.getVideoFile(1L)
+        file?.categories?.add(CategoryPayload(categoryName = "NewCat"))
+        videoFileService.updateVideoFile(1L, file!!)
 
-        val result = videoFileService.getVideoFile(1L).get()
-        Assert.assertEquals(2, result.categories.size)
-        Assert.assertEquals(1, result.series.size)
-        Assert.assertEquals(1, result.stars.size)
+        val result = videoFileService.getVideoFile(1L)
+        Assert.assertEquals(2, result?.categories?.size)
+        Assert.assertEquals(1, result?.series?.size)
+        Assert.assertEquals(1, result?.stars?.size)
     }
 
     @Test
@@ -138,7 +138,7 @@ class VideoFileServiceIntegrationTest {
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
                 Matchers.hasProperty("filesPerPage", Matchers.equalTo(10)),
                 Matchers.hasProperty("currentPage", Matchers.equalTo(0)),
-                Matchers.hasProperty("videoList", Matchers.containsInAnyOrder(
+                Matchers.hasProperty("videoList", containsInAnyOrder(
                         file1, file2, file3
                 ))
         ))
