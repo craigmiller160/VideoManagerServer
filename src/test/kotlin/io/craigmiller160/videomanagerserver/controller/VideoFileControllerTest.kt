@@ -1,21 +1,21 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.entity.AppUser
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
-import io.craigmiller160.videomanagerserver.service.VideoFileService
+import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -53,17 +53,17 @@ class VideoFileControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var videoFileController: VideoFileController
 
-    private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFile>>
-    private lateinit var jacksonVideoFile: JacksonTester<VideoFile>
+    private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFilePayload>>
+    private lateinit var jacksonVideoFile: JacksonTester<VideoFilePayload>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatusResponse>
     private lateinit var jacksonSearch: JacksonTester<VideoSearch>
     private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResults>
 
-    private lateinit var videoFileNoId: VideoFile
-    private lateinit var videoFile1: VideoFile
-    private lateinit var videoFile2: VideoFile
-    private lateinit var videoFile3: VideoFile
-    private lateinit var videoFileList: List<VideoFile>
+    private lateinit var videoFileNoId: VideoFilePayload
+    private lateinit var videoFile1: VideoFilePayload
+    private lateinit var videoFile2: VideoFilePayload
+    private lateinit var videoFile3: VideoFilePayload
+    private lateinit var videoFileList: List<VideoFilePayload>
     private lateinit var videoSearchResults: VideoSearchResults
     private lateinit var scanRunning: FileScanStatusResponse
     private lateinit var scanNotRunning: FileScanStatusResponse
@@ -81,10 +81,10 @@ class VideoFileControllerTest : AbstractControllerTest() {
     @Before
     override fun setup() {
         super.setup()
-        videoFileNoId = VideoFile(fileName = "NoId")
-        videoFile1 = VideoFile(1, "FirstFile")
-        videoFile2 = VideoFile(2, "SecondFile")
-        videoFile3 = VideoFile(3, "ThirdFile")
+        videoFileNoId = VideoFilePayload(fileName = "NoId")
+        videoFile1 = VideoFilePayload(1, "FirstFile")
+        videoFile2 = VideoFilePayload(2, "SecondFile")
+        videoFile3 = VideoFilePayload(3, "ThirdFile")
         videoFileList = listOf(videoFile1, videoFile2, videoFile3)
         videoSearchResults = VideoSearchResults().apply {
             videoList = videoFileList
@@ -125,9 +125,9 @@ class VideoFileControllerTest : AbstractControllerTest() {
     fun testGetVideoFile() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(videoFileService.getVideoFile(1))
-                .thenReturn(Optional.of(videoFile1))
+                .thenReturn(videoFile1)
         `when`(videoFileService.getVideoFile(5))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doGet("/api/video-files/1")
         assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
@@ -183,9 +183,9 @@ class VideoFileControllerTest : AbstractControllerTest() {
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedVideoFile = videoFile2.copy(fileId = 1)
         `when`(videoFileService.updateVideoFile(1, videoFile2))
-                .thenReturn(Optional.of(updatedVideoFile))
+                .thenReturn(updatedVideoFile)
         `when`(videoFileService.updateVideoFile(5, videoFile3))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
         assertOkResponse(response, jacksonVideoFile.write(updatedVideoFile).json)
@@ -219,8 +219,8 @@ class VideoFileControllerTest : AbstractControllerTest() {
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(videoFileService.deleteVideoFile(1))
-                .thenReturn(Optional.of(videoFile1))
-                .thenReturn(Optional.empty())
+                .thenReturn(videoFile1)
+                .thenReturn(null)
 
         var response = mockMvcHandler.doDelete("/api/video-files/1")
         assertOkResponse(response, jacksonVideoFile.write(videoFile1).json)
