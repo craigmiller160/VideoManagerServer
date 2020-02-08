@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ModelMapperConfig {
 
+    // TODO delete this if not needed
+
     @Bean
     fun modelMapper(): ModelMapper {
         val mapper = ModelMapper()
