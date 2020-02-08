@@ -59,7 +59,7 @@ class VideoFileServiceIntegrationTest {
         file1 = videoFileService.addVideoFile(file1)
 
         file2 = VideoFilePayload(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2)
-        file3 = videoFileService.addVideoFile(file2)
+        file2 = videoFileService.addVideoFile(file2)
 
         file3 = VideoFilePayload(fileName = FILE_NAME_3, displayName = FILE_DISPLAY_NAME_2)
         file3 = videoFileService.addVideoFile(file3)
