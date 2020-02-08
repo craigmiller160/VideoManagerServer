@@ -9,9 +9,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
-import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.entity.Settings
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner

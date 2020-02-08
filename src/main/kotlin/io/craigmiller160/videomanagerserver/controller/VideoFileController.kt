@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT

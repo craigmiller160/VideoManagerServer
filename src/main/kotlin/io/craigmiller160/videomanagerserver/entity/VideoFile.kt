@@ -1,4 +1,4 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import io.craigmiller160.videomanagerserver.entity.Category

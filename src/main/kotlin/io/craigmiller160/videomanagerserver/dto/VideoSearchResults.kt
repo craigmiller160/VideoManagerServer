@@ -1,5 +1,7 @@
 package io.craigmiller160.videomanagerserver.dto
 
+import io.craigmiller160.videomanagerserver.entity.VideoFile
+
 // TODO refactor
 
 data class VideoSearchResults (

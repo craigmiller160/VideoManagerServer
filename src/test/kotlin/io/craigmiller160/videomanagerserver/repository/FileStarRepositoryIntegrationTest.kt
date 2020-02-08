@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.entity.Star
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
