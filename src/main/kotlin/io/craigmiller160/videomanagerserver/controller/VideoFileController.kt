@@ -6,7 +6,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
-import io.craigmiller160.videomanagerserver.service.VideoFileService
+import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.support.ResourceRegion
