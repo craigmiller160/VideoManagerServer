@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.settings
 
 import com.nhaarman.mockito_kotlin.isA
+import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.repository.SettingsRepository
@@ -44,7 +45,6 @@ class SettingsServiceTest {
 
         val result = settingsService.getOrCreateSettings()
         assertThat(result, allOf(
-                hasProperty("settingsId", equalTo(SETTINGS_ID)),
                 hasProperty("rootDir", equalTo(ROOT_DIR))
         ))
 
@@ -59,7 +59,6 @@ class SettingsServiceTest {
 
         val result = settingsService.getOrCreateSettings()
         assertThat(result, allOf(
-                hasProperty("settingsId", equalTo(SETTINGS_ID)),
                 hasProperty("rootDir", emptyString())
         ))
 
@@ -69,19 +68,18 @@ class SettingsServiceTest {
 
     @Test
     fun test_updateSettings() {
-        val settingsArg = Settings(
-                settingsId = 2L,
-                rootDir = ROOT_DIR
-        )
-        val settingsResult = Settings(
+        val saveSettings = Settings(
                 settingsId = SETTINGS_ID,
                 rootDir = ROOT_DIR
         )
-        `when`(settingsRepository.save(settingsResult))
-                .thenReturn(settingsResult)
+        val settingsPayload = SettingsPayload(
+                rootDir = ROOT_DIR
+        )
+        `when`(settingsRepository.save(saveSettings))
+                .thenReturn(saveSettings)
 
-        val result = settingsService.updateSettings(settingsArg)
-        assertEquals(settingsResult, result)
+        val result = settingsService.updateSettings(settingsPayload)
+        assertEquals(settingsPayload, result)
     }
 
 }
