@@ -12,9 +12,11 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.any
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
@@ -54,8 +56,13 @@ class SettingsServiceTest {
 
     @Test
     fun test_getOrCreateSettings_create() {
+        val settings = Settings(
+                settingsId = SETTINGS_ID
+        )
         `when`(settingsRepository.findById(SETTINGS_ID))
                 .thenReturn(Optional.empty())
+        `when`(settingsRepository.save(settings))
+                .thenReturn(settings)
 
         val result = settingsService.getOrCreateSettings()
         assertThat(result, allOf(
