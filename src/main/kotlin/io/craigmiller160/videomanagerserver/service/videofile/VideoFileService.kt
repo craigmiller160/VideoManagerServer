@@ -23,6 +23,7 @@ import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
+import org.modelmapper.Converter
 import org.modelmapper.ModelMapper
 import org.modelmapper.spi.MappingContext
 import org.springframework.core.io.UrlResource
@@ -82,22 +83,10 @@ class VideoFileService (
     }
 
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
-        val getCateories = { src: VideoFilePayload -> src.categories }
-        val setCategories = { dest: VideoFile, categories: MutableSet<CategoryPayload> ->
-            val mappedCategories = categories.map { cat -> modelMapper.map(cat, Category::class.java) }
-                    .toMutableSet()
-            dest.categories = mappedCategories
-        }
-
-        modelMapper.typeMap(VideoFilePayload::class.java, VideoFile::class.java)
-                .addMappings { mapper ->
-                    mapper.map(getCateories, setCategories)
-                }
         return videoFileRepo.findById(fileId)
                 .map { videoFile ->
                     modelMapper.map(payload, videoFile)
                     videoFile.fileId = fileId
-                    println(videoFile) // TODO delete this
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }
