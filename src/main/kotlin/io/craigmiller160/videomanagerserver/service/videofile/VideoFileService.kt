@@ -79,9 +79,8 @@ class VideoFileService (
 
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
-                .map {
-                    // TODO need to preserve fields only in VideoFile
-                    val videoFile = modelMapper.map(payload, VideoFile::class.java)
+                .map { videoFile ->
+                    modelMapper.map(payload, videoFile)
                     videoFile.fileId = fileId
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)

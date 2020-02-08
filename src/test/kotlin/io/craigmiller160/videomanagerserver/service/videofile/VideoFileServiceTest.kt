@@ -148,14 +148,15 @@ class VideoFileServiceTest {
 
     @Test
     fun testUpdateVideoFile() {
-        val newFileWithId = VideoFile(fileId = 1, fileName = THIRD_NAME)
+        val newFileWithId = VideoFile(fileId = 1, fileName = "foo", active = true)
+        val newFileToSave = VideoFile(fileId = 1, fileName = THIRD_NAME, active = true)
         val newFilePayload = VideoFilePayload(fileName = THIRD_NAME)
         val newFilePayloadWithId = VideoFilePayload(fileId = 1, fileName = THIRD_NAME)
 
-        Mockito.`when`(videoFileRepo.save(newFileWithId))
-                .thenReturn(newFileWithId)
+        Mockito.`when`(videoFileRepo.save(newFileToSave))
+                .thenReturn(newFileToSave)
         Mockito.`when`(videoFileRepo.findById(1))
-                .thenReturn(Optional.of(expectedFiles[0]))
+                .thenReturn(Optional.of(newFileWithId))
 
         var actualFile = videoFileService.updateVideoFile(1, newFilePayload)
         assertNotNull(actualFile)
