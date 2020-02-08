@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
@@ -9,6 +10,9 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.entity.Category
+import io.craigmiller160.videomanagerserver.entity.Series
+import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
@@ -20,6 +24,7 @@ import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.modelmapper.ModelMapper
+import org.modelmapper.spi.MappingContext
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -77,10 +82,22 @@ class VideoFileService (
     }
 
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
+        val getCateories = { src: VideoFilePayload -> src.categories }
+        val setCategories = { dest: VideoFile, categories: MutableSet<CategoryPayload> ->
+            val mappedCategories = categories.map { cat -> modelMapper.map(cat, Category::class.java) }
+                    .toMutableSet()
+            dest.categories = mappedCategories
+        }
+
+        modelMapper.typeMap(VideoFilePayload::class.java, VideoFile::class.java)
+                .addMappings { mapper ->
+                    mapper.map(getCateories, setCategories)
+                }
         return videoFileRepo.findById(fileId)
                 .map { videoFile ->
                     modelMapper.map(payload, videoFile)
                     videoFile.fileId = fileId
+                    println(videoFile) // TODO delete this
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }

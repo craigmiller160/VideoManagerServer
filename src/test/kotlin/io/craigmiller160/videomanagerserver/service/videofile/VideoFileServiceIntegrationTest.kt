@@ -6,6 +6,7 @@ import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.LocalDateTime
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -33,12 +35,16 @@ class VideoFileServiceIntegrationTest {
         private const val FILE_NAME_3 = "MyFile2"
 
         private const val FILE_NAME_4 = "MyFile4"
+
+        private val NOW_TIMESTAMP = LocalDateTime.now()
     }
 
     @Autowired
     private lateinit var dbTestUtils: DbTestUtils
     @Autowired
     private lateinit var videoFileService: VideoFileService
+    @Autowired
+    private lateinit var videoFileRepo: VideoFileRepository
 
     private lateinit var file1: VideoFilePayload
     private lateinit var file2: VideoFilePayload
@@ -57,6 +63,11 @@ class VideoFileServiceIntegrationTest {
             stars.add(star)
         }
         file1 = videoFileService.addVideoFile(file1)
+        videoFileRepo.findById(file1.fileId)
+                .ifPresent { videoFile ->
+                    videoFile.lastScanTimestamp = NOW_TIMESTAMP
+                    videoFileRepo.save(videoFile)
+                }
 
         file2 = VideoFilePayload(fileName = FILE_NAME_2, displayName = FILE_DISPLAY_NAME_2)
         file2 = videoFileService.addVideoFile(file2)
@@ -226,6 +237,11 @@ class VideoFileServiceIntegrationTest {
                         file1, file2, file3
                 ))
         ))
+    }
+
+    @Test
+    fun test_updateVideoFile_preserveDbFields() {
+        TODO("Finish this")
     }
 
 }
