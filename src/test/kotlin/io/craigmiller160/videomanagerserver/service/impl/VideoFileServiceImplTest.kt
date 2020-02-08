@@ -8,6 +8,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
+import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.dto.VideoFile
@@ -272,8 +273,7 @@ class VideoFileServiceImplTest {
 
     @Test
     fun test_playVideo() {
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
 
@@ -292,7 +292,7 @@ class VideoFileServiceImplTest {
         `when`(videoFileRepo.findById(1))
                 .thenReturn(Optional.of(expectedFiles[0]))
         `when`(settingsService.getOrCreateSettings())
-                .thenReturn(Settings())
+                .thenReturn(SettingsPayload())
 
         videoFileService.playVideo(expectedFiles[0].fileId)
     }
