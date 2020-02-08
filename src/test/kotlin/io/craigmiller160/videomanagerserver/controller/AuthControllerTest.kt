@@ -6,7 +6,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.dto.RolePayload
 import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.dto.VideoToken
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
@@ -53,7 +53,7 @@ class AuthControllerTest : AbstractControllerTest() {
     private lateinit var authController: AuthController
 
     private lateinit var jacksonRoles: JacksonTester<List<RolePayload>>
-    private lateinit var jacksonVideoToken: JacksonTester<VideoToken>
+    private lateinit var jacksonVideoToken: JacksonTester<VideoTokenResponse>
     private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
     private lateinit var jacksonUserRequest: JacksonTester<AppUserRequest>
     private lateinit var jacksonUserResponse: JacksonTester<AppUserResponse>
@@ -623,7 +623,7 @@ class AuthControllerTest : AbstractControllerTest() {
             userName = "userName"
         }
         val videoId = 10L
-        val token = VideoToken("ABCDEFG")
+        val token = VideoTokenResponse("ABCDEFG")
 
         `when`(authService.getVideoToken(videoId))
                 .thenReturn(token)

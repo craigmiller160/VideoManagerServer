@@ -4,7 +4,7 @@ import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.dto.RolePayload
-import io.craigmiller160.videomanagerserver.dto.VideoToken
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
@@ -128,7 +128,7 @@ class AuthController (
     }
 
     @GetMapping("/videotoken/{fileId}")
-    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoToken> {
+    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoTokenResponse> {
         val token = authService.getVideoToken(fileId)
         return ResponseEntity.ok(token)
     }

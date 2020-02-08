@@ -4,9 +4,8 @@ import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.dto.RolePayload
-import io.craigmiller160.videomanagerserver.dto.VideoToken
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
@@ -166,12 +165,12 @@ class AuthService (
         return modelMapper.map(updatedUser, AppUserResponse::class.java)
     }
 
-    fun getVideoToken(videoId: Long): VideoToken {
+    fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
         val user = AppUser(userName = userName)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)
         val token = videoTokenProvider.createToken(user, params)
-        return VideoToken(token)
+        return VideoTokenResponse(token)
     }
 
     fun rolesHaveIds(roles: List<RolePayload>) =

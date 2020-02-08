@@ -7,7 +7,7 @@ import io.craigmiller160.videomanagerserver.dto.LoginRequest
 import io.craigmiller160.videomanagerserver.dto.RolePayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.dto.VideoToken
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
@@ -806,7 +806,7 @@ class AuthServiceTest {
                 .thenReturn(token)
 
         val result = authService.getVideoToken(videoId)
-        assertEquals(VideoToken(token), result)
+        assertEquals(VideoTokenResponse(token), result)
     }
 
     @Test
