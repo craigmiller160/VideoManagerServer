@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.service.videofile
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
@@ -153,7 +153,7 @@ class VideoFileService (
         videoFileRepo.save(dbVideoFile)
     }
 
-    fun searchForVideos(search: VideoSearch): VideoSearchResponse {
+    fun searchForVideos(search: VideoSearchRequest): VideoSearchResponse {
         val page = search.page
         val pageSize = videoConfig.apiPageSize
 

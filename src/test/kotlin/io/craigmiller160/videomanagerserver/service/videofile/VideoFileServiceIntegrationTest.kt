@@ -5,7 +5,7 @@ import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -74,7 +74,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_sortAsc() {
-        val search = VideoSearch(
+        val search = VideoSearchRequest(
                 sortBy = VideoFileSortBy.NAME,
                 sortDir = Sort.Direction.ASC
         )
@@ -91,7 +91,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_sortDesc() {
-        val search = VideoSearch(
+        val search = VideoSearchRequest(
                 sortBy = VideoFileSortBy.NAME,
                 sortDir = Sort.Direction.DESC
         )
@@ -132,7 +132,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_noCriteria() {
-        val search = VideoSearch()
+        val search = VideoSearchRequest()
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -146,7 +146,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_allCriteria() {
-        val search = VideoSearch("File", 1, 1, 1)
+        val search = VideoSearchRequest("File", 1, 1, 1)
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -160,7 +160,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_onlyText() {
-        val search = VideoSearch("File")
+        val search = VideoSearchRequest("File")
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -174,7 +174,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_onlyCategory() {
-        val search = VideoSearch(categoryId = 1)
+        val search = VideoSearchRequest(categoryId = 1)
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -188,7 +188,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_onlySeries() {
-        val search = VideoSearch(seriesId = 1)
+        val search = VideoSearchRequest(seriesId = 1)
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -202,7 +202,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_onlyStar() {
-        val search = VideoSearch(starId = 1)
+        val search = VideoSearchRequest(starId = 1)
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -216,7 +216,7 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_caseInsensitive() {
-        val search = VideoSearch(searchText = "FILE")
+        val search = VideoSearchRequest(searchText = "FILE")
         val result = videoFileService.searchForVideos(search)
         Assert.assertThat(result, Matchers.allOf(
                 Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),

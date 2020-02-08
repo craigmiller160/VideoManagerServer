@@ -3,7 +3,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
@@ -55,7 +55,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
     private lateinit var jacksonVideoFileList: JacksonTester<List<VideoFilePayload>>
     private lateinit var jacksonVideoFile: JacksonTester<VideoFilePayload>
     private lateinit var jacksonStatus: JacksonTester<FileScanStatusResponse>
-    private lateinit var jacksonSearch: JacksonTester<VideoSearch>
+    private lateinit var jacksonSearch: JacksonTester<VideoSearchRequest>
     private lateinit var jacksonVideoSearchResults: JacksonTester<VideoSearchResponse>
 
     private lateinit var videoFileNoId: VideoFilePayload
@@ -306,11 +306,11 @@ class VideoFileControllerTest : AbstractControllerTest() {
     @Test
     fun testSearchForVideos() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
-        `when`(videoFileService.searchForVideos(isA(VideoSearch::class.java)))
+        `when`(videoFileService.searchForVideos(isA(VideoSearchRequest::class.java)))
                 .thenReturn(videoSearchResults)
                 .thenReturn(VideoSearchResponse())
 
-        val search = VideoSearch("HelloWorld")
+        val search = VideoSearchRequest("HelloWorld")
 
         var response = mockMvcHandler.doPost("/api/video-files/search", jacksonSearch.write(search).json)
         assertOkResponse(response, jacksonVideoSearchResults.write(videoSearchResults).json)
@@ -321,7 +321,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_searchForVideos_unauthorized() {
-        val search = VideoSearch("HelloWorld")
+        val search = VideoSearchRequest("HelloWorld")
         val response = mockMvcHandler.doPost("/api/video-files/search", jacksonSearch.write(search).json)
         assertThat(response, hasProperty("status", equalTo(401)))
     }

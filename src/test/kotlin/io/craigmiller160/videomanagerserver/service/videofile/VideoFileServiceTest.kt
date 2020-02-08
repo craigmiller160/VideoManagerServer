@@ -10,7 +10,7 @@ import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
@@ -317,7 +317,7 @@ class VideoFileServiceTest {
 
     @Test
     fun test_searchForVideos() {
-        val search = VideoSearch(
+        val search = VideoSearchRequest(
                 page = 1
         )
         val searchQueryString = "searchQueryString"

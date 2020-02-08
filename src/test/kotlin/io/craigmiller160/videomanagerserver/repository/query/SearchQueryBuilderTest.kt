@@ -2,7 +2,7 @@ package io.craigmiller160.videomanagerserver.repository.query
 
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.test_util.isA
 import junit.framework.Assert.assertEquals
 import org.hamcrest.Matchers
@@ -27,7 +27,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.displayName ASC, vf.fileName ASC
         """.trimIndent()
-        val search = VideoSearch()
+        val search = VideoSearchRequest()
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -37,7 +37,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.displayName DESC, vf.fileName DESC
         """.trimIndent()
-        val search = VideoSearch(sortDir = Sort.Direction.DESC)
+        val search = VideoSearchRequest(sortDir = Sort.Direction.DESC)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -47,7 +47,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.viewCount ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = VideoFileSortBy.VIEW_COUNT)
+        val search = VideoSearchRequest(sortBy = VideoFileSortBy.VIEW_COUNT)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -57,7 +57,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.lastViewed ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = VideoFileSortBy.LAST_VIEWED)
+        val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_VIEWED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -67,7 +67,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.lastModified ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = VideoFileSortBy.LAST_MODIFIED)
+        val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_MODIFIED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -77,7 +77,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.fileAdded ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = VideoFileSortBy.FILE_ADDED)
+        val search = VideoSearchRequest(sortBy = VideoFileSortBy.FILE_ADDED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -96,7 +96,7 @@ class SearchQueryBuilderTest {
             AND st.starId = :starId
         """.trimIndent()
 
-        val search = VideoSearch("Hello", 1, 1, 1)
+        val search = VideoSearchRequest("Hello", 1, 1, 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
         Assert.assertEquals(expected, query)
     }
@@ -108,7 +108,7 @@ class SearchQueryBuilderTest {
             AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
             OR LOWER(vf.displayName) LIKE LOWER(:searchText))
         """.trimIndent()
-        val search = VideoSearch("Hello")
+        val search = VideoSearchRequest("Hello")
         val query = searchQueryBuilder.buildQueryCriteria(search)
         Assert.assertEquals(expected, query)
     }
@@ -120,7 +120,7 @@ class SearchQueryBuilderTest {
             WHERE vf.active = true
             AND ca.categoryId = :categoryId
         """.trimIndent()
-        val search = VideoSearch(categoryId = 1)
+        val search = VideoSearchRequest(categoryId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
         Assert.assertEquals(expected, query)
     }
@@ -132,7 +132,7 @@ class SearchQueryBuilderTest {
             WHERE vf.active = true
             AND st.starId = :starId
         """.trimIndent()
-        val search = VideoSearch(starId = 1)
+        val search = VideoSearchRequest(starId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
         Assert.assertEquals(expected, query)
     }
@@ -144,7 +144,7 @@ class SearchQueryBuilderTest {
             WHERE vf.active = true
             AND se.seriesId = :seriesId
         """.trimIndent()
-        val search = VideoSearch(seriesId = 1)
+        val search = VideoSearchRequest(seriesId = 1)
         val query = searchQueryBuilder.buildQueryCriteria(search)
         Assert.assertEquals(expected, query)
     }
@@ -152,7 +152,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_noParams() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch()
+        val search = VideoSearchRequest()
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(0))
@@ -163,7 +163,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_allParams() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch("Hello", 1, 1, 1)
+        val search = VideoSearchRequest("Hello", 1, 1, 1)
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(4))
@@ -175,7 +175,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_onlyText() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch("Hello")
+        val search = VideoSearchRequest("Hello")
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(1))
@@ -187,7 +187,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_onlyCategory() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(categoryId = 1)
+        val search = VideoSearchRequest(categoryId = 1)
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(1))
@@ -199,7 +199,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_onlySeries() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(seriesId = 1)
+        val search = VideoSearchRequest(seriesId = 1)
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(1))
@@ -211,7 +211,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_addParamsToQuery_onlyStar() {
         val query = Mockito.spy(Query::class.java)
-        val search = VideoSearch(starId = 1)
+        val search = VideoSearchRequest(starId = 1)
         searchQueryBuilder.addParamsToQuery(search, query)
         val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
         verify(query, Mockito.times(1))
@@ -227,7 +227,7 @@ class SearchQueryBuilderTest {
             WHERE vf.active = true
             ORDER BY vf.displayName ASC, vf.fileName ASC
         """.trimIndent()
-        val actual = searchQueryBuilder.buildEntitySearchQuery(VideoSearch())
+        val actual = searchQueryBuilder.buildEntitySearchQuery(VideoSearchRequest())
         assertEquals(expected, actual)
     }
 
@@ -237,7 +237,7 @@ class SearchQueryBuilderTest {
             SELECT COUNT(vf) AS video_file_count FROM VideoFile vf
             WHERE vf.active = true
         """.trimIndent()
-        val actual = searchQueryBuilder.buildCountSearchQuery(VideoSearch())
+        val actual = searchQueryBuilder.buildCountSearchQuery(VideoSearchRequest())
         assertEquals(expected, actual)
     }
 
