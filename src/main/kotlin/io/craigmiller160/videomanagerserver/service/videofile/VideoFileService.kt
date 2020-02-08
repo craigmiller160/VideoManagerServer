@@ -1,14 +1,15 @@
-package io.craigmiller160.videomanagerserver.service.impl
+package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
@@ -16,10 +17,9 @@ import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
-import io.craigmiller160.videomanagerserver.service.VideoFileService
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
-import org.springframework.beans.factory.annotation.Autowired
+import org.modelmapper.ModelMapper
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -29,11 +29,10 @@ import java.time.LocalDateTime
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
-import javax.transaction.Transactional
+import kotlin.streams.toList
 
 @Service
-@Transactional
-class VideoFileServiceImpl @Autowired constructor(
+class VideoFileService (
         private val videoFileRepo: VideoFileRepository,
         private val videoConfig: VideoConfiguration,
         private val fileScanner: FileScanner,
@@ -43,10 +42,11 @@ class VideoFileServiceImpl @Autowired constructor(
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
         private val fileStarRepo: FileStarRepository
-): VideoFileService {
+) {
 
     private val fileScanRunning = AtomicBoolean(false)
     private val lastScanSuccess = AtomicBoolean(true)
+    private val modelMapper = ModelMapper()
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
@@ -55,10 +55,13 @@ class VideoFileServiceImpl @Autowired constructor(
         )
     }
 
-    override fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFile> {
+    fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFilePayload> {
         val sort = getVideoFileSort(Sort.Direction.valueOf(value = sortDirection))
         val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
-        return videoFileRepo.findAll(pageable).toList()
+        return videoFileRepo.findAll(pageable)
+                .stream()
+                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+                .toList()
     }
 
     override fun getVideoFile(fileId: Long): Optional<VideoFile> {
@@ -164,4 +167,5 @@ class VideoFileServiceImpl @Autowired constructor(
             this.videoList = videoList
         }
     }
+
 }
