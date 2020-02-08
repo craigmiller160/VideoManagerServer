@@ -15,8 +15,6 @@ import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.Table
 
-// TODO refactor
-
 @Entity
 @Table(name = "video_files")
 data class VideoFile(
