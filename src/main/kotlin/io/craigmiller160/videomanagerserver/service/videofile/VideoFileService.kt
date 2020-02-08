@@ -178,7 +178,7 @@ class VideoFileService (
             totalFiles = totalCount
             filesPerPage = pageSize
             currentPage = page
-            this.videoList = videoList
+            this.videoList = videoList.map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
         }
     }
 
