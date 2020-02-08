@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.dto.VideoSearchResults
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
@@ -60,7 +60,7 @@ class VideoFileController @Autowired constructor(
 
     @GetMapping
     fun getAllVideoFiles(@RequestParam(required = false, defaultValue = "0") page: Int,
-                         @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFile>> {
+                         @RequestParam(required = false, defaultValue = "ASC") sortDirection: String): ResponseEntity<List<VideoFilePayload>> {
         validateSortDirection(sortDirection)
         val videoFiles = videoFileService.getAllVideoFiles(page, sortDirection)
         if (videoFiles.isEmpty()) {
@@ -70,25 +70,25 @@ class VideoFileController @Autowired constructor(
     }
 
     @GetMapping("/{videoFileId}")
-    fun getVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFile> {
+    fun getVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFilePayload> {
         return okOrNoContent(videoFileService.getVideoFile(videoFileId))
     }
 
     @Secured(ROLE_EDIT)
     @PostMapping
-    fun addVideoFile(@RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
+    fun addVideoFile(@RequestBody videoFile: VideoFilePayload): ResponseEntity<VideoFilePayload> {
         return ResponseEntity.ok(videoFileService.addVideoFile(videoFile))
     }
 
     @Secured(ROLE_EDIT)
     @PutMapping("/{videoFileId}")
-    fun updateVideoFile(@PathVariable videoFileId: Long, @RequestBody videoFile: VideoFile): ResponseEntity<VideoFile> {
+    fun updateVideoFile(@PathVariable videoFileId: Long, @RequestBody videoFile: VideoFilePayload): ResponseEntity<VideoFilePayload> {
         return okOrNoContent(videoFileService.updateVideoFile(videoFileId, videoFile))
     }
 
     @Secured(ROLE_EDIT)
     @DeleteMapping("/{videoFileId}")
-    fun deleteVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFile> {
+    fun deleteVideoFile(@PathVariable videoFileId: Long): ResponseEntity<VideoFilePayload> {
         return okOrNoContent(videoFileService.deleteVideoFile(videoFileId))
     }
 
