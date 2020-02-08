@@ -134,8 +134,8 @@ class VideoFileServiceTest {
 
     @Test
     fun testAddVideoFile() {
-        val newFile = VideoFile(fileName = THIRD_NAME)
-        val newFileWithId = VideoFile(fileId = 3, fileName = THIRD_NAME)
+        val newFile = VideoFile(fileName = THIRD_NAME, active = true)
+        val newFileWithId = VideoFile(fileId = 3, fileName = THIRD_NAME, active = true)
         val newFilePayload = VideoFilePayload(fileName = THIRD_NAME)
         val newFilePayloadWithId = VideoFilePayload(fileId = 3, fileName = THIRD_NAME)
 
@@ -148,10 +148,9 @@ class VideoFileServiceTest {
 
     @Test
     fun testUpdateVideoFile() {
-        val newFile = VideoFile(fileName = THIRD_NAME)
         val newFileWithId = VideoFile(fileId = 1, fileName = THIRD_NAME)
         val newFilePayload = VideoFilePayload(fileName = THIRD_NAME)
-        val newFilePayloadWithId = VideoFilePayload(fileId = 3, fileName = THIRD_NAME)
+        val newFilePayloadWithId = VideoFilePayload(fileId = 1, fileName = THIRD_NAME)
 
         Mockito.`when`(videoFileRepo.save(newFileWithId))
                 .thenReturn(newFileWithId)
@@ -340,9 +339,10 @@ class VideoFileServiceTest {
         Mockito.`when`(searchQuery.setMaxResults(10))
                 .thenReturn(searchQuery)
 
+        val dbResultList = listOf(VideoFile())
         val resultList = listOf(VideoFilePayload())
         Mockito.`when`(searchQuery.resultList)
-                .thenReturn(resultList)
+                .thenReturn(dbResultList)
 
         Mockito.`when`(countQuery.singleResult)
                 .thenReturn(10L)

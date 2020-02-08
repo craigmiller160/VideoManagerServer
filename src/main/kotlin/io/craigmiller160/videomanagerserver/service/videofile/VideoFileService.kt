@@ -71,7 +71,6 @@ class VideoFileService (
     }
 
     fun addVideoFile(payload: VideoFilePayload): VideoFilePayload {
-        // TODO test active
         val videoFile = modelMapper.map(payload, VideoFile::class.java)
         videoFile.active = true
         val savedVideoFile = videoFileRepo.save(videoFile)
