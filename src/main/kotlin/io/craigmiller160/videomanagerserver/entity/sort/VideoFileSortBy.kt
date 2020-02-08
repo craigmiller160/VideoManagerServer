@@ -1,8 +1,6 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity.sort
 
-// TODO refactor
-
-enum class SortBy(vararg val orderByClause: String) {
+enum class VideoFileSortBy(vararg val orderByClause: String) {
     NAME ("vf.displayName", "vf.fileName"),
     VIEW_COUNT ("vf.viewCount"),
     LAST_VIEWED ("vf.lastViewed"),

@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.repository.query
 
 import com.nhaarman.mockito_kotlin.verify
-import io.craigmiller160.videomanagerserver.dto.SortBy
+import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
 import io.craigmiller160.videomanagerserver.test_util.isA
 import junit.framework.Assert.assertEquals
@@ -47,7 +47,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.viewCount ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = SortBy.VIEW_COUNT)
+        val search = VideoSearch(sortBy = VideoFileSortBy.VIEW_COUNT)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -57,7 +57,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.lastViewed ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = SortBy.LAST_VIEWED)
+        val search = VideoSearch(sortBy = VideoFileSortBy.LAST_VIEWED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -67,7 +67,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.lastModified ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = SortBy.LAST_MODIFIED)
+        val search = VideoSearch(sortBy = VideoFileSortBy.LAST_MODIFIED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }
@@ -77,7 +77,7 @@ class SearchQueryBuilderTest {
         val expected = """
             ORDER BY vf.fileAdded ASC
         """.trimIndent()
-        val search = VideoSearch(sortBy = SortBy.FILE_ADDED)
+        val search = VideoSearch(sortBy = VideoFileSortBy.FILE_ADDED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
         Assert.assertEquals(expected, query)
     }

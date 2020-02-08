@@ -2,7 +2,7 @@ package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
-import io.craigmiller160.videomanagerserver.dto.SortBy
+import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearch
@@ -75,7 +75,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_sortAsc() {
         val search = VideoSearch(
-                sortBy = SortBy.NAME,
+                sortBy = VideoFileSortBy.NAME,
                 sortDir = Sort.Direction.ASC
         )
         val results = videoFileService.searchForVideos(search)
@@ -92,7 +92,7 @@ class VideoFileServiceIntegrationTest {
     @Test
     fun test_searchForVideos_sortDesc() {
         val search = VideoSearch(
-                sortBy = SortBy.NAME,
+                sortBy = VideoFileSortBy.NAME,
                 sortDir = Sort.Direction.DESC
         )
         val results = videoFileService.searchForVideos(search)
