@@ -20,17 +20,21 @@ class ModelMapperConfig {
 
     private fun videoFileToVideoFilePayloadConverter() =
             object : AbstractConverter<VideoFile,VideoFilePayload>() {
+
+                private val modelMapper = ModelMapper()
+
                 override fun convert(videoFile: VideoFile): VideoFilePayload {
-                    // TODO add more to this
-                    return VideoFilePayload()
+                    return modelMapper.map(videoFile, VideoFilePayload::class.java)
                 }
             }
 
     private fun videoFilePayloadToVideoFileConverter() =
             object : AbstractConverter<VideoFilePayload,VideoFile>() {
+
+                private val modelMapper = ModelMapper()
+
                 override fun convert(videoFilePayload: VideoFilePayload): VideoFile {
-                    // TODO add more to this
-                    return VideoFile()
+                    return modelMapper.map(videoFilePayload, VideoFile::class.java)
                 }
             }
 
