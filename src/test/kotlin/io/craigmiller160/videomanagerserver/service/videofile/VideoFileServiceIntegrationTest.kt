@@ -8,12 +8,17 @@ import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsInAnyOrder
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasProperty
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -241,7 +246,17 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_updateVideoFile_preserveDbFields() {
-        TODO("Finish this")
+        val newName = "NewName"
+        val request = file1.copy(
+                fileName = newName
+        )
+        videoFileService.updateVideoFile(file1.fileId, request)
+        val dbFile = videoFileRepo.findById(file1.fileId).get()
+        assertThat(dbFile, allOf(
+                hasProperty("fileName", equalTo(newName)),
+                hasProperty("active", equalTo(true)),
+                hasProperty("lastScanTimestamp", equalTo(NOW_TIMESTAMP))
+        ))
     }
 
 }
