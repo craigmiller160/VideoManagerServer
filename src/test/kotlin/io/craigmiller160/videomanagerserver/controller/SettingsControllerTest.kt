@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
@@ -42,7 +43,7 @@ class SettingsControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    private lateinit var jacksonSettings: JacksonTester<Settings>
+    private lateinit var jacksonSettings: JacksonTester<SettingsPayload>
 
     @Test
     fun test_getSettings() {
@@ -50,8 +51,7 @@ class SettingsControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.getOrCreateSettings())
@@ -87,8 +87,7 @@ class SettingsControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.updateSettings(settings))
@@ -104,8 +103,7 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateSettings_unauthorized() {
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
@@ -117,8 +115,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
