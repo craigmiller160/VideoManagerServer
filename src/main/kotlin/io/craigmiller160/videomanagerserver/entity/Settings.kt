@@ -1,12 +1,10 @@
-package io.craigmiller160.videomanagerserver.dto
+package io.craigmiller160.videomanagerserver.entity
 
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
 
 const val SETTINGS_ID = 1L
-
-// TODO refactor
 
 @Entity
 @Table(name = "settings")

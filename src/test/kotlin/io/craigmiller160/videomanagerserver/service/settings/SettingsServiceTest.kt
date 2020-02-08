@@ -1,15 +1,14 @@
 package io.craigmiller160.videomanagerserver.service.settings
 
 import com.nhaarman.mockito_kotlin.isA
-import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.dto.Settings
+import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.repository.SettingsRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.emptyString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.nullValue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks

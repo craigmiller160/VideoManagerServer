@@ -5,8 +5,8 @@ import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.dto.Settings
+import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.dto.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
@@ -25,10 +25,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.isA
 import org.mockito.MockitoAnnotations
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean

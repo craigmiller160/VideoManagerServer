@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.settings
 
-import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.dto.Settings
+import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.repository.SettingsRepository
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional

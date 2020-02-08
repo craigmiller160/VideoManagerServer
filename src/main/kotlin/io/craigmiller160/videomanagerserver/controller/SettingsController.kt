@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.Settings
+import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import org.springframework.http.ResponseEntity
