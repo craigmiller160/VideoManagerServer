@@ -41,9 +41,10 @@ class CategoryService @Autowired constructor(
 
     fun updateCategory(categoryId: Long, payload: CategoryPayload): CategoryPayload? {
         return categoryRepo.findById(categoryId)
-                .map { _ ->
+                .map { existingCategory ->
                     val category = modelMapper.map(payload, Category::class.java)
                     category.categoryId = categoryId
+                    category.hidden = existingCategory.hidden // TODO I don't like this brittle approach
                     val updatedCategory = categoryRepo.save(category)
                     modelMapper.map(updatedCategory, CategoryPayload::class.java)
                 }

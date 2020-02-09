@@ -87,6 +87,7 @@ class VideoFileService (
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
                 .map { existingFile ->
+                    // TODO the other update operations should all be checked to avoid this same problem
                     val videoFile = modelMapper.map(payload, VideoFile::class.java)
                     videoFile.fileId = fileId
                     videoFile.active = existingFile.active // TODO I hate this brittle solution
