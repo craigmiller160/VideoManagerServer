@@ -6,6 +6,7 @@ import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.CoreMatchers.allOf
@@ -14,11 +15,11 @@ import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -248,14 +249,16 @@ class VideoFileServiceIntegrationTest {
     fun test_updateVideoFile_preserveDbFields() {
         val newName = "NewName"
         val request = file1.copy(
-                fileName = newName
+                fileName = newName,
+                categories = mutableSetOf()
         )
         videoFileService.updateVideoFile(file1.fileId, request)
         val dbFile = videoFileRepo.findById(file1.fileId).get()
         assertThat(dbFile, allOf(
                 hasProperty("fileName", equalTo(newName)),
                 hasProperty("active", equalTo(true)),
-                hasProperty("lastScanTimestamp", equalTo(NOW_TIMESTAMP))
+                hasProperty("lastScanTimestamp", equalTo(NOW_TIMESTAMP)),
+                hasProperty("categories", hasSize<MutableSet<Category>>(0))
         ))
     }
 
