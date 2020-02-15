@@ -2,9 +2,9 @@ package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.entity.Star
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.StarRepository
-import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -13,10 +13,9 @@ import javax.transaction.Transactional
 @Transactional
 class StarService (
         private val starRepo: StarRepository,
-        private val fileStarRepo: FileStarRepository
+        private val fileStarRepo: FileStarRepository,
+        private val modelMapper: VMModelMapper
 ) {
-
-    private val modelMapper = ModelMapper()
 
     fun getAllStars(): List<StarPayload> {
         val sort = Sort.by(

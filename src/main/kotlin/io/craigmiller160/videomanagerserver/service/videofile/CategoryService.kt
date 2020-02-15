@@ -5,7 +5,6 @@ import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import org.modelmapper.ModelMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
