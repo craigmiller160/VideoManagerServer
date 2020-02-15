@@ -2,6 +2,9 @@ package io.craigmiller160.videomanagerserver.mapper
 
 import org.modelmapper.ModelMapper
 
+// TODO need to create a configuration object for this and replace all ModelMapper uses with it
+// TODO all unit tests should reference the instance from the config directly so they're all built the same
+
 class VMModelMapper {
 
     private val mapper = ModelMapper()
@@ -14,8 +17,8 @@ class VMModelMapper {
     fun <S: Any, D : Any> mapFromExisting(source: S, existing: D): D {
         val destType = existing::class.java
         val destination = map(source, destType)
-        val key = ExistingPropHandlerKey<S,D>(source::class.java, destType) // TODO remove explicit type arguments once this works
-        val handler = existingPropHandlers[key] // TODO make sure this can handle null values
+        val key = ExistingPropHandlerKey(source::class.java, destType)
+        val handler = existingPropHandlers[key]
         handler?.let {
             (handler as ExistingPropHandler<S,D>).handleExisting(source, existing, destination)
         }
