@@ -7,12 +7,6 @@ class VMModelMapper {
     private val mapper = ModelMapper()
     val existingPropHandlers: MutableMap<ExistingPropHandlerKey<out Any,out Any>,ExistingPropHandler<out Any,out Any>> = mutableMapOf()
 
-    // TODO externalize this
-    init {
-        val handler = VideoFilePayloadToVideoFileHandler()
-        existingPropHandlers += handler.key to handler
-    }
-
     fun <D : Any> map(source: Any, destType: Class<D>): D {
         return mapper.map(source, destType)
     }
