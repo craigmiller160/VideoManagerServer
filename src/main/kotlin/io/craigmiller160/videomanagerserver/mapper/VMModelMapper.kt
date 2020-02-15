@@ -1,12 +1,11 @@
 package io.craigmiller160.videomanagerserver.mapper
 
 import org.modelmapper.ModelMapper
-import org.springframework.stereotype.Component
 
-@Component
 class VMModelMapper {
 
     private val mapper = ModelMapper()
+    val existingPropHandlers: Map<ExistingPropHandlerKey<*,*>,ExistingPropHandler<*,*>> = mutableMapOf()
 
     fun <D : Any> map(source: Any, destType: Class<D>): D {
         return mapper.map(source, destType)
