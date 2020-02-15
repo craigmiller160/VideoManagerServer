@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import com.nhaarman.mockito_kotlin.times
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
@@ -36,6 +37,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
@@ -65,6 +67,9 @@ class AuthServiceTest {
 
     @Mock
     private lateinit var jwtTokenProvider: JwtTokenProvider
+
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
 
     @Mock
     private lateinit var videoTokenProvider: VideoTokenProvider

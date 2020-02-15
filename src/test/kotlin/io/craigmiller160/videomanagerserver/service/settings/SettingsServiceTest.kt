@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.settings
 
 import com.nhaarman.mockito_kotlin.isA
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.entity.Settings
@@ -19,6 +20,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.Optional
 import kotlin.test.assertEquals
@@ -32,7 +34,8 @@ class SettingsServiceTest {
 
     @Mock
     private lateinit var settingsRepository: SettingsRepository
-
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
     @InjectMocks
     private lateinit var settingsService: SettingsService
 
