@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 class MapperConfig {
 
     @Bean
-    fun modelMapper(): VMModelMapper { // TODO this needs to be used in all places
+    fun modelMapper(): VMModelMapper {
         val videoFilePayloadHandler = VideoFilePayloadToVideoFileHandler()
         val categoryPayloadHandler = CategoryPayloadToCategoryHandler()
         val mapper = VMModelMapper()
