@@ -16,6 +16,7 @@ import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
@@ -48,12 +49,12 @@ class VideoFileService (
         private val searchQueryBuilder: SearchQueryBuilder,
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
-        private val fileStarRepo: FileStarRepository
+        private val fileStarRepo: FileStarRepository,
+        private val modelMapper: VMModelMapper
 ) {
 
     private val fileScanRunning = AtomicBoolean(false)
     private val lastScanSuccess = AtomicBoolean(true)
-    private val modelMapper = ModelMapper()
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
@@ -90,8 +91,8 @@ class VideoFileService (
                     // TODO the other update operations should all be checked to avoid this same problem
                     val videoFile = modelMapper.map(payload, VideoFile::class.java)
                     videoFile.fileId = fileId
-                    videoFile.active = existingFile.active // TODO I hate this brittle solution
-                    videoFile.lastScanTimestamp = existingFile.lastScanTimestamp // TODO I hate this brittle solution
+//                    videoFile.active = existingFile.active // TODO I hate this brittle solution
+//                    videoFile.lastScanTimestamp = existingFile.lastScanTimestamp // TODO I hate this brittle solution
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }
