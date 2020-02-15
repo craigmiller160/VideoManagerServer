@@ -1,10 +1,9 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.AppUser
-import io.craigmiller160.videomanagerserver.dto.LocalFile
-import io.craigmiller160.videomanagerserver.dto.LocalFileList
-import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.entity.AppUser
+import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
+import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.file.LocalFileService
@@ -13,7 +12,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -21,15 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -44,42 +36,28 @@ class LocalFileControllerTest : AbstractControllerTest() {
     private lateinit var localFileController: LocalFileController
 
     @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
-    private lateinit var mockMvcHandler: MockMvcHandler
-
-    @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileListResponse>
 
-    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileList>
-
-    @Before
-    fun setup() {
-        mockMvcHandler = buildMockMvcHandler()
-        JacksonTester.initFields(this, objectMapper)
-    }
-
-    private fun mockFiles(): LocalFileList {
-        val file1 = LocalFile(
+    private fun mockFiles(): LocalFileListResponse {
+        val file1 = LocalFileResponse(
                 fileName = "file1",
                 filePath = "dir/file1",
                 isDirectory = false
         )
-        val file2 = LocalFile(
+        val file2 = LocalFileResponse(
                 fileName = "file2",
                 filePath = "dir/file2",
                 isDirectory = false
         )
-        val dir1 = LocalFile(
+        val dir1 = LocalFileResponse(
                 fileName = "dir1",
                 filePath = "dir/dir1",
                 isDirectory = true
         )
         val files = listOf(file1, file2, dir1)
-        return LocalFileList(
+        return LocalFileListResponse(
                 rootPath = "dir",
                 files = files
         )

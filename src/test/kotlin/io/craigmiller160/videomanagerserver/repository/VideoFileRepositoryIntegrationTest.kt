@@ -1,12 +1,10 @@
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.videomanagerserver.dto.Category
-import io.craigmiller160.videomanagerserver.dto.Series
-import io.craigmiller160.videomanagerserver.dto.Star
-import io.craigmiller160.videomanagerserver.dto.VideoFile
+import io.craigmiller160.videomanagerserver.entity.Category
+import io.craigmiller160.videomanagerserver.entity.Series
+import io.craigmiller160.videomanagerserver.entity.Star
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
-import io.craigmiller160.videomanagerserver.test_util.getFirst
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
@@ -15,7 +13,6 @@ import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
-import javax.transaction.Transactional
 
 @RunWith(SpringRunner::class)
 @SpringBootTest

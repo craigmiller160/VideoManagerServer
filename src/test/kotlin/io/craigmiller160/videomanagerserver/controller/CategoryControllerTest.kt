@@ -1,12 +1,11 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.AppUser
-import io.craigmiller160.videomanagerserver.dto.Category
-import io.craigmiller160.videomanagerserver.dto.Role
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
+import io.craigmiller160.videomanagerserver.entity.AppUser
+import io.craigmiller160.videomanagerserver.entity.Role
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
-import io.craigmiller160.videomanagerserver.service.CategoryService
+import io.craigmiller160.videomanagerserver.service.videofile.CategoryService
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -21,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -29,37 +27,32 @@ import java.util.Optional
 @ContextConfiguration
 class CategoryControllerTest : AbstractControllerTest() {
 
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var categoryService: CategoryService
 
     @Autowired
     private lateinit var categoryController: CategoryController
 
-    private lateinit var jacksonCategoryList: JacksonTester<List<Category>>
-    private lateinit var jacksonCategory: JacksonTester<Category>
+    private lateinit var jacksonCategoryList: JacksonTester<List<CategoryPayload>>
+    private lateinit var jacksonCategory: JacksonTester<CategoryPayload>
 
-    private lateinit var categoryNoId: Category
-    private lateinit var category1: Category
-    private lateinit var category2: Category
-    private lateinit var category3: Category
-    private lateinit var categoryList: List<Category>
+    private lateinit var categoryNoId: CategoryPayload
+    private lateinit var category1: CategoryPayload
+    private lateinit var category2: CategoryPayload
+    private lateinit var category3: CategoryPayload
+    private lateinit var categoryList: List<CategoryPayload>
 
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Before
-    fun setup() {
-        categoryNoId = Category(categoryName = "NoId")
-        category1 = Category(1, "FirstCategory")
-        category2 = Category(2, "SecondCategory")
-        category3 = Category(3, "ThirdCategory")
+    override fun setup() {
+        super.setup()
+        categoryNoId = CategoryPayload(categoryName = "NoId")
+        category1 = CategoryPayload(1, "FirstCategory")
+        category2 = CategoryPayload(2, "SecondCategory")
+        category3 = CategoryPayload(3, "ThirdCategory")
         categoryList = listOf(category1, category2, category3)
-
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, ObjectMapper())
     }
 
     @Test
@@ -86,9 +79,9 @@ class CategoryControllerTest : AbstractControllerTest() {
     fun testGetCategory() {
         mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
         `when`(categoryService.getCategory(1))
-                .thenReturn(Optional.of(category1))
+                .thenReturn(category1)
         `when`(categoryService.getCategory(5))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doGet("/api/categories/1")
         assertOkResponse(response, jacksonCategory.write(category1).json)
@@ -144,9 +137,9 @@ class CategoryControllerTest : AbstractControllerTest() {
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         val updatedCategory = category2.copy(categoryId = 1)
         `when`(categoryService.updateCategory(1, category2))
-                .thenReturn(Optional.of(updatedCategory))
+                .thenReturn(updatedCategory)
         `when`(categoryService.updateCategory(5, category3))
-                .thenReturn(Optional.empty())
+                .thenReturn(null)
 
         var response = mockMvcHandler.doPut("/api/categories/1", jacksonCategory.write(category2).json)
         assertOkResponse(response, jacksonCategory.write(updatedCategory).json)
@@ -180,8 +173,8 @@ class CategoryControllerTest : AbstractControllerTest() {
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)
         `when`(categoryService.deleteCategory(1))
-                .thenReturn(Optional.of(category1))
-                .thenReturn(Optional.empty())
+                .thenReturn(category1)
+                .thenReturn(null)
 
         var response = mockMvcHandler.doDelete("/api/categories/1")
         assertOkResponse(response, jacksonCategory.write(category1).json)

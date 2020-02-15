@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.file
 
-import io.craigmiller160.videomanagerserver.dto.LocalFile
+import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -62,9 +62,9 @@ class LocalFileServiceTest {
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(targetDir.absolutePath)),
                 hasProperty("parentPath", equalTo(targetDir.parentFile.absolutePath)),
-                hasProperty("files", allOf<List<LocalFile>>(
+                hasProperty("files", allOf<List<LocalFileResponse>>(
                         hasSize(4),
-                        containsInAnyOrder<LocalFile>(
+                        containsInAnyOrder<LocalFileResponse>(
                                 allOf(
                                         hasProperty("fileName", equalTo(FILE_1_NAME)),
                                         hasProperty("filePath", containsString(TARGET_DIR_NAME)),
@@ -96,9 +96,9 @@ class LocalFileServiceTest {
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(targetDir.absolutePath)),
                 hasProperty("parentPath", equalTo(targetDir.parentFile.absolutePath)),
-                hasProperty("files", allOf<List<LocalFile>>(
+                hasProperty("files", allOf<List<LocalFileResponse>>(
                         hasSize(1),
-                        containsInAnyOrder<LocalFile>(
+                        containsInAnyOrder<LocalFileResponse>(
                                 allOf(
                                         hasProperty("fileName", equalTo(DIR_2_NAME)),
                                         hasProperty("filePath", containsString(TARGET_DIR_NAME)),
@@ -115,9 +115,9 @@ class LocalFileServiceTest {
         assertThat(files, allOf(
                 hasProperty("rootPath", equalTo(homeDir.absolutePath)),
                 hasProperty("parentPath", equalTo(homeDir.parentFile.absolutePath)),
-                hasProperty("files", allOf<List<LocalFile>>(
+                hasProperty("files", allOf<List<LocalFileResponse>>(
                         hasSize(3),
-                        containsInAnyOrder<LocalFile>(
+                        containsInAnyOrder<LocalFileResponse>(
                                 allOf(
                                         hasProperty("fileName", equalTo(FILE_4_NAME)),
                                         hasProperty("filePath", containsString(HOME_DIR_NAME)),

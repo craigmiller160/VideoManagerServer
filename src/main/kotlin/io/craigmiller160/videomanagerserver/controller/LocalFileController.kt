@@ -1,6 +1,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.LocalFileList
+import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.file.LocalFileService
 import org.springframework.http.ResponseEntity
@@ -19,7 +19,7 @@ class LocalFileController(private val localFileService: LocalFileService) {
     fun getFilesFromDirectory(
             @RequestParam(required = false) path: String?,
             @RequestParam(required = false, defaultValue = "false") onlyDirectories: Boolean
-    ): ResponseEntity<LocalFileList> {
+    ): ResponseEntity<LocalFileListResponse> {
         val actualPath = if (path == null || path.isEmpty()) null else path
         val fileList = localFileService.getFilesFromDirectory(actualPath, onlyDirectories)
         return ResponseEntity.ok(fileList)

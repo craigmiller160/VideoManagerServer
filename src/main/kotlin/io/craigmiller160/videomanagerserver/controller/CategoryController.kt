@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.Category
+import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.service.CategoryService
+import io.craigmiller160.videomanagerserver.service.videofile.CategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
@@ -22,7 +22,7 @@ class CategoryController @Autowired constructor(
 ) {
 
     @GetMapping
-    fun getAllCategories(): ResponseEntity<List<Category>> {
+    fun getAllCategories(): ResponseEntity<List<CategoryPayload>> {
         val categories = categoryService.getAllCategories()
         if (categories.isEmpty()) {
             return ResponseEntity.noContent().build()
@@ -31,25 +31,25 @@ class CategoryController @Autowired constructor(
     }
 
     @GetMapping("/{categoryId}")
-    fun getCategory(@PathVariable categoryId: Long): ResponseEntity<Category> {
+    fun getCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
         return okOrNoContent(categoryService.getCategory(categoryId))
     }
 
     @Secured(ROLE_EDIT)
     @PostMapping
-    fun addCategory(@RequestBody category: Category): ResponseEntity<Category> {
+    fun addCategory(@RequestBody category: CategoryPayload): ResponseEntity<CategoryPayload> {
         return ResponseEntity.ok(categoryService.addCategory(category))
     }
 
     @Secured(ROLE_EDIT)
     @PutMapping("/{categoryId}")
-    fun updateCategory(@PathVariable categoryId: Long, @RequestBody category: Category): ResponseEntity<Category> {
+    fun updateCategory(@PathVariable categoryId: Long, @RequestBody category: CategoryPayload): ResponseEntity<CategoryPayload> {
         return okOrNoContent(categoryService.updateCategory(categoryId, category))
     }
 
     @Secured(ROLE_EDIT)
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<Category> {
+    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
         return okOrNoContent(categoryService.deleteCategory(categoryId))
     }
 

@@ -1,8 +1,10 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.dto.AppUser
-import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.dto.VideoToken
+import io.craigmiller160.videomanagerserver.dto.AppUserRequest
+import io.craigmiller160.videomanagerserver.dto.AppUserResponse
+import io.craigmiller160.videomanagerserver.dto.LoginRequest
+import io.craigmiller160.videomanagerserver.dto.RolePayload
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.security.AuthService
@@ -40,13 +42,13 @@ class AuthController (
             .build()
 
     @GetMapping("/check")
-    fun checkAuth(): ResponseEntity<AppUser> {
+    fun checkAuth(): ResponseEntity<AppUserResponse> {
         val user = authService.checkAuth()
         return ResponseEntity.ok(user)
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: AppUser, response: HttpServletResponse): ResponseEntity<Void> {
+    fun login(@RequestBody request: LoginRequest, response: HttpServletResponse): ResponseEntity<Void> {
         val token = authService.login(request)
         val cookie = createCookie(token, DEFAULT_MAX_AGE)
         response.addHeader("Set-Cookie", cookie.toString())
@@ -64,31 +66,31 @@ class AuthController (
 
     @Secured(ROLE_ADMIN)
     @PostMapping("/users/revoke/{userId}")
-    fun revokeAccess(@PathVariable userId: Long): ResponseEntity<AppUser> {
+    fun revokeAccess(@PathVariable userId: Long): ResponseEntity<AppUserResponse> {
         val result = authService.revokeAccess(userId)
         return ResponseEntity.ok(result)
     }
 
     @Secured(ROLE_ADMIN)
     @PostMapping("/users")
-    fun createUser(@RequestBody user: AppUser): ResponseEntity<AppUser> {
+    fun createUser(@RequestBody user: AppUserRequest): ResponseEntity<AppUserResponse> {
         return ResponseEntity.ok(authService.createUser(user))
     }
 
     @Secured(ROLE_ADMIN)
     @PutMapping("/users/admin/{userId}")
-    fun updateUserAdmin(@PathVariable("userId") userId: Long, @RequestBody user: AppUser): ResponseEntity<AppUser> {
+    fun updateUserAdmin(@PathVariable("userId") userId: Long, @RequestBody user: AppUserRequest): ResponseEntity<AppUserResponse> {
         return okOrNoContent(authService.updateUserAdmin(userId, user))
     }
 
     @PutMapping("/users/self")
-    fun updateUserSelf(@RequestBody user: AppUser): ResponseEntity<AppUser> {
+    fun updateUserSelf(@RequestBody user: AppUserRequest): ResponseEntity<AppUserResponse> {
         return okOrNoContent(authService.updateUserSelf(user))
     }
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/users")
-    fun getAllUsers(): ResponseEntity<List<AppUser>> {
+    fun getAllUsers(): ResponseEntity<List<AppUserResponse>> {
         val users = authService.getAllUsers()
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build()
@@ -98,13 +100,13 @@ class AuthController (
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/users/admin/{userId}")
-    fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
+    fun getUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUserResponse> {
         return okOrNoContent(authService.getUser(userId))
     }
 
     @Secured(ROLE_ADMIN)
     @GetMapping("/roles")
-    fun getRoles(): ResponseEntity<List<Role>> {
+    fun getRoles(): ResponseEntity<List<RolePayload>> {
         val roles = authService.getRoles()
         if (roles.isEmpty()) {
             return ResponseEntity.noContent().build()
@@ -114,7 +116,7 @@ class AuthController (
 
     @Secured(ROLE_ADMIN)
     @DeleteMapping("/users/{userId}")
-    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUser> {
+    fun deleteUser(@PathVariable("userId") userId: Long): ResponseEntity<AppUserResponse> {
         return okOrNoContent(authService.deleteUser(userId))
     }
 
@@ -126,7 +128,7 @@ class AuthController (
     }
 
     @GetMapping("/videotoken/{fileId}")
-    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoToken> {
+    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoTokenResponse> {
         val token = authService.getVideoToken(fileId)
         return ResponseEntity.ok(token)
     }

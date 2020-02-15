@@ -1,10 +1,10 @@
 package io.craigmiller160.videomanagerserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.craigmiller160.videomanagerserver.dto.AppUser
-import io.craigmiller160.videomanagerserver.dto.Role
-import io.craigmiller160.videomanagerserver.dto.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.dto.Settings
+import io.craigmiller160.videomanagerserver.dto.SettingsPayload
+import io.craigmiller160.videomanagerserver.entity.AppUser
+import io.craigmiller160.videomanagerserver.entity.Role
+import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
+import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
@@ -13,7 +13,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -21,15 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -41,9 +34,6 @@ class SettingsControllerTest : AbstractControllerTest() {
         private const val ROOT_DIR = "rootDir"
     }
 
-    private lateinit var mockMvc: MockMvc
-    private lateinit var mockMvcHandler: MockMvcHandler
-
     @MockBean
     private lateinit var settingsService: SettingsService
 
@@ -53,20 +43,7 @@ class SettingsControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    private lateinit var webAppContext: WebApplicationContext
-
-    private lateinit var jacksonSettings: JacksonTester<Settings>
-
-    @Before
-    fun setup() {
-        mockMvcHandler = buildMockMvcHandler()
-
-        JacksonTester.initFields(this, objectMapper)
-    }
+    private lateinit var jacksonSettings: JacksonTester<SettingsPayload>
 
     @Test
     fun test_getSettings() {
@@ -74,8 +51,7 @@ class SettingsControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.getOrCreateSettings())
@@ -111,8 +87,7 @@ class SettingsControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_ADMIN))
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.updateSettings(settings))
@@ -128,8 +103,7 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateSettings_unauthorized() {
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
@@ -141,8 +115,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        val settings = Settings(
-                settingsId = SETTINGS_ID,
+        val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         mockMvcHandler.token = jwtTokenProvider.createToken(user)

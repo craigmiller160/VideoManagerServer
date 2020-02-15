@@ -1,13 +1,13 @@
 package io.craigmiller160.videomanagerserver.repository.query
 
-import io.craigmiller160.videomanagerserver.dto.VideoSearch
+import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import org.springframework.stereotype.Component
 import javax.persistence.Query
 
 @Component
 class SearchQueryBuilder {
 
-    fun buildEntitySearchQuery(search: VideoSearch): String {
+    fun buildEntitySearchQuery(search: VideoSearchRequest): String {
         return StringBuilder()
                 .appendln("SELECT vf FROM VideoFile vf")
                 .appendln(buildQueryCriteria(search))
@@ -16,7 +16,7 @@ class SearchQueryBuilder {
                 .trim()
     }
 
-    fun buildCountSearchQuery(search: VideoSearch): String {
+    fun buildCountSearchQuery(search: VideoSearchRequest): String {
         return StringBuilder()
                 .appendln("SELECT COUNT(vf) AS video_file_count FROM VideoFile vf")
                 .appendln(buildQueryCriteria(search))
@@ -24,7 +24,7 @@ class SearchQueryBuilder {
                 .trim()
     }
 
-    fun addParamsToQuery(search: VideoSearch, query: Query) {
+    fun addParamsToQuery(search: VideoSearchRequest, query: Query) {
         search.searchText?.let {
             query.setParameter("searchText", "%$it%")
         }
@@ -39,7 +39,7 @@ class SearchQueryBuilder {
         }
     }
 
-    internal fun buildQueryOrderBy(search: VideoSearch): String {
+    internal fun buildQueryOrderBy(search: VideoSearchRequest): String {
         val builder = StringBuilder()
                 .append("ORDER BY ")
         val columns = search.sortBy.orderByClause
@@ -48,7 +48,7 @@ class SearchQueryBuilder {
         return builder.toString().trim()
     }
 
-    internal fun buildQueryCriteria(search: VideoSearch): String {
+    internal fun buildQueryCriteria(search: VideoSearchRequest): String {
         val queryBuilder = StringBuilder()
         search.categoryId?.let {
             queryBuilder.appendln("LEFT JOIN vf.categories ca")

@@ -1,7 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.file
 
-import io.craigmiller160.videomanagerserver.dto.LocalFile
-import io.craigmiller160.videomanagerserver.dto.LocalFileList
+import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
+import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.File
@@ -12,7 +12,7 @@ class LocalFileService (
         private val userHome: String
 ) {
 
-    fun getFilesFromDirectory(path: String?, onlyDirectories: Boolean): LocalFileList {
+    fun getFilesFromDirectory(path: String?, onlyDirectories: Boolean): LocalFileListResponse {
         val dirPath = path ?: userHome
         val files = File(dirPath)
                 .listFiles { file ->
@@ -21,11 +21,11 @@ class LocalFileService (
                     }
                     !file.isHidden
                 }
-                ?.map { file -> LocalFile(file) }
+                ?.map { file -> LocalFileResponse(file) }
                 ?.sortedBy { localFile -> localFile.fileName }
                 ?: listOf()
         val parentPath = File(dirPath).parentFile?.absolutePath ?: ""
-        return LocalFileList(
+        return LocalFileListResponse(
                 rootPath = dirPath,
                 parentPath = parentPath,
                 files = files
