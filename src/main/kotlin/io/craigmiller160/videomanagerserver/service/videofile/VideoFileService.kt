@@ -1,7 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
@@ -10,12 +9,10 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
-import io.craigmiller160.videomanagerserver.entity.Category
-import io.craigmiller160.videomanagerserver.entity.Series
-import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
@@ -23,11 +20,6 @@ import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
-import org.modelmapper.Converter
-import org.modelmapper.ModelMapper
-import org.modelmapper.convention.MatchingStrategies
-import org.modelmapper.spi.MappingContext
-import org.modelmapper.spi.MatchingStrategy
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -48,12 +40,12 @@ class VideoFileService (
         private val searchQueryBuilder: SearchQueryBuilder,
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
-        private val fileStarRepo: FileStarRepository
+        private val fileStarRepo: FileStarRepository,
+        private val modelMapper: VMModelMapper
 ) {
 
     private val fileScanRunning = AtomicBoolean(false)
     private val lastScanSuccess = AtomicBoolean(true)
-    private val modelMapper = ModelMapper()
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
@@ -87,11 +79,8 @@ class VideoFileService (
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
                 .map { existingFile ->
-                    // TODO the other update operations should all be checked to avoid this same problem
-                    val videoFile = modelMapper.map(payload, VideoFile::class.java)
+                    val videoFile = modelMapper.mapFromExisting(payload, existingFile)
                     videoFile.fileId = fileId
-                    videoFile.active = existingFile.active // TODO I hate this brittle solution
-                    videoFile.lastScanTimestamp = existingFile.lastScanTimestamp // TODO I hate this brittle solution
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }

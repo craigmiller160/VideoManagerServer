@@ -3,6 +3,7 @@ package io.craigmiller160.videomanagerserver.service.videofile
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
 import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
@@ -14,6 +15,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
@@ -88,6 +90,8 @@ class VideoFileServiceTest {
     private lateinit var fileSeriesRepo: FileSeriesRepository
     @InjectMocks
     private lateinit var videoFileService: VideoFileService
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
 
     @Before
     fun setup() {

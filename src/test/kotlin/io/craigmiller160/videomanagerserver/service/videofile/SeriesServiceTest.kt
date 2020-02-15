@@ -1,6 +1,7 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
 import com.nhaarman.mockito_kotlin.verify
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
@@ -13,6 +14,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
@@ -46,6 +48,8 @@ class SeriesServiceTest {
     private lateinit var fileSeriesRepo: FileSeriesRepository
     @InjectMocks
     private lateinit var seriesService: SeriesService
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
 
     @Test
     fun testGetAllSeries() {

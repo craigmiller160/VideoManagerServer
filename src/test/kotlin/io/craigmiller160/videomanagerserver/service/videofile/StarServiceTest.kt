@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
@@ -12,6 +13,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
@@ -45,6 +47,8 @@ class StarServiceTest {
     private lateinit var fileStarRepo: FileStarRepository
     @InjectMocks
     private lateinit var starService: StarService
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
 
     @Test
     fun testGetAllStars() {

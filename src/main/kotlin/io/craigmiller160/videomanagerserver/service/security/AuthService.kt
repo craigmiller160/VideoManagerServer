@@ -8,6 +8,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
@@ -15,7 +16,6 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvi
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
-import org.modelmapper.ModelMapper
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -27,10 +27,9 @@ class AuthService (
         private val passwordEncoder: BCryptPasswordEncoder,
         private val jwtTokenProvider: JwtTokenProvider,
         private val videoTokenProvider: VideoTokenProvider,
-        private val securityContextService: SecurityContextService
+        private val securityContextService: SecurityContextService,
+        private val modelMapper: VMModelMapper
 ) {
-
-    private val modelMapper = ModelMapper()
 
     fun checkAuth(): AppUserResponse {
         val userName = securityContextService.getUserName()
