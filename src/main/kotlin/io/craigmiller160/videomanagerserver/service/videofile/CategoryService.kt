@@ -2,6 +2,7 @@ package io.craigmiller160.videomanagerserver.service.videofile
 
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import org.modelmapper.ModelMapper
@@ -14,10 +15,9 @@ import javax.transaction.Transactional
 @Transactional
 class CategoryService @Autowired constructor(
         private val categoryRepo: CategoryRepository,
-        private val fileCategoryRepo: FileCategoryRepository
+        private val fileCategoryRepo: FileCategoryRepository,
+        private val modelMapper: VMModelMapper
 ) {
-
-    private val modelMapper = ModelMapper()
 
     fun getAllCategories(): List<CategoryPayload> {
         val sort = Sort.by(
@@ -42,9 +42,8 @@ class CategoryService @Autowired constructor(
     fun updateCategory(categoryId: Long, payload: CategoryPayload): CategoryPayload? {
         return categoryRepo.findById(categoryId)
                 .map { existingCategory ->
-                    val category = modelMapper.map(payload, Category::class.java)
+                    val category = modelMapper.mapFromExisting(payload, existingCategory)
                     category.categoryId = categoryId
-                    category.hidden = existingCategory.hidden // TODO I don't like this brittle approach
                     val updatedCategory = categoryRepo.save(category)
                     modelMapper.map(updatedCategory, CategoryPayload::class.java)
                 }

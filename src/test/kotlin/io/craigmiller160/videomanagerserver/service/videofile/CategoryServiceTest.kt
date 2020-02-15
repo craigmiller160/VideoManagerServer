@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.Sort
 import java.util.Optional
@@ -47,6 +49,8 @@ class CategoryServiceTest {
     private lateinit var categoryRepo: CategoryRepository
     @Mock
     private lateinit var fileCategoryRepo: FileCategoryRepository
+    @Spy
+    private var modelMapper = MapperConfig().modelMapper()
 
     @Test
     fun testGetAllCategories() {
