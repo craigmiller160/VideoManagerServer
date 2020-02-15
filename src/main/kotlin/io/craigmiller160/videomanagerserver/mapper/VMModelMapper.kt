@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper
 // TODO need to create a configuration object for this and replace all ModelMapper uses with it
 // TODO all unit tests should reference the instance from the config directly so they're all built the same
 
-class VMModelMapper {
+open class VMModelMapper {
 
     private val mapper = ModelMapper()
     val existingPropHandlers: MutableMap<ExistingPropHandlerKey<out Any,out Any>,ExistingPropHandler<out Any,out Any>> = mutableMapOf()
