@@ -88,11 +88,8 @@ class VideoFileService (
     fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
         return videoFileRepo.findById(fileId)
                 .map { existingFile ->
-                    // TODO the other update operations should all be checked to avoid this same problem
-                    val videoFile = modelMapper.map(payload, VideoFile::class.java)
+                    val videoFile = modelMapper.mapFromExisting(payload, existingFile)
                     videoFile.fileId = fileId
-//                    videoFile.active = existingFile.active // TODO I hate this brittle solution
-//                    videoFile.lastScanTimestamp = existingFile.lastScanTimestamp // TODO I hate this brittle solution
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }
