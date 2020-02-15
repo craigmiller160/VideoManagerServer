@@ -1,17 +1,21 @@
 package io.craigmiller160.videomanagerserver.mapper
 
 import org.modelmapper.ModelMapper
+import org.springframework.stereotype.Component
 
+@Component
 class VMModelMapper {
 
     private val mapper = ModelMapper()
 
-    fun <T> map(source: Any, destType: Class<T>): T {
+    fun <D : Any> map(source: Any, destType: Class<D>): D {
         return mapper.map(source, destType)
     }
 
-    fun <T> mapWithExisting(source: Any, destType: Class<T>, existing: T): T {
-        TODO("Figure out better name and implementation")
+    fun <D : Any> mapFromExisting(source: Any, existing: D): D {
+        val destType = existing::class.java
+        val result = map(source, destType)
+        TODO("Figure out how to properly map existing values onto result")
     }
 
 }
