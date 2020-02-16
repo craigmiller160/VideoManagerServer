@@ -7,7 +7,6 @@ cors:
   origins: http://localhost:3000
 
 logging:
-  file: ${HOME}/${logging.file.path}
   level:
     org.hibernate.SQL: DEBUG
     org.springframework.web: DEBUG

@@ -36,7 +36,7 @@ logging:
     org.hibernate: INFO
     io.craigmiller160: INFO
   file:
-    path: video-manager/server-logs/${spring.profiles.active}.log
+    path: ${HOME}/${logging.file.path}
 
 
 video:
