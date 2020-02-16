@@ -16,6 +16,9 @@ spring:
   mvc:
     dispatch-options-request: true
 
+cors:
+  origins: http://localhost:3000
+
 server:
   servlet:
     context-path: /api

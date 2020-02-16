@@ -3,9 +3,6 @@ spring:
     db: vm_dev
     host: localhost
 
-cors:
-  origins: http://localhost:3000
-
 logging:
   level:
     org.hibernate.SQL: DEBUG
