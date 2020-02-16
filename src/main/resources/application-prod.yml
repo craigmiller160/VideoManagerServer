@@ -8,7 +8,7 @@ cors:
 
 logging:
   file:
-    path: /opt/${logging.file.path}
+    path: /opt/${logging.file.common-path}
 
 localfile:
   homeDir: /opt/video-manager/homeDir

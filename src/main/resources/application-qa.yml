@@ -1,7 +1,7 @@
 spring:
   datasource:
     db: vm_qa
-      host: localhost
+    host: localhost
   jpa:
     hibernate:
       ddl-auto: create-drop
