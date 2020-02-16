@@ -4,5 +4,12 @@ spring:
     host: localhost
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+      hbm2ddl:
+        delimiter: ;
     generate-ddl: true
+    properties:
+      javax.persistence.schema-generation.create-source: metadata
+      javax.persistence.schema-generation.scripts.action: drop-and-create
+      javax.persistence.schema-generation.scripts.create-target: sql/create-schema.sql
+      javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
