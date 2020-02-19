@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.test_util.isA
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Test

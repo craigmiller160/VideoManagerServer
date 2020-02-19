@@ -5,8 +5,8 @@ import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

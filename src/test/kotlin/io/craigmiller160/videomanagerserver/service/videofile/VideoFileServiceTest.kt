@@ -25,7 +25,7 @@ import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Before

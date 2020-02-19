@@ -3,10 +3,17 @@ spring:
     active: @spring.profiles.active@
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+      hbm2ddl:
+        delimiter: ;
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
+      javax.persistence.schema-generation.create-source: metadata
+      javax.persistence.schema-generation.scripts.action: drop-and-create
+      javax.persistence.schema-generation.scripts.create-target: sql/create-schema.sql
+      javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
+    generate-ddl: true
   datasource:
     url: jdbc:postgresql://${spring.datasource.host}:5432/${spring.datasource.db}
     username: user
