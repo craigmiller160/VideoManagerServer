@@ -18,3 +18,5 @@ VideoManagerCypress - the automated testing application.
     3. vm_prod
 3. Dev & QA will have auto-generated schemas initially.
 4. Prod schema needs to be executed manually.
+    1. Run the project for the first time with: `mvn spring-boot:run`
+    2. Create and drop SQL files will be generated in the sql/ directory.
