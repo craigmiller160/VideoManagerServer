@@ -6,7 +6,7 @@ import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
