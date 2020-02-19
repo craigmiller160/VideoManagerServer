@@ -2,6 +2,11 @@ spring:
   datasource:
     db: vm_prod
     host: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      javax.persistence.schema-generation.scripts.action: none;
 
 cors:
   origins: http://localhost:9000
