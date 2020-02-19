@@ -7,7 +7,12 @@ This is the server application for the VideoManager application.
 ### Related Projects
 
 VideoManagerClient - the client application.
+VideoManagerCypress - the automated testing application.
 
 ### Setup
 
-Make sure Postgres is running. If it has not already been done, please run the "sql/init.sql" script to set up the database before running this application.
+1. Make sure Postgres is running.
+2. Create the following three databases:
+    1. vm_dev
+    2. vm_qa
+    3. vm_prod
