@@ -25,3 +25,6 @@
 /.nb-gradle/
 
 docker/*.jar
+
+sql/create-schema.sql
+sql/drop-schema.sql

@@ -16,6 +16,9 @@ spring:
   mvc:
     dispatch-options-request: true
 
+cors:
+  origins: http://localhost:3000
+
 server:
   servlet:
     context-path: /api
@@ -36,7 +39,8 @@ logging:
     org.hibernate: INFO
     io.craigmiller160: INFO
   file:
-    path: video-manager/server-logs/${spring.profiles.active}.log
+    common-path: video-manager/server-logs/${spring.profiles.active}.log
+    path: ${HOME}/${logging.file.common-path}
 
 
 video:

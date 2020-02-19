@@ -1,3 +1,3 @@
 
-INSERT INTO roles (name)
-VALUES ('ROLE_EDIT'), ('ROLE_ADMIN'), ('ROLE_SCAN');
+INSERT INTO roles (role_id, name)
+VALUES (1, 'ROLE_EDIT'), (2, 'ROLE_ADMIN'), (3, 'ROLE_SCAN');
