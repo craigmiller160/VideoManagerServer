@@ -16,3 +16,5 @@ VideoManagerCypress - the automated testing application.
     1. vm_dev
     2. vm_qa
     3. vm_prod
+3. Dev & QA will have auto-generated schemas initially.
+4. Prod schema needs to be executed manually.
