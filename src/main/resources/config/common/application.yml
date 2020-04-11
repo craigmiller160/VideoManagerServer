@@ -14,10 +14,10 @@ spring:
       javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
     generate-ddl: true
   datasource:
-    url: jdbc:postgresql://${spring.datasource.host}:5432/${spring.datasource.db}
+    url: ${spring.datasource.jdbc-url}/${spring.datasource.db}
+    # TODO migrate the credentials
     username: user
     password: password
-    driver-class-name: org.postgresql.Driver
     docker: true
   mvc:
     dispatch-options-request: true
