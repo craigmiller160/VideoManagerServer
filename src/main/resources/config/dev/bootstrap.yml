@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      profile: dev
+      username: ${CONFIG_SERVER_USER}
+      password: ${CONFIG_SERVER_PASSWORD}

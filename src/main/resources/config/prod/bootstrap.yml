@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    config:
+      profile: prod
+      # TODO username and password should come from container
