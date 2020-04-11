@@ -14,23 +14,31 @@ import javax.net.ssl.TrustManagerFactory
 @SpringBootApplication
 class VideoManagerServerApplication
 
+private const val TRUST_STORE_TYPE = "JKS"
+private const val TRUST_STORE_PATH = "truststore.jks"
+private const val TRUST_STORE_PASSWORD = "changeit"
+
 private val logger = LoggerFactory.getLogger(VideoManagerServerApplication::class.java)
 
 fun main(args: Array<String>) {
+    setupTls()
+    Thread.setDefaultUncaughtExceptionHandler { _, e -> logger.error("Uncaught exception", e) }
+    runApplication<VideoManagerServerApplication>(*args)
+}
+
+fun setupTls() {
     val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-    val trustStore = KeyStore.getInstance("JKS")
-    val trustStoreStream = VideoManagerServerApplication::class.java.classLoader.getResourceAsStream("truststore.jks")
-    logger.info("" + trustStoreStream) // TODO delete this
-    trustStore.load(trustStoreStream, "changeit".toCharArray())
+
+    val trustStore = KeyStore.getInstance(TRUST_STORE_TYPE)
+    val trustStoreStream = VideoManagerServerApplication::class.java.classLoader.getResourceAsStream(TRUST_STORE_PATH)
+    trustStore.load(trustStoreStream, TRUST_STORE_PASSWORD.toCharArray())
+
     trustManagerFactory.init(trustStore)
+
     val trustManagers = trustManagerFactory.trustManagers
     val sslContext = SSLContext.getInstance("TLS")
     sslContext.init(null, trustManagers, null)
     SSLContext.setDefault(sslContext)
 
     HttpsURLConnection.setDefaultHostnameVerifier(AllowAllHostnameVerifier())
-
-    Thread.setDefaultUncaughtExceptionHandler { _, e -> logger.error("Uncaught exception", e) }
-    runApplication<VideoManagerServerApplication>(*args)
 }
-
