@@ -14,7 +14,7 @@ private val logger = LoggerFactory.getLogger(VideoManagerServerApplication::clas
 fun main(args: Array<String>) {
     val trustStorePath = ClassLoader.getSystemClassLoader().getResource("truststore.jks")?.toURI()?.path
     System.setProperty("javax.net.ssl.trustStore", trustStorePath!!)
-    System.setProperty("javax.net.ssl.trustStorePassword", "password")
+    System.setProperty("javax.net.ssl.trustStorePassword", "changeit")
     HttpsURLConnection.setDefaultHostnameVerifier(AllowAllHostnameVerifier())
 
     Thread.setDefaultUncaughtExceptionHandler { _, e -> logger.error("Uncaught exception", e) }
