@@ -6,7 +6,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.hbm2ddl.delimiter: ";"
+      hibernate.hbm2ddl.delimiter: ';'
       hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
       javax.persistence.schema-generation.create-source: metadata
       javax.persistence.schema-generation.scripts.action: drop-and-create

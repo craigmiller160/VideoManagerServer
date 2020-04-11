@@ -20,3 +20,5 @@ VideoManagerCypress - the automated testing application.
 4. Prod schema needs to be executed manually.
     1. Run the project for the first time with: `mvn spring-boot:run`
     2. Create and drop SQL files will be generated in the sql/ directory.
+        1. Be warned that the default behavior is to append to existing files, so if you want a complete, non-repetitive schema you'll need to delete the files before running.
+        2. Alternatively, mvn clean will delete them for you.
