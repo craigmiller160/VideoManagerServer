@@ -15,9 +15,6 @@ spring:
     generate-ddl: true
   datasource:
     url: ${spring.datasource.jdbc-url}/${spring.datasource.db}
-    # TODO migrate the credentials
-    username: user
-    password: password
     docker: true
   mvc:
     dispatch-options-request: true
