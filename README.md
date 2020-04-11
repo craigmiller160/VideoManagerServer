@@ -22,3 +22,8 @@ VideoManagerCypress - the automated testing application.
     2. Create and drop SQL files will be generated in the sql/ directory.
         1. Be warned that the default behavior is to append to existing files, so if you want a complete, non-repetitive schema you'll need to delete the files before running.
         2. Alternatively, mvn clean will delete them for you.
+        
+TODO
+ADD REFERENCE TO ENVIRONMENT VARIABLES FOR DEV,QA,PROD
+CONFIG_SERVER_USER
+CONFIG_SERVER_PASSWORD
