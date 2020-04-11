@@ -1,5 +1,5 @@
 spring:
   cloud:
     config:
+      uri: https://local-config-server:8002
       profile: prod,spring
-      # TODO username and password should come from container
