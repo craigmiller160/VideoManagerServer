@@ -2,5 +2,5 @@ spring:
   cloud:
     config:
       uri: https://localhost:8002
-      name: postgres,postgres-spring
+      name: postgres
       fail-fast: true
