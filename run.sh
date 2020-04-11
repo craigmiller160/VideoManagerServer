@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ARGS="-Dspring.config.location=classpath:/config/common/,classpath:/config/$1/ -Djavax.net.ssl.trustStore=truststore.jks -Djavax.net.ssl.trustStorePassword=password"
+ARGS="-Dspring.config.location=classpath:/config/common/,classpath:/config/$1/"
 
 case $1 in
   dev) mvn clean spring-boot:run -Dspring-boot.run.jvmArguments="$ARGS" ;;
