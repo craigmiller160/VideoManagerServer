@@ -1,12 +1,10 @@
 spring:
-  profiles:
-    active: @spring.profiles.active@
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.hbm2ddl.delimiter: ";"
+      hibernate.hbm2ddl.delimiter: ';'
       hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
       javax.persistence.schema-generation.create-source: metadata
       javax.persistence.schema-generation.scripts.action: drop-and-create
@@ -14,10 +12,7 @@ spring:
       javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
     generate-ddl: true
   datasource:
-    url: jdbc:postgresql://${spring.datasource.host}:5432/${spring.datasource.db}
-    username: user
-    password: password
-    driver-class-name: org.postgresql.Driver
+    url: ${spring.datasource.jdbc-url}/${spring.datasource.db}
     docker: true
   mvc:
     dispatch-options-request: true
@@ -33,10 +28,6 @@ server:
     key-store-type: PKCS12
     key-store: classpath:cert/video-server.p12
     key-store-password: d?ba5#?&WA#dSy}LQ(51
-    protocol: TLS
-    enabled-protocols: TLSv1.3,TLSv1.2
-    ciphers: TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256,TLS_AES_128_GCM_SHA256,DHE-RSA-AES256-GCM-SHA384,DHE-RSA-AES128-GCM-SHA256,ECDHE-RSA-AES256-GCM-SHA384,ECDHE-RSA-AES128-GCM-SHA256
-
 
 logging:
   level:
