@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: @spring.profiles.active@
   jpa:
     hibernate:
       ddl-auto: update
