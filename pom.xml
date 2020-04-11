@@ -25,6 +25,7 @@
         <modelmapper.version>2.3.6</modelmapper.version>
         <start-class>io.craigmiller160.videomanagerserver.VideoManagerServerApplicationKt</start-class>
         <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
+        <spring.retry.version>1.2.5.RELEASE</spring.retry.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,10 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
@@ -72,6 +77,12 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>${kotlin.coroutines.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>${spring.retry.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.nhaarman/mockito-kotlin -->
         <dependency>

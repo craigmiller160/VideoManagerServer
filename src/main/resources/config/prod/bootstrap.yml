@@ -1,5 +1,10 @@
 spring:
+  config:
+    retry:
+      max-attempts: 20
   cloud:
     config:
       uri: https://local-config-server:8002
       profile: prod,spring
+      retry:
+        max-attempts: 20
