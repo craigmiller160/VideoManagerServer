@@ -1,7 +1,9 @@
 #!/bin/bash
 
-name=$(cat package.json | grep name | sed 's/^\s*"name":\s\?"//g' | sed 's/",$//g' | sed 's/\@craigmiller160\///g')
-version=$(cat package.json | grep version | sed 's/^\s*"version":\s\?"//g' | sed 's/",$//g')
+raw_name=$(cat pom.xml | grep artifactId | head -n2 | tail -n1)
+name=$(echo $raw_name | sed 's/^\s*<artifactId>//g' | sed 's/<\/artifactId>$//g')
+raw_version=$(cat pom.xml | grep version | head -n3 | tail -n1)
+version=$(echo $raw_version | sed 's/^\s*<version>//g' | sed 's/<\/version>$//g')
 registry=localhost:32000
 tag=$registry/$name:$version
 
