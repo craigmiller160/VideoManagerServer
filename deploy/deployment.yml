@@ -27,8 +27,9 @@ spec:
             httpGet:
               path: /api/actuator/health
               port: 8443
+              scheme: HTTPS
             initialDelaySeconds: 10
-            periodSeconds: 10 # TODO change to 300
+            periodSeconds: 300
       volumes:
         - name: video-manager-server-volume-homedir
           hostPath:
