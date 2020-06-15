@@ -27,3 +27,16 @@ spec:
         - name: video-manager-server-volume-homeDir
           hostPath:
             path: /opt/kubernetes/data/video-manager-server/homeDir
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-manager-server-service
+spec:
+  type: ClusterIP
+  selector:
+    app: video-manager-server
+  ports:
+    - port: 8443
+      targetPort: 8443
+      protocol: TCP
