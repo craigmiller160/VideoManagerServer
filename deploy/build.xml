@@ -1,0 +1,14 @@
+<project name="video-manager-server" default="copy" basedir="../">
+    <description>VideoManagerServer supplemental build script</description>
+
+    <target name="clean">
+        <delete dir="deploy/build" />
+        <mkdir dir="deploy/build" />
+    </target>
+
+    <target name="copy" depends="clean">
+        <copy todir="deploy/build">
+            <fileset dir="target" includes="video-manager-server-*.jar" />
+        </copy>
+    </target>
+</project>
