@@ -1,6 +1,0 @@
-spring:
-  cloud:
-    config:
-      profile: qa,spring
-      username: ${CONFIG_SERVER_USER}
-      password: ${CONFIG_SERVER_PASSWORD}

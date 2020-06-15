@@ -1,7 +1,6 @@
 spring:
   datasource:
     db: vm_prod
-    host: postgres
   jpa:
     hibernate:
       ddl-auto: none

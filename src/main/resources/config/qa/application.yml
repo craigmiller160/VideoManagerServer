@@ -2,3 +2,6 @@ spring:
   datasource:
     db: vm_qa
     host: localhost
+    port: 5432
+    username: user
+    password: password

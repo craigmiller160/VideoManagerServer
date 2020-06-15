@@ -12,6 +12,7 @@ spring:
       javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
     generate-ddl: true
   datasource:
+    jdbc-url: jdbc:postgresql://${spring.datasource.host}/${spring.datasource.port}
     url: ${spring.datasource.jdbc-url}/${spring.datasource.db}
     docker: true
   mvc:

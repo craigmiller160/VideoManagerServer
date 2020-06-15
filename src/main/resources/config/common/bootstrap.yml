@@ -1,6 +1,0 @@
-spring:
-  cloud:
-    config:
-      uri: https://localhost:8002
-      name: postgres
-      fail-fast: true

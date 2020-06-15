@@ -1,5 +1,0 @@
-spring:
-  cloud:
-    config:
-      uri: https://local-config-server:8002
-      profile: prod,spring
