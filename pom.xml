@@ -25,6 +25,7 @@
         <modelmapper.version>2.3.6</modelmapper.version>
         <start-class>io.craigmiller160.videomanagerserver.VideoManagerServerApplicationKt</start-class>
         <spring.retry.version>1.2.5.RELEASE</spring.retry.version>
+        <deploy.build.dir>deploy/build</deploy.build.dir>
     </properties>
 
     <dependencies>

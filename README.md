@@ -24,14 +24,7 @@ VideoManagerCypress - the automated testing application.
 
 ### Running Locally
 
-To run this project locally, first please set up the following system environment variables with the correct values:
-
-```
-CONFIG_SERVER_USER
-CONFIG_SERVER_PASSWORD
-```
-
-Then, please use the `run.sh` script to run it. The name of the environment it is being run in (dev/qa/prod) is a requirement. For example:
+Please use the `run.sh` script to run it. The name of the environment it is being run in (dev/qa/prod) is a requirement. For example:
 
 `sh run.sh dev`
 
