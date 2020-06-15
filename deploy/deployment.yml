@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-manager-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: video-manager-server
+  template:
+    metadata:
+      labels:
+        app: video-manager-serve
+    spec:
+      containers:
+        - name: video-manager-server
+          image: localhost:32000/video-manager-server:1.10.0-SNAPSHOT
+          ports:
+            - containerPort: 8443
+          envFrom:
+            - configMapRef:
+                name: video-manager-server-config
+          volumeMounts:
+            - mountPath: /opt/video-manager/homeDir
+              name: video-manager-server-volume-homeDir
+      volumes:
+        - name: video-manager-server-volume-homeDir
+          hostPath:
+            path: /opt/kubernetes/data/video-manager-server/homeDir
