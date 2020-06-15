@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: video-manager-server-config
+data:
+  spring.profiles.active: prod
+  spring.config.location: classpath:/config/common/,classpath:/config/prod/
+  spring.datasource.host: postgres-service
+  spring.datasource.port: 30001
+  spring.datasource.username: user
+  spring.datasource.password: password
