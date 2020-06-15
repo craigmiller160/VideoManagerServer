@@ -42,6 +42,7 @@ Any environment in production will need the following environment variables to b
 ```
 spring.cloud.config.username=
 spring.cloud.config.password=
+spring.cloud.config.retry.max-attempts=
 spring.profiles.active=prod
 spring.config.location=classpath:/config/common/,classpath:/config/prod/
 ```
