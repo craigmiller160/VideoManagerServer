@@ -39,3 +39,5 @@ spring.cloud.config.retry.max-attempts=
 spring.profiles.active=prod
 spring.config.location=classpath:/config/common/,classpath:/config/prod/
 ```
+
+To build the production artifact and automatically copy it to the staging deploy/build directory, run `mvn clean verify`.
