@@ -2,7 +2,7 @@ spring:
   datasource:
     db: vm_dev
     host: localhost
-    port: 5432
+    port: 30001
     username: user
     password: password
 
