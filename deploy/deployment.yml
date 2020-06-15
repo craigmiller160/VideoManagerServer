@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: video-manager-server
-          image: localhost:32000/video-manager-server:1.10.0-SNAPSHOT.3
+          image: localhost:32000/video-manager-server:1.10.0-SNAPSHOT.4
           ports:
             - containerPort: 8443
           envFrom:
@@ -23,6 +23,12 @@ spec:
           volumeMounts:
             - mountPath: /opt/video-manager/homeDir
               name: video-manager-server-volume-homedir
+          livenessProbe:
+            httpGet:
+              path: /api/actuator/health
+              port: 8443
+            initialDelaySeconds: 10
+            periodSeconds: 10 # TODO change to 300
       volumes:
         - name: video-manager-server-volume-homedir
           hostPath:
