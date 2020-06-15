@@ -41,3 +41,5 @@ spring.config.location=classpath:/config/common/,classpath:/config/prod/
 ```
 
 To build the production artifact and automatically copy it to the staging deploy/build directory, run `mvn clean verify`.
+
+Lastly, we need to have directories to mount. Create `/opt/kubernetes/data/video-manager-server/homeDir`, because that's where it'll be setup to search for the video files directory. Make sure to symlink this to the actual location of the files on the host system.
