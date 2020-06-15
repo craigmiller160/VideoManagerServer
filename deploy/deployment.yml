@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: video-manager-serve
+        app: video-manager-server
     spec:
       containers:
         - name: video-manager-server
@@ -22,9 +22,9 @@ spec:
                 name: video-manager-server-config
           volumeMounts:
             - mountPath: /opt/video-manager/homeDir
-              name: video-manager-server-volume-homeDir
+              name: video-manager-server-volume-homedir
       volumes:
-        - name: video-manager-server-volume-homeDir
+        - name: video-manager-server-volume-homedir
           hostPath:
             path: /opt/kubernetes/data/video-manager-server/homeDir
 ---
