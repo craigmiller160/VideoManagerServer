@@ -8,7 +8,7 @@ registry=localhost:32000
 tag=$registry/$name:$version
 
 check_artifact_version() {
-  artifact_version=$(ls deploy/build | grep zip | sed 's/\.jar$//g' | sed "s/^$name-//g")
+  artifact_version=$(ls deploy/build | grep jar | sed 's/\.jar$//g' | sed "s/^$name-//g")
   if [ $version != $artifact_version ]; then
     echo "Project version $version does not equal artifact version $artifact_version"
     exit 1
