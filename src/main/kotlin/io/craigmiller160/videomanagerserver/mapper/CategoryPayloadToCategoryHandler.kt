@@ -11,7 +11,8 @@ class CategoryPayloadToCategoryHandler() : ExistingPropHandler<CategoryPayload, 
     override val destinationType = Category::class.java
     override val key = ExistingPropHandlerKey(sourceType, destinationType)
 
-    override fun handleExisting(source: CategoryPayload, existing: Category, destination: Category) {
+    override fun handleExisting(source: CategoryPayload, existing: Category, destination: Category): Category {
         destination.hidden = existing.hidden
+        return destination
     }
 }

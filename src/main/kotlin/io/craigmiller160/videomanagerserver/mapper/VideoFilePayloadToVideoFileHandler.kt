@@ -11,8 +11,9 @@ class VideoFilePayloadToVideoFileHandler() : ExistingPropHandler<VideoFilePayloa
     override val destinationType = VideoFile::class.java
     override val key = ExistingPropHandlerKey(sourceType, destinationType)
 
-    override fun handleExisting(source: VideoFilePayload, existing: VideoFile, destination: VideoFile) {
+    override fun handleExisting(source: VideoFilePayload, existing: VideoFile, destination: VideoFile): VideoFile {
         destination.active = existing.active
         destination.lastScanTimestamp = existing.lastScanTimestamp
+        return destination
     }
 }
