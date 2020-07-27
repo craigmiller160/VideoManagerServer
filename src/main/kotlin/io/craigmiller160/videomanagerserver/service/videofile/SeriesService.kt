@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.modelmapper.EnhancedModelMapper
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.Series
-import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import org.springframework.data.domain.Sort
@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 class SeriesService (
         private val seriesRepo: SeriesRepository,
         private val fileSeriesRepo: FileSeriesRepository,
-        private val modelMapper: VMModelMapper
+        private val modelMapper: EnhancedModelMapper
 ) {
 
     fun getAllSeries(): List<SeriesPayload> {

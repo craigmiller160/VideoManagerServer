@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.security
 
+import io.craigmiller160.modelmapper.EnhancedModelMapper
 import io.craigmiller160.videomanagerserver.dto.AppUserRequest
 import io.craigmiller160.videomanagerserver.dto.AppUserResponse
 import io.craigmiller160.videomanagerserver.dto.LoginRequest
@@ -8,7 +9,6 @@ import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.exception.ApiUnauthorizedException
 import io.craigmiller160.videomanagerserver.exception.NoUserException
-import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.AppUserRepository
 import io.craigmiller160.videomanagerserver.repository.RoleRepository
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
@@ -28,7 +28,7 @@ class AuthService (
         private val jwtTokenProvider: JwtTokenProvider,
         private val videoTokenProvider: VideoTokenProvider,
         private val securityContextService: SecurityContextService,
-        private val modelMapper: VMModelMapper
+        private val modelMapper: EnhancedModelMapper
 ) {
 
     fun checkAuth(): AppUserResponse {

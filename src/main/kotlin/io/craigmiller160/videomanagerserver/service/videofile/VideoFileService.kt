@@ -1,5 +1,6 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.modelmapper.EnhancedModelMapper
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
@@ -12,7 +13,6 @@ import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
-import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
@@ -41,7 +41,7 @@ class VideoFileService (
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
         private val fileStarRepo: FileStarRepository,
-        private val modelMapper: VMModelMapper
+        private val modelMapper: EnhancedModelMapper
 ) {
 
     private val fileScanRunning = AtomicBoolean(false)

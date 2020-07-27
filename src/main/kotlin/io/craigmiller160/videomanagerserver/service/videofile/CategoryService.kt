@@ -1,8 +1,8 @@
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.modelmapper.EnhancedModelMapper
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.entity.Category
-import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.CategoryRepository
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +15,7 @@ import javax.transaction.Transactional
 class CategoryService @Autowired constructor(
         private val categoryRepo: CategoryRepository,
         private val fileCategoryRepo: FileCategoryRepository,
-        private val modelMapper: VMModelMapper
+        private val modelMapper: EnhancedModelMapper
 ) {
 
     fun getAllCategories(): List<CategoryPayload> {
