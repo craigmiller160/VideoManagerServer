@@ -1,9 +1,11 @@
 package io.craigmiller160.videomanagerserver.mapper
 
+import io.craigmiller160.modelmapper.ExistingPropHandler
+import io.craigmiller160.modelmapper.ExistingPropHandlerKey
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 
-class VideoFilePayloadToVideoFileHandler() : ExistingPropHandler<VideoFilePayload,VideoFile> {
+class VideoFilePayloadToVideoFileHandler() : ExistingPropHandler<VideoFilePayload, VideoFile> {
 
     override val sourceType = VideoFilePayload::class.java
     override val destinationType = VideoFile::class.java
