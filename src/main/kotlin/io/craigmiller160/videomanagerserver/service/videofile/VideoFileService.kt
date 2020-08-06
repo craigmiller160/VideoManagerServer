@@ -81,6 +81,7 @@ class VideoFileService (
                 .map { existingFile ->
                     val videoFile = modelMapper.mapFromExisting(payload, existingFile)
                     videoFile.fileId = fileId
+                    videoFile.viewCount = existingFile.viewCount
                     val savedVideoFile = videoFileRepo.save(videoFile)
                     modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
                 }
