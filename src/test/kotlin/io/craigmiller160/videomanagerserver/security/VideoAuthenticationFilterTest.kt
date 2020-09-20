@@ -52,9 +52,6 @@ class VideoAuthenticationFilterTest {
     }
 
     @Mock
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
-    @Mock
     private lateinit var videoTokenProvider: VideoTokenProvider
 
     @InjectMocks
@@ -86,92 +83,6 @@ class VideoAuthenticationFilterTest {
                 .thenReturn(path)
         `when`(request.contextPath)
                 .thenReturn("/api")
-    }
-
-    @Test
-    fun test_doFilterInternal_jwt_validToken() {
-        val token = "TOKEN"
-
-        val params = HashMap<String,Any>()
-        `when`(jwtTokenProvider.resolveToken(request))
-                .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token, params))
-                .thenReturn(TokenValidationStatus.VALID)
-        `when`(jwtTokenProvider.createAuthentication(token))
-                .thenReturn(authentication)
-        setupRequest(JWT_PATH)
-
-        videoAuthenticationFilter.doFilterInternal(request, response, chain)
-
-        val authArgCaptor = ArgumentCaptor.forClass(Authentication::class.java)
-        verify(securityContext, times(1)).authentication = authArgCaptor.capture()
-        assertEquals(authentication, authArgCaptor.value)
-
-        verify(chain, times(1))
-                .doFilter(request, response)
-    }
-
-    @Test
-    fun test_doFilterInternal_jwt_noToken() {
-        setupRequest(JWT_PATH)
-        videoAuthenticationFilter.doFilterInternal(request, response, chain)
-        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
-    }
-
-    @Test
-    fun test_doFilterInternal_jwt_badSignature() {
-        val token = "TOKEN"
-
-        val params = HashMap<String,Any>()
-        setupRequest(JWT_PATH)
-        `when`(jwtTokenProvider.resolveToken(request))
-                .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token, params))
-                .thenReturn(TokenValidationStatus.BAD_SIGNATURE)
-
-        videoAuthenticationFilter.doFilterInternal(request, response, chain)
-
-        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
-    }
-
-    @Test
-    fun test_doFilterInternal_jwt_expiredToken() {
-        val token = "TOKEN"
-
-        val params = HashMap<String,Any>()
-        setupRequest(JWT_PATH)
-        `when`(jwtTokenProvider.resolveToken(request))
-                .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token, params))
-                .thenReturn(TokenValidationStatus.EXPIRED)
-
-        videoAuthenticationFilter.doFilterInternal(request, response, chain)
-
-        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
-    }
-
-    @Test
-    fun test_doFilterInternal_jwt_exception() {
-        val token = "TOKEN"
-
-        val params = HashMap<String,Any>()
-        setupRequest(JWT_PATH)
-        `when`(jwtTokenProvider.resolveToken(request))
-                .thenReturn(token)
-        `when`(jwtTokenProvider.validateToken(token, params))
-                .thenThrow(RuntimeException("Hello World"))
-
-        videoAuthenticationFilter.doFilterInternal(request, response, chain)
-
-        assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
     }
 
     @Test
