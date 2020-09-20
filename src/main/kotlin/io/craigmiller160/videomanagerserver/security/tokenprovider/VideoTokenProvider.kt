@@ -21,7 +21,6 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -60,13 +59,14 @@ class VideoTokenProvider (
         return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}""".toRegex()
     }
 
-    override fun createToken(user: AppUser, params: Map<String,Any>): String {
-        val userName = user.userName
-        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        val exp = generateExpiration()
-        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        val tokenString = "$userName$separator$videoId$separator$exp"
-        return encryptHandler.doEncrypt(tokenString)
+    override fun createToken(user: Any, params: Map<String,Any>): String {
+//        val userName = user.userName
+//        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+//        val exp = generateExpiration()
+//        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+//        val tokenString = "$userName$separator$videoId$separator$exp"
+//        return encryptHandler.doEncrypt(tokenString)
+        TODO("Fix this to use new user stuff")
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
@@ -128,9 +128,5 @@ class VideoTokenProvider (
                 TokenConstants.CLAIM_VIDEO_ID to tokenParams[1],
                 TokenConstants.CLAIM_EXP to tokenParams[2]
         )
-    }
-
-    override fun isRefreshAllowed(user: AppUser): Boolean {
-        return false
     }
 }

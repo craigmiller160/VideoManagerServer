@@ -19,7 +19,6 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.springframework.stereotype.Service
@@ -32,10 +31,10 @@ class AuthService (
 
     fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
-        val user = AppUser(userName = userName)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)
-        val token = videoTokenProvider.createToken(user, params)
-        return VideoTokenResponse(token)
+//        val token = videoTokenProvider.createToken(user, params)
+//        return VideoTokenResponse(token)
+        TODO("Fix this to use new user stuff")
     }
 
 }
