@@ -26,8 +26,7 @@ import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,9 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.core.io.UrlResource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
+import java.io.File
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -300,14 +301,13 @@ class VideoFileControllerTest : AbstractControllerTest() {
     @Test
     fun test_playVideo() {
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        TODO("Finish this")
-//        val token = videoTokenProvider.createToken(user, params)
-//        val file = File(".")
-//        `when`(videoFileService.playVideo(1L))
-//                .thenReturn(UrlResource(file.toURI()))
-//        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-//        assertEquals(206, response.status)
-//        assertTrue(response.contentAsByteArray.isNotEmpty())
+        val token = videoTokenProvider.createToken("user", params)
+        val file = File(".")
+        `when`(videoFileService.playVideo(1L))
+                .thenReturn(UrlResource(file.toURI()))
+        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+        assertEquals(206, response.status)
+        assertTrue(response.contentAsByteArray.isNotEmpty())
     }
 
     @Test
