@@ -59,14 +59,12 @@ class VideoTokenProvider (
         return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}""".toRegex()
     }
 
-    override fun createToken(user: Any, params: Map<String,Any>): String {
-//        val userName = user.userName
-//        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-//        val exp = generateExpiration()
-//        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-//        val tokenString = "$userName$separator$videoId$separator$exp"
-//        return encryptHandler.doEncrypt(tokenString)
-        TODO("Fix this to use new user stuff")
+    override fun createToken(userName: String, params: Map<String,Any>): String {
+        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+        val exp = generateExpiration()
+        val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+        val tokenString = "$userName$separator$videoId$separator$exp"
+        return encryptHandler.doEncrypt(tokenString)
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {

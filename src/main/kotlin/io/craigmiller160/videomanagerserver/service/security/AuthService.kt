@@ -32,9 +32,8 @@ class AuthService (
     fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)
-//        val token = videoTokenProvider.createToken(user, params)
-//        return VideoTokenResponse(token)
-        TODO("Fix this to use new user stuff")
+        val token = videoTokenProvider.createToken(userName, params)
+        return VideoTokenResponse(token)
     }
 
 }

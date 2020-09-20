@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest
 
 interface TokenProvider {
 
-    fun createToken(user: Any, params: Map<String,Any> = HashMap()): String
+    fun createToken(userName: String, params: Map<String,Any> = HashMap()): String
 
     fun resolveToken(req: HttpServletRequest): String?
 
