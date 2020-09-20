@@ -61,9 +61,6 @@ class AuthControllerTest : AbstractControllerTest() {
     private lateinit var jacksonUserResponse: JacksonTester<AppUserResponse>
     private lateinit var jacksonUserResponseList: JacksonTester<List<AppUserResponse>>
 
-    @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
     @Test
     fun test_getVideoToken() {
         val user = AppUser().apply {
@@ -75,7 +72,7 @@ class AuthControllerTest : AbstractControllerTest() {
 
         `when`(authService.getVideoToken(videoId))
                 .thenReturn(token)
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = this.token
 
         val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
         assertThat(response, allOf(

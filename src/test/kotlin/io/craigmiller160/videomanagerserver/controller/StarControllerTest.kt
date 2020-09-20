@@ -59,9 +59,6 @@ class StarControllerTest : AbstractControllerTest() {
     private lateinit var star3: StarPayload
     private lateinit var starList: List<StarPayload>
 
-    @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
     @Before
     override fun setup() {
         super.setup()
@@ -74,7 +71,7 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetAllStars() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(starService.getAllStars())
                 .thenReturn(starList)
                 .thenReturn(listOf())
@@ -94,7 +91,7 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetStar() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(starService.getStar(1))
                 .thenReturn(star1)
         `when`(starService.getStar(5))
@@ -119,7 +116,7 @@ class StarControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val starWithId = starNoId.copy(starId = 1)
         `when`(starService.addStar(starNoId))
                 .thenReturn(starWithId)
@@ -139,7 +136,7 @@ class StarControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/stars", jacksonStar.write(starNoId).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -151,7 +148,7 @@ class StarControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val updatedStar = star2.copy(starId = 1)
         `when`(starService.updateStar(1, star2))
                 .thenReturn(updatedStar)
@@ -176,7 +173,7 @@ class StarControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -188,7 +185,7 @@ class StarControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         `when`(starService.deleteStar(1))
                 .thenReturn(star1)
                 .thenReturn(null)
@@ -211,7 +208,7 @@ class StarControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/stars/1")
         assertThat(response, hasProperty("status", equalTo(403)))

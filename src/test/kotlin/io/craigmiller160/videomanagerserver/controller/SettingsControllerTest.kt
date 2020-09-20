@@ -25,9 +25,7 @@ import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -55,9 +53,6 @@ class SettingsControllerTest : AbstractControllerTest() {
     @Autowired
     private lateinit var settingsController: SettingsController
 
-    @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
     private lateinit var jacksonSettings: JacksonTester<SettingsPayload>
 
     @Test
@@ -72,7 +67,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         `when`(settingsService.getOrCreateSettings())
                 .thenReturn(settings)
 
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/settings")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -91,7 +86,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/settings")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
@@ -108,7 +103,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         `when`(settingsService.updateSettings(settings))
                 .thenReturn(settings)
 
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -133,7 +128,7 @@ class SettingsControllerTest : AbstractControllerTest() {
         val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
         assertThat(response, hasProperty("status", equalTo(403)))
     }

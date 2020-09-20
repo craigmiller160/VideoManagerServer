@@ -86,9 +86,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
     private lateinit var scanAlreadyRunning: FileScanStatusResponse
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
-    @Autowired
     private lateinit var videoTokenProvider: VideoTokenProvider
 
     @Autowired
@@ -116,7 +113,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetAllVideoFiles() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(videoFileService.getAllVideoFiles(anyInt(), anyString()))
                 .thenReturn(videoFileList)
                 .thenReturn(listOf())
@@ -139,7 +136,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetVideoFile() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(videoFileService.getVideoFile(1))
                 .thenReturn(videoFile1)
         `when`(videoFileService.getVideoFile(5))
@@ -164,7 +161,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
@@ -184,7 +181,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/video-files", jacksonVideoFile.write(videoFileNoId).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -196,7 +193,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val updatedVideoFile = videoFile2.copy(fileId = 1)
         `when`(videoFileService.updateVideoFile(1, videoFile2))
                 .thenReturn(updatedVideoFile)
@@ -221,7 +218,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -233,7 +230,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_EDIT))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         `when`(videoFileService.deleteVideoFile(1))
                 .thenReturn(videoFile1)
                 .thenReturn(null)
@@ -256,7 +253,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/video-files/1")
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -268,7 +265,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
                 userName = "userName",
                 roles = listOf(Role(name = ROLE_SCAN))
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
@@ -285,7 +282,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         val user = AppUser(
                 userName = "userName"
         )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
@@ -302,7 +299,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testIsVideoScanRunning() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(videoFileService.isVideoFileScanRunning())
                 .thenReturn(scanNotRunning)
                 .thenReturn(scanRunning)
@@ -322,7 +319,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testSearchForVideos() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(videoFileService.searchForVideos(isA(VideoSearchRequest::class.java)))
                 .thenReturn(videoSearchResults)
                 .thenReturn(VideoSearchResponse())
@@ -364,7 +361,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_recordNewVideoPlay() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/video-files/record-play/1")
         assertEquals(200, response.status)
 
