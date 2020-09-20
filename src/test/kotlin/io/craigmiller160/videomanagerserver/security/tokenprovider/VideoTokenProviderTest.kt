@@ -40,6 +40,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 import javax.servlet.http.HttpServletRequest
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
 class VideoTokenProviderTest {
@@ -75,12 +76,10 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
         val tokenRegex = "$USER_NAME$separator$VIDEO_ID$separator$dateRegex".toRegex()
-        TODO("Finish this")
-//        val appUser = AppUser(userName = USER_NAME)
-//        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
-//        val token = videoTokenProvider.createToken(appUser, params)
-//        val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
-//        assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
+        val token = videoTokenProvider.createToken("userName", params)
+        val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
+        assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
     }
 
     @Test
