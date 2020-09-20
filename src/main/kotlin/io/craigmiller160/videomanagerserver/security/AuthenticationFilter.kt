@@ -18,7 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.security
 
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -29,12 +28,9 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class AuthenticationFilter (
-        private val jwtTokenProvider: JwtTokenProvider,
+class AuthenticationFilter ( // TODO rename this
         private val videoTokenProvider: VideoTokenProvider
 ) : OncePerRequestFilter() {
-
-    // TODO refactor to remove JWT part
 
     companion object {
         val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}$""")
@@ -52,7 +48,7 @@ class AuthenticationFilter (
             validateToken(req, resp, chain, videoTokenProvider, params)
         }
         else {
-            validateToken(req, resp, chain, jwtTokenProvider)
+            chain.doFilter(req, resp)
         }
     }
 
