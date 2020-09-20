@@ -189,9 +189,4 @@ class VideoTokenProviderTest {
         ))
     }
 
-    @Test
-    fun test_isRefreshAllowed() {
-        assertFalse(videoTokenProvider.isRefreshAllowed(AppUser()))
-    }
-
 }
