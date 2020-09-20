@@ -71,6 +71,8 @@ abstract class AbstractControllerTest {
                 .thenReturn(JwtUtils.CLIENT_KEY)
         Mockito.`when`(oauthConfig.clientName)
                 .thenReturn(JwtUtils.CLIENT_NAME)
+        Mockito.`when`(oauthConfig.cookieName)
+                .thenReturn("vm_token")
 
         val jwt = JwtUtils.createJwt()
         token = JwtUtils.signAndSerializeJwt(jwt, keyPair.private)
