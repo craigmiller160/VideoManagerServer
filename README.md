@@ -21,8 +21,18 @@ VideoManagerCypress - the automated testing application.
     2. Prod schema needs to be executed manually.
         1. Run the project for the first time (instructions below)
         2. Create and drop SQL files will be generated in the sql/ directory.
+4. This depends on the SSO OAuth2 Server.
+5. Run the SQL script from oauth2-utils to setup the refresh token table.
+
+### Auth Server Setup
+
+1. Create a client for this app in the Auth Server UI
+    1. Update the properties of this app with the client key/secret.
+    1. Add the ADMIN, EDIT, and SCAN roles.
 
 ### Running Locally
+
+The SSO OAuth Server must be running before this can run.
 
 Please use the `run.sh` script to run it. The name of the environment it is being run in (dev/qa/prod) is a requirement. For example:
 
