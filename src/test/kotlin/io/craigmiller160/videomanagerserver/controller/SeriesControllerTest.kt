@@ -19,9 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.service.videofile.SeriesService
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty

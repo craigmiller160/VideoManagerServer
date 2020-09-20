@@ -19,17 +19,7 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import io.craigmiller160.videomanagerserver.dto.FileScanStatusResponse
-import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
-import io.craigmiller160.videomanagerserver.dto.VideoSearchResponse
-import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
-import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.security.ROLE_SCAN
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
@@ -38,24 +28,19 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.core.io.UrlResource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import java.io.File
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
@@ -174,9 +159,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_addVideoFile_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/video-files", jacksonVideoFile.write(videoFileNoId).json)
@@ -317,15 +299,15 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_playVideo() {
-        val user = AppUser(userName = "userName")
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
-        val token = videoTokenProvider.createToken(user, params)
-        val file = File(".")
-        `when`(videoFileService.playVideo(1L))
-                .thenReturn(UrlResource(file.toURI()))
-        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-        assertEquals(206, response.status)
-        assertTrue(response.contentAsByteArray.isNotEmpty())
+        TODO("Finish this")
+//        val token = videoTokenProvider.createToken(user, params)
+//        val file = File(".")
+//        `when`(videoFileService.playVideo(1L))
+//                .thenReturn(UrlResource(file.toURI()))
+//        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+//        assertEquals(206, response.status)
+//        assertTrue(response.contentAsByteArray.isNotEmpty())
     }
 
     @Test

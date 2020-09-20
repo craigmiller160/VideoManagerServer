@@ -20,9 +20,6 @@ package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
 import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.file.LocalFileService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat

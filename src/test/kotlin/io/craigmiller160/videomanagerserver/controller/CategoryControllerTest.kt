@@ -19,7 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.service.videofile.CategoryService
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -157,9 +156,6 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/categories/1", jacksonCategory.write(categoryNoId).json)
@@ -188,9 +184,6 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_deleteCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/categories/1")

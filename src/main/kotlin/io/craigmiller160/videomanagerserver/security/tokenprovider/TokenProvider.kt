@@ -18,7 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import org.springframework.security.core.Authentication
 import javax.servlet.http.HttpServletRequest
 
