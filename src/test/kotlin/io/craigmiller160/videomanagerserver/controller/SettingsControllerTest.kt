@@ -19,9 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
@@ -57,17 +54,13 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getSettings() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
         val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.getOrCreateSettings())
                 .thenReturn(settings)
 
-        mockMvcHandler.token = token
+        mockMvcHandler.token = adminToken
         val response = mockMvcHandler.doGet("/api/settings")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -83,9 +76,6 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getSettings_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/settings")
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -93,17 +83,13 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateSettings() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
         val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )
         `when`(settingsService.updateSettings(settings))
                 .thenReturn(settings)
 
-        mockMvcHandler.token = token
+        mockMvcHandler.token = adminToken
         val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -122,9 +108,6 @@ class SettingsControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateSettings_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         val settings = SettingsPayload(
                 rootDir = ROOT_DIR
         )

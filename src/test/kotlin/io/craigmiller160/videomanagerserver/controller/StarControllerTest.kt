@@ -112,11 +112,7 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun testAddStar() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val starWithId = starNoId.copy(starId = 1)
         `when`(starService.addStar(starNoId))
                 .thenReturn(starWithId)
@@ -133,9 +129,6 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_addStar_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/stars", jacksonStar.write(starNoId).json)
@@ -144,11 +137,7 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun testUpdateStar() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val updatedStar = star2.copy(starId = 1)
         `when`(starService.updateStar(1, star2))
                 .thenReturn(updatedStar)
@@ -170,9 +159,6 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateStar_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/stars/1", jacksonStar.write(star2).json)
@@ -181,11 +167,7 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun testDeleteStar() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         `when`(starService.deleteStar(1))
                 .thenReturn(star1)
                 .thenReturn(null)
@@ -205,9 +187,6 @@ class StarControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_deleteStar_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/stars/1")

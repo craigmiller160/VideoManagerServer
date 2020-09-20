@@ -157,11 +157,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testAddVideoFile() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val videoFileWithId = videoFileNoId.copy(fileId = 1)
         `when`(videoFileService.addVideoFile(videoFileNoId))
                 .thenReturn(videoFileWithId)
@@ -189,11 +185,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testUpdateVideoFile() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val updatedVideoFile = videoFile2.copy(fileId = 1)
         `when`(videoFileService.updateVideoFile(1, videoFile2))
                 .thenReturn(updatedVideoFile)
@@ -215,9 +207,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateVideoFile_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/video-files/1", jacksonVideoFile.write(videoFile2).json)
@@ -226,11 +215,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun testDeleteVideoFile() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         `when`(videoFileService.deleteVideoFile(1))
                 .thenReturn(videoFile1)
                 .thenReturn(null)
@@ -250,9 +235,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_deleteVideoFile_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/video-files/1")
@@ -261,11 +243,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_StartVideoScan() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_SCAN))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = scanToken
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
                 .thenReturn(scanAlreadyRunning)
@@ -279,9 +257,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_startVideoScan_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
         `when`(videoFileService.startVideoFileScan())
                 .thenReturn(scanRunning)
