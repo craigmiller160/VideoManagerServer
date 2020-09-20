@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.config
 
+import io.craigmiller160.oauth2.security.JwtValidationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.AuthenticationFilterConfigurer
 import org.springframework.beans.factory.annotation.Value
@@ -49,7 +50,8 @@ class SecurityConfig (
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int,
         @Value("\${cors.origins}")
-        private val corsOrigins: String
+        private val corsOrigins: String,
+        private val jwtValidationFilterConfigurer: JwtValidationFilterConfigurer
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
@@ -60,7 +62,8 @@ class SecurityConfig (
                         .configurationSource(corsConfigurationSource())
                     .and()
                     .authorizeRequests()
-                        .antMatchers("/auth/login", "/auth/logout", "/auth/refresh", "/actuator/health").permitAll()
+                        .antMatchers("/actuator/health").permitAll()
+                        .antMatchers(*jwtValidationFilterConfigurer.getInsecurePathPatterns()).permitAll()
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
@@ -68,6 +71,8 @@ class SecurityConfig (
                     .and()
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
+                    .and()
+                    .apply(jwtValidationFilterConfigurer)
                     .and()
                     .apply(authenticationFilterConfigurer)
                     .and()

@@ -34,6 +34,8 @@ class AuthenticationFilter (
         private val videoTokenProvider: VideoTokenProvider
 ) : OncePerRequestFilter() {
 
+    // TODO refactor to remove JWT part
+
     companion object {
         val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}$""")
     }
