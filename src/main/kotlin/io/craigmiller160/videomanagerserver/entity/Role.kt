@@ -26,7 +26,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "roles")
-data class Role (
+data class Role ( // TODO delete this
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var roleId: Long = 0,

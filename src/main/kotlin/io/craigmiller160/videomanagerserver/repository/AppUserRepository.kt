@@ -23,7 +23,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface AppUserRepository : CrudRepository<AppUser, Long> {
+interface AppUserRepository : CrudRepository<AppUser, Long> { // TODO delete this
 
     fun findByUserName(userName: String): AppUser?
 

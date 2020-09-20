@@ -32,7 +32,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-data class AppUser (
+data class AppUser ( // TODO delete this
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var userId: Long = 0,

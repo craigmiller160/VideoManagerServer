@@ -39,7 +39,7 @@ import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
 @Component
-class JwtTokenProvider (
+class JwtTokenProvider ( // TODO delete this
        private val tokenConfig: TokenConfig,
        private val legacyDateConverter: LegacyDateConverter
 ) : TokenProvider {
