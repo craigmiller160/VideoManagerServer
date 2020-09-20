@@ -95,6 +95,10 @@ object JwtUtils {
         return doCreateJwt(expMinutes, listOf(ROLE_SCAN))
     }
 
+    fun createAdminJwt(expMinutes: Long = 1000): SignedJWT {
+        return doCreateJwt(expMinutes, listOf(ROLE_ADMIN))
+    }
+
     fun signAndSerializeJwt(jwt: SignedJWT, privateKey: PrivateKey): String {
         val signer = RSASSASigner(privateKey)
         jwt.sign(signer)

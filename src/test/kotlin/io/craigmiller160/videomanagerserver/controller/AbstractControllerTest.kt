@@ -64,6 +64,7 @@ abstract class AbstractControllerTest {
     protected lateinit var token: String
     protected lateinit var editToken: String
     protected lateinit var scanToken: String
+    protected lateinit var adminToken: String
 
     @Before
     open fun setup() {
@@ -84,6 +85,9 @@ abstract class AbstractControllerTest {
 
         val scanJwt = JwtUtils.createScanJwt()
         scanToken = JwtUtils.signAndSerializeJwt(scanJwt, keyPair.private)
+
+        val adminJwt = JwtUtils.createAdminJwt()
+        adminToken = JwtUtils.signAndSerializeJwt(adminJwt, keyPair.private)
 
         mockMvcHandler = buildMockMvcHandler()
         JacksonTester.initFields(this, objectMapper)

@@ -19,7 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.*
-import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.service.security.AuthService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
@@ -63,10 +62,6 @@ class AuthControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getVideoToken() {
-        val user = AppUser().apply {
-            userId = 1L
-            userName = "userName"
-        }
         val videoId = 10L
         val token = VideoTokenResponse("ABCDEFG")
 

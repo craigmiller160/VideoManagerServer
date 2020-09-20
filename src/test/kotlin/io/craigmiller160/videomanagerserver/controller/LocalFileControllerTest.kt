@@ -77,17 +77,12 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
-
         val path = "dir"
         val files = mockFiles()
         `when`(localFileService.getFilesFromDirectory(path, false))
                 .thenReturn(files)
 
-        mockMvcHandler.token = token
+        mockMvcHandler.token = adminToken
         val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -97,16 +92,11 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory_noPath() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
-
         val files = mockFiles()
         `when`(localFileService.getFilesFromDirectory(null, false))
                 .thenReturn(files)
 
-        mockMvcHandler.token = token
+        mockMvcHandler.token = adminToken
         var response = mockMvcHandler.doGet("/api/localfiles/directory")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -128,10 +118,6 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
-
         mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/localfiles/directory")
         assertThat(response, hasProperty("status", equalTo(403)))
