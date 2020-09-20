@@ -112,11 +112,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testAddCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val categoryWithId = categoryNoId.copy(categoryId = 1)
         `when`(categoryService.addCategory(categoryNoId))
                 .thenReturn(categoryWithId)
@@ -133,9 +129,6 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_addCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
         mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/categories", jacksonCategory.write(categoryNoId).json)
@@ -144,11 +137,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testUpdateCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         val updatedCategory = category2.copy(categoryId = 1)
         `when`(categoryService.updateCategory(1, category2))
                 .thenReturn(updatedCategory)
@@ -181,11 +170,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testDeleteCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = token
+        mockMvcHandler.token = editToken
         `when`(categoryService.deleteCategory(1))
                 .thenReturn(category1)
                 .thenReturn(null)

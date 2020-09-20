@@ -62,7 +62,7 @@ object JwtUtils {
         return JWKSet(builder.build())
     }
 
-    private fun createJwt(expMinutes: Long = 100, roles: List<String> = listOf()): SignedJWT {
+    private fun doCreateJwt(expMinutes: Long = 100, roles: List<String> = listOf()): SignedJWT {
         val header = JWSHeader.Builder(JWSAlgorithm.RS256)
                 .build()
 
@@ -84,15 +84,15 @@ object JwtUtils {
     }
 
     fun createJwt(expMinutes: Long = 100): SignedJWT {
-        return createJwt(expMinutes)
+        return doCreateJwt(expMinutes)
     }
 
     fun createEditJwt(expMinutes: Long = 1000): SignedJWT {
-        return createJwt(expMinutes, listOf(ROLE_EDIT))
+        return doCreateJwt(expMinutes, listOf(ROLE_EDIT))
     }
 
     fun createScanJwt(expMinutes: Long = 1000): SignedJWT {
-        return createJwt(expMinutes, listOf(ROLE_SCAN))
+        return doCreateJwt(expMinutes, listOf(ROLE_SCAN))
     }
 
     fun signAndSerializeJwt(jwt: SignedJWT, privateKey: PrivateKey): String {
