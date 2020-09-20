@@ -19,16 +19,36 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.nimbusds.jose.jwk.JWKSet
+import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import org.junit.Before
+import org.junit.BeforeClass
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.json.JacksonTester
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import java.security.KeyPair
 
 abstract class AbstractControllerTest {
+
+    companion object {
+
+        protected lateinit var keyPair: KeyPair
+        protected lateinit var jwkSet: JWKSet
+
+        @BeforeClass
+        @JvmStatic
+        fun beforeAll() {
+            keyPair = JwtUtils.createKeyPair()
+            jwkSet = JwtUtils.createJwkSet(keyPair)
+        }
+    }
 
     @Autowired
     private lateinit var webAppContext: WebApplicationContext
@@ -38,8 +58,23 @@ abstract class AbstractControllerTest {
 
     protected lateinit var mockMvcHandler: MockMvcHandler
 
+    @MockBean
+    protected lateinit var oauthConfig: OAuthConfig
+
+    protected lateinit var token: String
+
     @Before
     open fun setup() {
+        Mockito.`when`(oauthConfig.jwkSet)
+                .thenReturn(jwkSet)
+        Mockito.`when`(oauthConfig.clientKey)
+                .thenReturn(JwtUtils.CLIENT_KEY)
+        Mockito.`when`(oauthConfig.clientName)
+                .thenReturn(JwtUtils.CLIENT_NAME)
+
+        val jwt = JwtUtils.createJwt()
+        token = JwtUtils.signAndSerializeJwt(jwt, keyPair.private)
+
         mockMvcHandler = buildMockMvcHandler()
         JacksonTester.initFields(this, objectMapper)
     }
