@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.repository
 
+import io.craigmiller160.oauth2.config.OAuthConfig
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
@@ -34,6 +35,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 
@@ -56,6 +58,9 @@ class FileCategoryRepositoryIntegrationTest {
     private lateinit var videoFileRepository: VideoFileRepository
     @Autowired
     private lateinit var dbTestUtils: DbTestUtils
+
+    @MockBean
+    private lateinit var oauthConfig: OAuthConfig
 
     private var fileId = 0L
     private var categoryId = 0L

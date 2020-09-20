@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
+import io.craigmiller160.oauth2.config.OAuthConfig
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
@@ -41,6 +42,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
@@ -69,6 +71,9 @@ class VideoFileServiceIntegrationTest {
     private lateinit var videoFileService: VideoFileService
     @Autowired
     private lateinit var videoFileRepo: VideoFileRepository
+
+    @MockBean
+    private lateinit var oauthConfig: OAuthConfig
 
     private lateinit var file1: VideoFilePayload
     private lateinit var file2: VideoFilePayload
