@@ -24,5 +24,5 @@ data class AuthGrantedAuthority (
         private val authorityString: String
 ) : GrantedAuthority {
 
-    override fun getAuthority() = authorityString
+    override fun getAuthority() = authorityString // TODO delete this file
 }

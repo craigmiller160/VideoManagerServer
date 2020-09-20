@@ -20,7 +20,7 @@ package io.craigmiller160.videomanagerserver.config
 
 import io.craigmiller160.oauth2.security.JwtValidationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
-import io.craigmiller160.videomanagerserver.security.AuthenticationFilterConfigurer
+import io.craigmiller160.videomanagerserver.security.VideoAuthenticationFilterConfigurer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -46,7 +46,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 )
 class SecurityConfig (
         private val authEntryPoint: AuthEntryPoint,
-        private val authenticationFilterConfigurer: AuthenticationFilterConfigurer,
+        private val videoAuthenticationFilterConfigurer: VideoAuthenticationFilterConfigurer,
         @Value("\${video.security.password.hashRounds}")
         private val hashRounds: Int,
         @Value("\${cors.origins}")
@@ -74,7 +74,7 @@ class SecurityConfig (
                     .and()
                     .apply(jwtValidationFilterConfigurer)
                     .and()
-                    .apply(authenticationFilterConfigurer)
+                    .apply(videoAuthenticationFilterConfigurer)
                     .and()
                     .requiresChannel().anyRequest().requiresSecure()
         }
