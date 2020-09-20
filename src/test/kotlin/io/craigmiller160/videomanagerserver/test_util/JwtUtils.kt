@@ -38,8 +38,9 @@ import java.util.*
 
 object JwtUtils {
 
-    const val ROLE_1 = "ROLE_1"
-    const val ROLE_2 = "ROLE_2"
+    const val ROLE_EDIT = "ROLE_EDIT"
+    const val ROLE_ADMIN = "ROLE_ADMIN"
+    const val ROLE_SCAN = "ROLE_SCAN"
     const val USERNAME = "username"
     const val ROLES_CLAIM = "roles"
     const val CLIENT_KEY = "clientKey"
@@ -61,17 +62,7 @@ object JwtUtils {
         return JWKSet(builder.build())
     }
 
-    fun createAuthUser(): AuthenticatedUser {
-        return AuthenticatedUser(
-                userName = USERNAME,
-                grantedAuthorities = listOf(SimpleGrantedAuthority(ROLE_1), SimpleGrantedAuthority(ROLE_2)),
-                firstName = FIRST_NAME,
-                lastName = LAST_NAME,
-                tokenId = TOKEN_ID
-        )
-    }
-
-    fun createJwt(expMinutes: Long = 100): SignedJWT {
+    private fun createJwt(expMinutes: Long = 100, roles: List<String> = listOf()): SignedJWT {
         val header = JWSHeader.Builder(JWSAlgorithm.RS256)
                 .build()
 
@@ -83,13 +74,25 @@ object JwtUtils {
                 .issueTime(Date())
                 .subject(USERNAME)
                 .expirationTime(expDate)
-                .claim(ROLES_CLAIM, listOf(ROLE_1, ROLE_2))
+                .claim(ROLES_CLAIM, roles)
                 .claim("clientKey", CLIENT_KEY)
                 .claim("clientName", CLIENT_NAME)
                 .claim("firstName", FIRST_NAME)
                 .claim("lastName", LAST_NAME)
                 .build()
         return SignedJWT(header, claims)
+    }
+
+    fun createJwt(expMinutes: Long = 100): SignedJWT {
+        return createJwt(expMinutes)
+    }
+
+    fun createEditJwt(expMinutes: Long = 1000): SignedJWT {
+        return createJwt(expMinutes, listOf(ROLE_EDIT))
+    }
+
+    fun createScanJwt(expMinutes: Long = 1000): SignedJWT {
+        return createJwt(expMinutes, listOf(ROLE_SCAN))
     }
 
     fun signAndSerializeJwt(jwt: SignedJWT, privateKey: PrivateKey): String {
