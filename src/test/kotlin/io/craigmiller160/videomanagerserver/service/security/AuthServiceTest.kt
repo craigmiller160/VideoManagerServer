@@ -18,11 +18,15 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
+import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 
@@ -41,18 +45,16 @@ class AuthServiceTest {
     @Test
     fun test_getVideoToken() {
         val userName = "userName"
-        TODO("Finish this")
-//        val user = AppUser(userName = userName)
-//        val videoId = 10L
-//        val token = "ABCDEFG"
-//
-//        `when`(securityContextService.getUserName())
-//                .thenReturn(userName)
-//        `when`(videoTokenProvider.createToken(user, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)))
-//                .thenReturn(token)
-//
-//        val result = authService.getVideoToken(videoId)
-//        assertEquals(VideoTokenResponse(token), result)
+        val videoId = 10L
+        val token = "ABCDEFG"
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(userName)
+        `when`(videoTokenProvider.createToken(userName, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)))
+                .thenReturn(token)
+
+        val result = authService.getVideoToken(videoId)
+        assertEquals(VideoTokenResponse(token), result)
     }
 
 }
