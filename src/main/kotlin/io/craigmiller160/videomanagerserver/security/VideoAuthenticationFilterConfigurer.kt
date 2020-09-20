@@ -18,7 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.security
 
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

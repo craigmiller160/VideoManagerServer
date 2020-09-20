@@ -21,9 +21,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.SeriesService
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
@@ -39,7 +37,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
-import java.util.Optional
 
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest

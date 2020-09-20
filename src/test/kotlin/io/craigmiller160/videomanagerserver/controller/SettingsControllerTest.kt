@@ -21,10 +21,7 @@ package io.craigmiller160.videomanagerserver.controller
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.AppUser
 import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
-import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat

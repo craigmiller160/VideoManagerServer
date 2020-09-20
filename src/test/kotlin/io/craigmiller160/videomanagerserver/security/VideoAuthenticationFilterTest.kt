@@ -20,7 +20,6 @@ package io.craigmiller160.videomanagerserver.security
 
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
