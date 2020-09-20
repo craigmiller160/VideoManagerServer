@@ -18,12 +18,8 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
-import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.repository.AppUserRepository
-import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.junit.Assert.assertEquals
@@ -32,36 +28,11 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 
 @RunWith(MockitoJUnitRunner.Silent::class)
 class AuthServiceTest {
-
-    companion object {
-        private const val USER_NAME = "craig"
-        private const val PASSWORD = "password"
-        private const val ENCODED_PASSWORD = "encoded_password"
-        private const val TOKEN = "token"
-        private const val ROLE = "role"
-    }
-
-    @Mock
-    private lateinit var appUserRepository: AppUserRepository
-
-    @Mock
-    private lateinit var roleRepository: RoleRepository
-
-    @Mock
-    private lateinit var passwordEncoder: BCryptPasswordEncoder
-
-    @Mock
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
-    @Spy
-    private var modelMapper = MapperConfig().modelMapper()
 
     @Mock
     private lateinit var videoTokenProvider: VideoTokenProvider

@@ -20,13 +20,8 @@ package io.craigmiller160.videomanagerserver.service.security
 
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
-import io.craigmiller160.videomanagerserver.repository.AppUserRepository
-import io.craigmiller160.videomanagerserver.repository.RoleRepository
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
