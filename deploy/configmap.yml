@@ -9,3 +9,6 @@ data:
   spring.datasource.port: "5432"
   spring.datasource.username: user
   spring.datasource.password: password
+  oauth2.auth-server-host: https://sso-oauth2-server-service:8443
+  oauth2.client-key:
+  oauth2:client-secret:
