@@ -18,4 +18,4 @@
 
 package io.craigmiller160.videomanagerserver.security
 
-const val COOKIE_NAME = "vm_token" // TODO delete this file
+const val COOKIE_NAME = "vm_token"

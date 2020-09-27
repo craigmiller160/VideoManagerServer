@@ -31,7 +31,7 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class VideoAuthenticationFilter ( // TODO rename this
+class VideoAuthenticationFilter (
         private val videoTokenProvider: VideoTokenProvider
 ) : OncePerRequestFilter() {
 
