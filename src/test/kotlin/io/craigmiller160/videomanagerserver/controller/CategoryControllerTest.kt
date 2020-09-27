@@ -19,10 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.CategoryService
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -60,9 +56,6 @@ class CategoryControllerTest : AbstractControllerTest() {
     private lateinit var category3: CategoryPayload
     private lateinit var categoryList: List<CategoryPayload>
 
-    @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
-
     @Before
     override fun setup() {
         super.setup()
@@ -75,7 +68,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetAllCategories() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(categoryService.getAllCategories())
                 .thenReturn(categoryList)
                 .thenReturn(listOf())
@@ -95,7 +88,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testGetCategory() {
-        mockMvcHandler.token = jwtTokenProvider.createToken(AppUser(userName = "userName"))
+        mockMvcHandler.token = token
         `when`(categoryService.getCategory(1))
                 .thenReturn(category1)
         `when`(categoryService.getCategory(5))
@@ -116,11 +109,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testAddCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = editToken
         val categoryWithId = categoryNoId.copy(categoryId = 1)
         `when`(categoryService.addCategory(categoryNoId))
                 .thenReturn(categoryWithId)
@@ -137,10 +126,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_addCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPost("/api/categories", jacksonCategory.write(categoryNoId).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -148,11 +134,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testUpdateCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = editToken
         val updatedCategory = category2.copy(categoryId = 1)
         `when`(categoryService.updateCategory(1, category2))
                 .thenReturn(updatedCategory)
@@ -174,10 +156,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_updateCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doPut("/api/categories/1", jacksonCategory.write(categoryNoId).json)
         assertThat(response, hasProperty("status", equalTo(403)))
@@ -185,11 +164,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun testDeleteCategory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_EDIT))
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = editToken
         `when`(categoryService.deleteCategory(1))
                 .thenReturn(category1)
                 .thenReturn(null)
@@ -209,10 +184,7 @@ class CategoryControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_deleteCategory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
 
         val response = mockMvcHandler.doDelete("/api/categories/1")
         assertThat(response, hasProperty("status", equalTo(403)))

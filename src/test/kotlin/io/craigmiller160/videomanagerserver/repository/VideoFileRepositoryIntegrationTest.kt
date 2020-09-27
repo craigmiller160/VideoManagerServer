@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.repository
 
+import io.craigmiller160.oauth2.config.OAuthConfig
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.entity.Star
@@ -38,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
 
@@ -75,6 +77,9 @@ class VideoFileRepositoryIntegrationTest {
 
     private lateinit var videoFile: VideoFile
     private lateinit var videoFile2: VideoFile
+
+    @MockBean
+    private lateinit var oauthConfig: OAuthConfig
 
     @Before
     fun setup() {

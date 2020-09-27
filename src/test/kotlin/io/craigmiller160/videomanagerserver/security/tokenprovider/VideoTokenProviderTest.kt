@@ -21,13 +21,7 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasEntry
-import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.hasSize
-import org.junit.Assert.assertFalse
+import org.hamcrest.Matchers.*
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -41,7 +35,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Base64
+import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 import javax.servlet.http.HttpServletRequest
@@ -82,9 +76,8 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
         val tokenRegex = "$USER_NAME$separator$VIDEO_ID$separator$dateRegex".toRegex()
-        val appUser = AppUser(userName = USER_NAME)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
-        val token = videoTokenProvider.createToken(appUser, params)
+        val token = videoTokenProvider.createToken("userName", params)
         val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
         assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
     }
@@ -187,11 +180,6 @@ class VideoTokenProviderTest {
                 hasEntry(TokenConstants.CLAIM_VIDEO_ID, VIDEO_ID),
                 hasEntry(TokenConstants.CLAIM_EXP, dateString)
         ))
-    }
-
-    @Test
-    fun test_isRefreshAllowed() {
-        assertFalse(videoTokenProvider.isRefreshAllowed(AppUser()))
     }
 
 }

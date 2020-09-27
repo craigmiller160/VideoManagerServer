@@ -16,15 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.craigmiller160.videomanagerserver.repository
+package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import org.springframework.boot.autoconfigure.domain.EntityScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
-@Repository
-interface AppUserRepository : CrudRepository<AppUser, Long> {
-
-    fun findByUserName(userName: String): AppUser?
-
-}
+@Configuration
+@EnableJpaRepositories(basePackages = [
+    "io.craigmiller160.oauth2.repository",
+    "io.craigmiller160.videomanagerserver.repository"
+])
+@EntityScan(basePackages = [
+    "io.craigmiller160.oauth2.entity",
+    "io.craigmiller160.videomanagerserver.entity"
+])
+class JpaConfig

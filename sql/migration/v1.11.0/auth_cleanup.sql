@@ -16,19 +16,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.craigmiller160.videomanagerserver.entity
-
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.Table
-
-@Entity
-@Table(name = "roles")
-data class Role (
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var roleId: Long = 0,
-        var name: String = ""
-)
+DROP TABLE user_roles;
+DROP TABLE users;
+DROP TABLE roles;

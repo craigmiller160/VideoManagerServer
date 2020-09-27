@@ -18,19 +18,20 @@
 
 package io.craigmiller160.videomanagerserver.security
 
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.Charset
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class AuthenticationFilter (
-        private val jwtTokenProvider: JwtTokenProvider,
+class VideoAuthenticationFilter (
         private val videoTokenProvider: VideoTokenProvider
 ) : OncePerRequestFilter() {
 
@@ -50,7 +51,7 @@ class AuthenticationFilter (
             validateToken(req, resp, chain, videoTokenProvider, params)
         }
         else {
-            validateToken(req, resp, chain, jwtTokenProvider)
+            chain.doFilter(req, resp)
         }
     }
 
@@ -60,11 +61,13 @@ class AuthenticationFilter (
         val token = tokenProvider.resolveToken(req)
         token?.let {
             try {
-                val status = tokenProvider.validateToken(token, params)
+                val decodedToken = URLDecoder.decode(token, Charsets.UTF_8)
+                println("Decoded: $decodedToken")
+                val status = tokenProvider.validateToken(decodedToken, params)
                 logger.debug("Token Validation Status: $status")
                 when (status) {
                     TokenValidationStatus.VALID -> {
-                        val auth = tokenProvider.createAuthentication(token)
+                        val auth = tokenProvider.createAuthentication(decodedToken)
                         SecurityContextHolder.getContext().authentication = auth
                         chain.doFilter(req, resp)
                     }

@@ -16,13 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.craigmiller160.videomanagerserver.security
+package io.craigmiller160.videomanagerserver.config
 
-import org.springframework.security.core.GrantedAuthority
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 
-data class AuthGrantedAuthority (
-        private val authorityString: String
-) : GrantedAuthority {
-
-    override fun getAuthority() = authorityString
-}
+@Configuration
+@ComponentScan(basePackages = [
+    "io.craigmiller160.oauth2"
+])
+class OauthUtilsConfig

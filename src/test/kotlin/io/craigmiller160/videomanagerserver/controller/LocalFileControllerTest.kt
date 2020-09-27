@@ -18,18 +18,12 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.entity.AppUser
-import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
 import io.craigmiller160.videomanagerserver.dto.LocalFileListResponse
-import io.craigmiller160.videomanagerserver.entity.Role
-import io.craigmiller160.videomanagerserver.security.ROLE_ADMIN
-import io.craigmiller160.videomanagerserver.security.tokenprovider.JwtTokenProvider
+import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
 import io.craigmiller160.videomanagerserver.service.file.LocalFileService
 import io.craigmiller160.videomanagerserver.test_util.responseBody
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
+import org.hamcrest.Matchers.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -52,9 +46,6 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Autowired
     private lateinit var localFileController: LocalFileController
-
-    @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
 
     private lateinit var jacksonLocalFileList: JacksonTester<LocalFileListResponse>
 
@@ -83,17 +74,12 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
-
         val path = "dir"
         val files = mockFiles()
         `when`(localFileService.getFilesFromDirectory(path, false))
                 .thenReturn(files)
 
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = adminToken
         val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -103,16 +89,11 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory_noPath() {
-        val user = AppUser(
-                userName = "userName",
-                roles = listOf(Role(name = ROLE_ADMIN))
-        )
-
         val files = mockFiles()
         `when`(localFileService.getFilesFromDirectory(null, false))
                 .thenReturn(files)
 
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = adminToken
         var response = mockMvcHandler.doGet("/api/localfiles/directory")
         assertThat(response, allOf(
                 hasProperty("status", equalTo(200)),
@@ -134,11 +115,7 @@ class LocalFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_getFilesFromDirectory_missingRole() {
-        val user = AppUser(
-                userName = "userName"
-        )
-
-        mockMvcHandler.token = jwtTokenProvider.createToken(user)
+        mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/localfiles/directory")
         assertThat(response, hasProperty("status", equalTo(403)))
     }
