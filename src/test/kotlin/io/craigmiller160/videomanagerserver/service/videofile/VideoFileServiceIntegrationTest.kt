@@ -85,9 +85,6 @@ class VideoFileServiceIntegrationTest {
 
     @Before
     fun setup() {
-        println("TIMESTAMP: $NOW_TIMESTAMP") // TODO delete this
-
-        dbTestUtils.cleanDb()
         val category = CategoryPayload(categoryName = "MyCategory")
         val series = SeriesPayload(seriesName = "MySeries")
         val star = StarPayload(starName = "MyStar")
@@ -100,7 +97,6 @@ class VideoFileServiceIntegrationTest {
         file1 = videoFileService.addVideoFile(file1)
         videoFileRepo.findById(file1.fileId)
                 .ifPresent { videoFile ->
-                    println("IS PRESENT") // TODO delete this
                     videoFile.lastScanTimestamp = NOW_TIMESTAMP
                     videoFileRepo.save(videoFile)
                 }
@@ -281,10 +277,10 @@ class VideoFileServiceIntegrationTest {
         val newName = "NewName"
         val request = file1.copy(
                 fileName = newName,
-                categories = mutableSetOf()
+                categories = mutableSetOf(),
+                viewCount = 10,
+                lastViewed = NOW_TIMESTAMP
         )
-
-        // TODO validate viewCount & lastViewed
 
         videoFileService.updateVideoFile(file1.fileId, request)
         val dbFile: VideoFile = videoFileRepo.findById(file1.fileId).get()
@@ -293,9 +289,12 @@ class VideoFileServiceIntegrationTest {
                 hasProperty("active", equalTo(true)),
                 hasProperty("categories", hasSize<MutableSet<Category>>(0))
         ))
-        val formattedDbTimestamp = dbFile.lastScanTimestamp.format(formatter)
-        val formattedConstant = NOW_TIMESTAMP.format(formatter)
-        assertEquals(formattedConstant, formattedDbTimestamp)
+
+        val actualLastScanTimestamp = dbFile.lastScanTimestamp.format(formatter)
+        val expectedLastScanTimestamp = NOW_TIMESTAMP.format(formatter)
+        assertEquals(expectedLastScanTimestamp, actualLastScanTimestamp)
+
+        // TODO in the future add tests for viewCount & lastViewed here, once the timestamp bug is worked out in H2 tests
     }
 
 }
