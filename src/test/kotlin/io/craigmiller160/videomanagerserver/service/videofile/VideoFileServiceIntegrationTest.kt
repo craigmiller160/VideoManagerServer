@@ -26,6 +26,7 @@ import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.Category
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.CoreMatchers.allOf
@@ -46,6 +47,8 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -270,19 +273,28 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_updateVideoFile_preserveDbFields() {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         val newName = "NewName"
         val request = file1.copy(
                 fileName = newName,
-                categories = mutableSetOf()
+                categories = mutableSetOf(),
+                viewCount = 10,
+                lastViewed = NOW_TIMESTAMP
         )
+
         videoFileService.updateVideoFile(file1.fileId, request)
-        val dbFile = videoFileRepo.findById(file1.fileId).get()
+        val dbFile: VideoFile = videoFileRepo.findById(file1.fileId).get()
         assertThat(dbFile, allOf(
                 hasProperty("fileName", equalTo(newName)),
                 hasProperty("active", equalTo(true)),
-                hasProperty("lastScanTimestamp", equalTo(NOW_TIMESTAMP)),
                 hasProperty("categories", hasSize<MutableSet<Category>>(0))
         ))
+
+        val actualLastScanTimestamp = dbFile.lastScanTimestamp.format(formatter)
+        val expectedLastScanTimestamp = NOW_TIMESTAMP.format(formatter)
+        assertEquals(expectedLastScanTimestamp, actualLastScanTimestamp)
+
+        // TODO in the future add tests for viewCount & lastViewed here, once the timestamp bug is worked out in H2 tests
     }
 
 }
