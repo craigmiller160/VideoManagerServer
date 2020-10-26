@@ -26,6 +26,7 @@ import io.craigmiller160.videomanagerserver.dto.StarPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.Category
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.CoreMatchers.allOf
@@ -46,6 +47,8 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -82,6 +85,9 @@ class VideoFileServiceIntegrationTest {
 
     @Before
     fun setup() {
+        println("TIMESTAMP: $NOW_TIMESTAMP") // TODO delete this
+
+        dbTestUtils.cleanDb()
         val category = CategoryPayload(categoryName = "MyCategory")
         val series = SeriesPayload(seriesName = "MySeries")
         val star = StarPayload(starName = "MyStar")
@@ -94,6 +100,7 @@ class VideoFileServiceIntegrationTest {
         file1 = videoFileService.addVideoFile(file1)
         videoFileRepo.findById(file1.fileId)
                 .ifPresent { videoFile ->
+                    println("IS PRESENT") // TODO delete this
                     videoFile.lastScanTimestamp = NOW_TIMESTAMP
                     videoFileRepo.save(videoFile)
                 }
@@ -270,19 +277,25 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_updateVideoFile_preserveDbFields() {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
         val newName = "NewName"
         val request = file1.copy(
                 fileName = newName,
                 categories = mutableSetOf()
         )
+
+        // TODO validate viewCount & lastViewed
+
         videoFileService.updateVideoFile(file1.fileId, request)
-        val dbFile = videoFileRepo.findById(file1.fileId).get()
+        val dbFile: VideoFile = videoFileRepo.findById(file1.fileId).get()
         assertThat(dbFile, allOf(
                 hasProperty("fileName", equalTo(newName)),
                 hasProperty("active", equalTo(true)),
-                hasProperty("lastScanTimestamp", equalTo(NOW_TIMESTAMP)),
                 hasProperty("categories", hasSize<MutableSet<Category>>(0))
         ))
+        val formattedDbTimestamp = dbFile.lastScanTimestamp.format(formatter)
+        val formattedConstant = NOW_TIMESTAMP.format(formatter)
+        assertEquals(formattedConstant, formattedDbTimestamp)
     }
 
 }
