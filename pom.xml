@@ -10,14 +10,15 @@
     </parent>
     <groupId>io.craigmiller160</groupId>
     <artifactId>video-manager-server</artifactId>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.12.0-SNAPSHOT.1</version>
     <name>video-manager-server</name>
     <description>Video Manager project</description>
 
     <properties>
         <java.version>1.8</java.version>
         <kotlin.version>1.3.61</kotlin.version>
-        <oauth2.utils.version>1.4.1</oauth2.utils.version>
+        <oauth2.utils.version>1.5.0</oauth2.utils.version>
+        <web.utils.version>1.0.0</web.utils.version>
         <api.test.processor.version>1.0.0</api.test.processor.version>
         <hamcrest.version>2.2</hamcrest.version>
         <postgres.version>42.2.9</postgres.version>
@@ -35,6 +36,11 @@
             <groupId>io.craigmiller160</groupId>
             <artifactId>oauth2-utils</artifactId>
             <version>${oauth2.utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.craigmiller160</groupId>
+            <artifactId>web-utils</artifactId>
+            <version>${web.utils.version}</version>
         </dependency>
         <dependency>
             <groupId>io.craigmiller160</groupId>

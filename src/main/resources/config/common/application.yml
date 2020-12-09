@@ -23,8 +23,6 @@ cors:
   origins: http://localhost:3000
 
 server:
-  servlet:
-    context-path: /api
   port: 8443
   ssl:
     key-store-type: PKCS12
@@ -37,6 +35,7 @@ logging:
     org.springframework: INFO
     org.hibernate: INFO
     io.craigmiller160: INFO
+    io.craigmiller160.webutils: DEBUG
   file:
     common-path: video-manager/server-logs/${spring.profiles.active}.log
     path: ${HOME}/${logging.file.common-path}
@@ -62,8 +61,8 @@ oauth2:
   cookie-name: vm_token
   cookie-max-age-secs: 86400
   client-name: video-manager-server
-  auth-login-base-uri: "/oauth2"
-  auth-code-redirect-uri: "/api/oauth/authcode/code"
-  post-auth-redirect: "/"
+  auth-login-base-uri: "/video-manager/oauth2"
+  auth-code-redirect-uri: "/video-manager/api/oauth/authcode/code"
+  post-auth-redirect: "/video-manager"
   auth-code-wait-mins: 10
   insecure-paths: "/api/actuator/health"
