@@ -35,6 +35,7 @@ logging:
     org.springframework: INFO
     org.hibernate: INFO
     io.craigmiller160: INFO
+    io.craigmiller160.webutils: DEBUG
   file:
     common-path: video-manager/server-logs/${spring.profiles.active}.log
     path: ${HOME}/${logging.file.common-path}
