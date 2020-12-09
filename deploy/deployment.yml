@@ -25,7 +25,7 @@ spec:
               name: video-manager-server-volume-homedir
           livenessProbe:
             httpGet:
-              path: /api/actuator/health
+              path: /actuator/health
               port: 8443
               scheme: HTTPS
             initialDelaySeconds: 10
