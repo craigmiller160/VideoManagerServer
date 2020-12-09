@@ -23,8 +23,6 @@ cors:
   origins: http://localhost:3000
 
 server:
-  servlet:
-    context-path: /api
   port: 8443
   ssl:
     key-store-type: PKCS12
