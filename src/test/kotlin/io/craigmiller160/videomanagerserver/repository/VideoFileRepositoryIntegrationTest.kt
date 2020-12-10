@@ -169,12 +169,13 @@ class VideoFileRepositoryIntegrationTest {
     @Test
     fun testDeleteOldFiles() {
         val timestamp = LocalDateTime.now()
+        val deleteByTimestamp = LocalDateTime.now().minusDays(1)
         val id = videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp)).fileId
 
         var count = videoFileRepo.count()
         assertEquals(3, count)
 
-        videoFileRepo.deleteOldFiles(timestamp)
+        videoFileRepo.deleteOldFiles(deleteByTimestamp)
         count = videoFileRepo.count()
         assertEquals(1, count)
 
@@ -186,9 +187,10 @@ class VideoFileRepositoryIntegrationTest {
     @Test
     fun test_setOldFilesInactive() {
         val timestamp = LocalDateTime.now()
+        val inactiveByTimestamp = LocalDateTime.now().minusDays(1)
         videoFileRepo.save(VideoFile(fileName = FILE_NAME_3, lastScanTimestamp = timestamp, active = true)).fileId
 
-        val result = videoFileRepo.setOldFilesInactive(timestamp)
+        val result = videoFileRepo.setOldFilesInactive(inactiveByTimestamp)
         assertEquals(2, result)
 
         val fileMap = videoFileRepo.findAll()
