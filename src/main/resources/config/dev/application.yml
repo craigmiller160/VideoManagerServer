@@ -3,8 +3,8 @@ spring:
     db: vm_dev
     host: localhost
     port: 30001
-    username: user
-    password: password
+    username: postgres_root
+    password: ${POSTGRES_ROOT_PASSWORD}
 
 logging:
   level:
