@@ -20,6 +20,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: video-manager-server-config
+          env:
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-root-password
+                  key: POSTGRES_ROOT_PASSWORD
           volumeMounts:
             - mountPath: /opt/video-manager/homeDir
               name: video-manager-server-volume-homedir
