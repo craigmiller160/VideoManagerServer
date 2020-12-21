@@ -23,6 +23,10 @@ cors:
   origins: http://localhost:3000
 
 server:
+  servlet:
+    session:
+      cookie:
+        name: CRAIGSESSIONID
   port: 8443
   ssl:
     key-store-type: PKCS12
