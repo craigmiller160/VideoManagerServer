@@ -10,4 +10,3 @@ data:
   spring.datasource.username: postgres_root
   oauth2.auth-server-host: https://sso-oauth2-server-service:8443
   oauth2.client-key: 932a25e5-0071-4174-b33f-ea0e8170c470
-  oauth2.client-secret: 8e0c88bc-95d3-4e08-97ba-2870f323781c

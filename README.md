@@ -29,6 +29,14 @@ VideoManagerCypress - the automated testing application.
 1. Create a client for this app in the Auth Server UI
     1. Update the properties of this app with the client key/secret.
     1. Add the ADMIN, EDIT, and SCAN roles.
+    
+## Client Secret Setup
+
+The Client Secret for prod needs to be stored in a kubernetes secret.
+
+```
+kubectl create secret generic video-manager-server-client-secret --from-literal=client-secret=######
+```
 
 ### Running Locally
 

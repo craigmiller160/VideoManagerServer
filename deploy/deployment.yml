@@ -26,6 +26,11 @@ spec:
                 secretKeyRef:
                   name: postgres-root-password
                   key: POSTGRES_ROOT_PASSWORD
+            - name: oauth2.client-secret
+              valueFrom:
+                secretKeyRef:
+                  name: video-manager-server-client-secret
+                  key: client-secret
           volumeMounts:
             - mountPath: /opt/video-manager/homeDir
               name: video-manager-server-volume-homedir
