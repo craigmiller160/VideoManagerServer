@@ -40,6 +40,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.craigmiller160</groupId>
             <artifactId>oauth2-utils</artifactId>
             <version>${oauth2.utils.version}</version>
