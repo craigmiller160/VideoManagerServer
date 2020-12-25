@@ -28,10 +28,17 @@
         <modelmapper.version>2.3.6</modelmapper.version>
         <start-class>io.craigmiller160.videomanagerserver.VideoManagerServerApplicationKt</start-class>
         <spring.retry.version>1.3.0</spring.retry.version>
+        <junit.version>4.13.1</junit.version>
         <deploy.build.dir>deploy/build</deploy.build.dir>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.craigmiller160</groupId>
             <artifactId>oauth2-utils</artifactId>
@@ -145,6 +152,14 @@
                 <exclusion>
                     <groupId>org.hamcrest</groupId>
                     <artifactId>hamcrest-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
