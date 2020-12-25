@@ -15,10 +15,10 @@
     <description>Video Manager project</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <kotlin.version>1.3.61</kotlin.version>
-        <oauth2.utils.version>1.5.0</oauth2.utils.version>
-        <web.utils.version>1.0.0</web.utils.version>
+        <java.version>11</java.version>
+        <kotlin.version>1.4.21</kotlin.version>
+        <oauth2.utils.version>1.6.0</oauth2.utils.version>
+        <web.utils.version>1.1.0</web.utils.version>
         <api.test.processor.version>1.0.0</api.test.processor.version>
         <hamcrest.version>2.2</hamcrest.version>
         <postgres.version>42.2.9</postgres.version>
@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>io.craigmiller160</groupId>
-            <artifactId>web-utils</artifactId>
+            <artifactId>spring-web-utils</artifactId>
             <version>${web.utils.version}</version>
         </dependency>
         <dependency>
