@@ -70,7 +70,7 @@ class SecurityConfig (
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                     .and()
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
@@ -86,15 +86,6 @@ class SecurityConfig (
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder(hashRounds)
-    }
-
-    @Bean
-    fun restCsrfPreventionFilter(): FilterRegistrationBean<RestCsrfPreventionFilter> {
-        val filter = RestCsrfPreventionFilter()
-        filter.denyStatus = 403
-        val filterRegistration = FilterRegistrationBean(filter)
-        filterRegistration.order = Integer.MIN_VALUE
-        return filterRegistration
     }
 
     @Bean
