@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: video-manager-server
-          image: localhost:32000/video-manager-server:1.15.0-SNAPSHOT
+          image: localhost:32000/video-manager-server:1.14.1
           ports:
             - containerPort: 8443
           envFrom:
