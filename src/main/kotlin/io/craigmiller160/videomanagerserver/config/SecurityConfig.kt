@@ -21,7 +21,9 @@ package io.craigmiller160.videomanagerserver.config
 import io.craigmiller160.oauth2.security.JwtValidationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.VideoAuthenticationFilterConfigurer
+import org.apache.catalina.filters.RestCsrfPreventionFilter
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
@@ -32,6 +34,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -57,7 +60,7 @@ class SecurityConfig (
     override fun configure(http: HttpSecurity?) {
         http?.let {
             http
-                    .csrf().disable()
+                .csrf().disable()
                     .cors()
                         .configurationSource(corsConfigurationSource())
                     .and()
@@ -83,6 +86,15 @@ class SecurityConfig (
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder(hashRounds)
+    }
+
+    @Bean
+    fun restCsrfPreventionFilter(): FilterRegistrationBean<RestCsrfPreventionFilter> {
+        val filter = RestCsrfPreventionFilter()
+        filter.denyStatus = 403
+        val filterRegistration = FilterRegistrationBean(filter)
+        filterRegistration.order = Integer.MIN_VALUE
+        return filterRegistration
     }
 
     @Bean
