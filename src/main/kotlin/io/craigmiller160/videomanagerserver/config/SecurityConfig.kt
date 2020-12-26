@@ -32,6 +32,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -57,7 +58,6 @@ class SecurityConfig (
     override fun configure(http: HttpSecurity?) {
         http?.let {
             http
-                    .csrf().disable()
                     .cors()
                         .configurationSource(corsConfigurationSource())
                     .and()
