@@ -23,6 +23,8 @@ cors:
   origins: http://localhost:3000
 
 server:
+  session:
+    timeout: -1
   servlet:
     session:
       cookie:

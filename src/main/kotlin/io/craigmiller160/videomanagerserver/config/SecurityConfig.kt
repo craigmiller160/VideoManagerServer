@@ -70,7 +70,7 @@ class SecurityConfig (
                         .anyRequest().fullyAuthenticated()
                     .and()
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                     .and()
                     .exceptionHandling()
                         .authenticationEntryPoint(authEntryPoint)
