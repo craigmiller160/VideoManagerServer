@@ -21,7 +21,9 @@ package io.craigmiller160.videomanagerserver.config
 import io.craigmiller160.oauth2.security.JwtValidationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.VideoAuthenticationFilterConfigurer
+import org.apache.catalina.filters.RestCsrfPreventionFilter
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
