@@ -89,15 +89,6 @@ class SecurityConfig (
     }
 
     @Bean
-    fun restCsrfPreventionFilter(): FilterRegistrationBean<RestCsrfPreventionFilter> {
-        val filter = RestCsrfPreventionFilter()
-        filter.denyStatus = 403
-        val filterRegistration = FilterRegistrationBean(filter)
-        filterRegistration.order = Integer.MIN_VALUE
-        return filterRegistration
-    }
-
-    @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowedOrigins = corsOrigins.split(",").map { it.trim() }.toList()
