@@ -17,7 +17,7 @@
     <properties>
         <java.version>11</java.version>
         <kotlin.version>1.4.21</kotlin.version>
-        <oauth2.utils.version>1.7.0</oauth2.utils.version>
+        <oauth2.utils.version>1.7.1</oauth2.utils.version>
         <web.utils.version>1.1.0</web.utils.version>
         <api.test.processor.version>1.0.0</api.test.processor.version>
         <hamcrest.version>2.2</hamcrest.version>
