@@ -28,7 +28,7 @@ server:
   servlet:
     session:
       cookie:
-        name: CRAIGSESSIONID
+        name: VM-SESSIONID
   port: 8443
   ssl:
     key-store-type: PKCS12
