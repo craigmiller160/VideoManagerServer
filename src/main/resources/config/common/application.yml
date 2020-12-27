@@ -29,6 +29,7 @@ server:
     session:
       cookie:
         name: VM-SESSIONID
+        path: /video-manager
   port: 8443
   ssl:
     key-store-type: PKCS12
