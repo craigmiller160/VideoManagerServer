@@ -1,7 +1,7 @@
 spring:
   datasource:
     db: vm_dev
-    host: localhost
+    host: craigpc
     port: 30001
     username: postgres_root
     password: ${POSTGRES_ROOT_PASSWORD}
@@ -19,6 +19,6 @@ video:
       key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
 
 oauth2:
-  auth-server-host: https://localhost:7003
+  auth-server-host: https://craigpc:7003
   client-key: ba8ea173-b5eb-4ccf-9ca6-0ea7c3b4b417
   client-secret: fa618231-49e1-47cf-8edf-d406832d6ead
