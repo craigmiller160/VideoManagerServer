@@ -82,7 +82,8 @@ class SearchQueryBuilder {
 
         search.searchText?.let {
             queryBuilder.appendln("AND (LOWER(vf.fileName) LIKE LOWER(:searchText)")
-                    .appendln("OR LOWER(vf.displayName) LIKE LOWER(:searchText))")
+                    .appendln("OR LOWER(vf.displayName) LIKE LOWER(:searchText)")
+                    .appendln("OR LOWER(vf.description) LIKE LOWER(:searchText))")
         }
         search.categoryId?.let {
             queryBuilder.appendln("AND ca.categoryId = :categoryId")
