@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.craigmiller160</groupId>
     <artifactId>video-manager-server</artifactId>
-    <version>1.15.0</version>
+    <version>1.16.0-SNAPSHOT</version>
     <name>video-manager-server</name>
     <description>Video Manager project</description>
 
