@@ -108,7 +108,8 @@ class SearchQueryBuilderTest {
             LEFT JOIN vf.stars st
             WHERE vf.active = true
             AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
-            OR LOWER(vf.displayName) LIKE LOWER(:searchText))
+            OR LOWER(vf.displayName) LIKE LOWER(:searchText)
+            OR LOWER(vf.description) LIKE LOWER(:searchText))
             AND ca.categoryId = :categoryId
             AND se.seriesId = :seriesId
             AND st.starId = :starId
@@ -124,7 +125,8 @@ class SearchQueryBuilderTest {
         val expected = """
             WHERE vf.active = true
             AND (LOWER(vf.fileName) LIKE LOWER(:searchText)
-            OR LOWER(vf.displayName) LIKE LOWER(:searchText))
+            OR LOWER(vf.displayName) LIKE LOWER(:searchText)
+            OR LOWER(vf.description) LIKE LOWER(:searchText))
         """.trimIndent()
         val search = VideoSearchRequest("Hello")
         val query = searchQueryBuilder.buildQueryCriteria(search)
