@@ -19,6 +19,7 @@
 package io.craigmiller160.videomanagerserver.repository.query
 
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import org.springframework.stereotype.Component
 import javax.persistence.Query
 
@@ -62,6 +63,13 @@ class SearchQueryBuilder {
                 .append("ORDER BY ")
         val columns = search.sortBy.orderByClause
                 .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
+        val fullColumns = if (search.sortBy === VideoFileSortBy.NAME) {
+            columns
+        } else {
+            val nameClause = VideoFileSortBy.NAME.orderByClause
+                    .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
+            "$columns, $nameClause"
+        }
         builder.append(columns)
         return builder.toString().trim()
     }
