@@ -70,7 +70,7 @@ class SearchQueryBuilder {
                     .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
             "$columns, $nameClause"
         }
-        builder.append(columns)
+        builder.append(fullColumns)
         return builder.toString().trim()
     }
 
