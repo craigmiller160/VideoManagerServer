@@ -43,9 +43,15 @@
         <spring.retry.version>1.3.0</spring.retry.version>
         <junit.version>4.13.1</junit.version>
         <deploy.build.dir>deploy/build</deploy.build.dir>
+        <tomcat.csrf.version>1.0.0-SNAPSHOT</tomcat.csrf.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.craigmiller160</groupId>
+            <artifactId>spring-tomcat-csrf-filter</artifactId>
+            <version>${tomcat.csrf.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
