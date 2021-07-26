@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
-import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.dto.CategoryPayload
 import io.craigmiller160.videomanagerserver.dto.SeriesPayload
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
@@ -76,7 +76,7 @@ class VideoFileServiceIntegrationTest {
     private lateinit var videoFileRepo: VideoFileRepository
 
     @MockBean
-    private lateinit var oauthConfig: OAuthConfig
+    private lateinit var oauthConfig: OAuth2Config
 
     private lateinit var file1: VideoFilePayload
     private lateinit var file2: VideoFilePayload

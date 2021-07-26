@@ -20,7 +20,7 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nimbusds.jose.jwk.JWKSet
-import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import org.junit.Before
 import org.junit.BeforeClass
@@ -59,7 +59,7 @@ abstract class AbstractControllerTest {
     protected lateinit var mockMvcHandler: MockMvcHandler
 
     @MockBean
-    protected lateinit var oauthConfig: OAuthConfig
+    protected lateinit var oauthConfig: OAuth2Config
 
     protected lateinit var token: String
     protected lateinit var editToken: String

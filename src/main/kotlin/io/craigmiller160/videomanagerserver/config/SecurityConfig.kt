@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.security.JwtValidationFilterConfigurer
+import io.craigmiller160.spring.oauth2.security.JwtValidationFilterConfigurer
 import io.craigmiller160.videomanagerserver.security.AuthEntryPoint
 import io.craigmiller160.videomanagerserver.security.VideoAuthenticationFilterConfigurer
 import org.apache.catalina.filters.RestCsrfPreventionFilter

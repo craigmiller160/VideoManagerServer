@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.oauth2.config.OAuth2Config
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +39,7 @@ class TokenConfigIntegrationTest {
     }
 
     @MockBean
-    private lateinit var oauthConfig: OAuthConfig
+    private lateinit var oauthConfig: OAuth2Config
 
     @Autowired
     private lateinit var tokenConfig: TokenConfig

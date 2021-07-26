@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
@@ -60,7 +60,7 @@ class FileCategoryRepositoryIntegrationTest {
     private lateinit var dbTestUtils: DbTestUtils
 
     @MockBean
-    private lateinit var oauthConfig: OAuthConfig
+    private lateinit var oauthConfig: OAuth2Config
 
     private var fileId = 0L
     private var categoryId = 0L

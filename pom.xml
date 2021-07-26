@@ -30,7 +30,7 @@
     <properties>
         <java.version>11</java.version>
         <kotlin.version>1.4.21</kotlin.version>
-        <oauth2.utils.version>1.8.0</oauth2.utils.version>
+        <oauth2.utils.version>1.9.0-SNAPSHOT</oauth2.utils.version>
         <web.utils.version>1.1.2</web.utils.version>
         <api.test.processor.version>1.2.2</api.test.processor.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>io.craigmiller160</groupId>
-            <artifactId>oauth2-utils</artifactId>
+            <artifactId>spring-oauth2-utils</artifactId>
             <version>${oauth2.utils.version}</version>
         </dependency>
         <dependency>

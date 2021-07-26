@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuthConfig
+import io.craigmiller160.oauth2.config.OAuth2Config
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -41,7 +41,7 @@ class DbConfigIntegrationTest {
     }
 
     @MockBean
-    private lateinit var oauthConfig: OAuthConfig
+    private lateinit var oauthConfig: OAuth2Config
 
     @Autowired
     private lateinit var dbConfig: DbConfig
