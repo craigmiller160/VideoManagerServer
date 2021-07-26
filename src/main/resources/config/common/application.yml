@@ -75,4 +75,4 @@ oauth2:
   auth-code-redirect-uri: "/video-manager/api/oauth/authcode/code"
   post-auth-redirect: "/video-manager"
   auth-code-wait-mins: 10
-  insecure-paths: "/api/actuator/health"
+  insecure-paths: "/actuator/health"
