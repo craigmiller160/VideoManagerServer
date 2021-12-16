@@ -10,9 +10,21 @@
     </parent>
     <groupId>io.craigmiller160</groupId>
     <artifactId>video-manager-server</artifactId>
-    <version>1.15.1</version>
+    <version>1.15.2</version>
     <name>video-manager-server</name>
     <description>Video Manager project</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>${log4j2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <distributionManagement>
         <repository>
@@ -28,6 +40,7 @@
     </distributionManagement>
 
     <properties>
+        <log4j2.version>2.16.0</log4j2.version>
         <java.version>11</java.version>
         <kotlin.version>1.4.21</kotlin.version>
         <oauth2.utils.version>1.8.0</oauth2.utils.version>
