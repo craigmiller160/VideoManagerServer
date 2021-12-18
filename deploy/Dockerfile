@@ -1,4 +1,4 @@
-FROM openjdk:11.0.2-jre-slim
+FROM openjdk:17.0.1-slim
 
 RUN mkdir -p /opt/videos
 RUN mkdir -p /opt/video-manager/server-logs
