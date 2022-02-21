@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: video-manager-server
-          image: craigmiller160.ddns.net:30004/video-manager-server:latest
+          image: craigmiller160.ddns.net:30004/video-manager-server:${KUBE_IMG_VERSION}
           ports:
             - containerPort: 8443
           envFrom:
