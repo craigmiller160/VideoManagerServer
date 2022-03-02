@@ -50,9 +50,8 @@ class VideoAuthenticationFilter (
             val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
             validateToken(req, resp, chain, videoTokenProvider, params)
         }
-        else {
-            chain.doFilter(req, resp)
-        }
+
+        chain.doFilter(req, resp)
     }
 
     private fun validateToken(req: HttpServletRequest, resp: HttpServletResponse,
@@ -69,7 +68,6 @@ class VideoAuthenticationFilter (
                     TokenValidationStatus.VALID -> {
                         val auth = tokenProvider.createAuthentication(decodedToken)
                         SecurityContextHolder.getContext().authentication = auth
-                        chain.doFilter(req, resp)
                     }
                     else -> unauthenticated(req, resp, chain, status)
                 }
@@ -85,6 +83,5 @@ class VideoAuthenticationFilter (
         val request = "${req.method} ${getPathUri(req)}"
         logger.error("Attempted unauthenticated access. Request: $request Status: $status")
         SecurityContextHolder.clearContext()
-        chain.doFilter(req, resp)
     }
 }
