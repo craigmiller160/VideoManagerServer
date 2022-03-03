@@ -19,6 +19,7 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
+import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
@@ -33,12 +34,11 @@ class AuthService (
         private val videoFileService: VideoFileService
 ) {
 
-    // TODO update tests
     fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
         val rootDirectory = settingsService.getOrCreateSettings().rootDir
         val filePath = videoFileService.getVideoFile(videoId)
-                ?: throw RuntimeException("") // TODO custom/improved exception
+                ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
         val fullFilePath = "$rootDirectory$filePath"
         val params = mapOf(
                 TokenConstants.PARAM_VIDEO_ID to videoId,

@@ -57,4 +57,9 @@ class AuthServiceTest {
         assertEquals(VideoTokenResponse(token), result)
     }
 
+    @Test
+    fun test_getVideoToken_noFileFound() {
+        TODO("Finish this")
+    }
+
 }
