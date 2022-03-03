@@ -316,7 +316,10 @@ class VideoFileServiceTest {
         val claims = mapOf(
                 TokenConstants.CLAIM_FILE_PATH to path
         )
-        val details = User.withUsername("").build()
+        val details = User.withUsername("Hello")
+                .password("World")
+                .authorities(emptyList())
+                .build()
         val auth = VideoTokenAuthentication(details, claims)
         val context = SecurityContextImpl(auth)
         SecurityContextHolder.setContext(context)
