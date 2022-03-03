@@ -18,9 +18,15 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import io.craigmiller160.videomanagerserver.dto.SettingsPayload
+import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
+import io.craigmiller160.videomanagerserver.entity.Settings
+import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
+import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,14 +39,29 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner.Silent::class)
 class AuthServiceTest {
 
-    @Mock
-    private lateinit var videoTokenProvider: VideoTokenProvider
+    companion object {
+        private const val ROOT_DIR = "/root/dir"
+        private const val FILE_PATH = "/file/path"
+    }
 
     @Mock
+    private lateinit var videoTokenProvider: VideoTokenProvider
+    @Mock
     private lateinit var securityContextService: SecurityContextService
+    @Mock
+    private lateinit var settingsService: SettingsService
+    @Mock
+    private lateinit var videoFileService: VideoFileService
 
     @InjectMocks
     private lateinit var authService: AuthService
+
+    private val settings = SettingsPayload(
+            rootDir = ROOT_DIR
+    )
+    private val videoFile = VideoFilePayload(
+            fileName = FILE_PATH
+    )
 
     @Test
     fun test_getVideoToken() {
@@ -52,6 +73,10 @@ class AuthServiceTest {
                 .thenReturn(userName)
         `when`(videoTokenProvider.createToken(userName, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)))
                 .thenReturn(token)
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(settings)
+        `when`(videoFileService.getVideoFile(videoId))
+                .thenReturn(videoFile)
 
         val result = authService.getVideoToken(videoId)
         assertEquals(VideoTokenResponse(token), result)
