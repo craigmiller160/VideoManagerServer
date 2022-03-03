@@ -29,6 +29,7 @@ import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
+import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
@@ -36,11 +37,13 @@ import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
+import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.io.File
 import java.time.LocalDateTime
@@ -153,21 +156,15 @@ class VideoFileService (
         return createScanErrorStatus()
     }
 
+    // TODO update tests
     fun playVideo(fileId: Long): UrlResource {
-        val settings = settingsService.getOrCreateSettings()
-        if (settings.rootDir.isEmpty()) {
-            throw InvalidSettingException("No root directory is set")
-        }
-
-        val dbVideoFile = videoFileRepo.findById(fileId)
-                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
-        val fullPath = "${ensureTrailingSlash(settings.rootDir)}${dbVideoFile.fileName}"
-        return UrlResource(File(fullPath).toURI())
+        val auth = SecurityContextHolder.getContext().authentication as VideoTokenAuthentication
+        return UrlResource(File(auth.filePath).toURI())
     }
 
     fun recordNewVideoPlay(fileId: Long) {
         val dbVideoFile = videoFileRepo.findById(fileId)
-                .orElseThrow { Exception("Could not find video file in DB by ID: $fileId") }
+                .orElseThrow { VideoFileNotFoundException("Could not find video file in DB by ID: $fileId") }
         dbVideoFile.viewCount++
         dbVideoFile.lastViewed = LocalDateTime.now()
         videoFileRepo.save(dbVideoFile)

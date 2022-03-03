@@ -43,7 +43,7 @@ class AuthService (
         val videoFile = videoFileService.getVideoFile(videoId)
                 ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
         val filePath = videoFile.fileName
-        val fullFilePath = "$rootDirectory$filePath"
+        val fullFilePath = "$rootDirectory/$filePath"
         val params = mapOf(
                 TokenConstants.PARAM_VIDEO_ID to videoId,
                 TokenConstants.PARAM_FILE_PATH to fullFilePath
