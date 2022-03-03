@@ -28,7 +28,6 @@ import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
 import io.craigmiller160.videomanagerserver.entity.VideoFile
-import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
@@ -38,8 +37,6 @@ import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
-import io.craigmiller160.videomanagerserver.service.settings.SettingsService
-import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -57,7 +54,6 @@ class VideoFileService (
         private val videoConfig: VideoConfiguration,
         private val fileScanner: FileScanner,
         private val entityManager: EntityManager,
-        private val settingsService: SettingsService,
         private val searchQueryBuilder: SearchQueryBuilder,
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
