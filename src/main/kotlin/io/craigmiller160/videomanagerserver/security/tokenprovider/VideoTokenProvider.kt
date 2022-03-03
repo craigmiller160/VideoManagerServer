@@ -39,8 +39,6 @@ class VideoTokenProvider (
         private val tokenConfig: TokenConfig
 ) : TokenProvider {
 
-    // TODO update lots of tests here
-
     private val encryptHandler: EncryptHandler
 
     init {

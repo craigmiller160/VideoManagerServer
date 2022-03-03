@@ -152,7 +152,6 @@ class VideoFileService (
         return createScanErrorStatus()
     }
 
-    // TODO update tests
     fun playVideo(fileId: Long): UrlResource {
         val auth = SecurityContextHolder.getContext().authentication as VideoTokenAuthentication
         return UrlResource(File(auth.filePath).toURI())
