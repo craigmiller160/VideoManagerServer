@@ -21,6 +21,7 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
+import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -118,7 +119,7 @@ class VideoTokenProvider (
                 .password("")
                 .authorities(ArrayList<GrantedAuthority>())
                 .build()
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+        return VideoTokenAuthentication(userDetails, claims)
     }
 
     override fun getClaims(token: String): Map<String, Any> {
