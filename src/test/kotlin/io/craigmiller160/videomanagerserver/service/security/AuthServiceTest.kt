@@ -74,7 +74,7 @@ class AuthServiceTest {
                 .thenReturn(userName)
         `when`(videoTokenProvider.createToken(userName, mapOf(
                 TokenConstants.PARAM_VIDEO_ID to videoId,
-                TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR$FILE_PATH"
+                TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR/$FILE_PATH"
         )))
                 .thenReturn(token)
         `when`(settingsService.getOrCreateSettings())
