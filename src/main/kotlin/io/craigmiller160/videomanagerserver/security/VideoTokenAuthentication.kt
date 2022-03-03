@@ -9,7 +9,7 @@ class VideoTokenAuthentication(
         private val userDetails: UserDetails,
         val claims: Map<String,Any>
 ) : Authentication {
-    private var innerIsAuth: Boolean = false
+    private var innerIsAuth: Boolean = true
 
     val filePath: String = claims[TokenConstants.CLAIM_FILE_PATH] as String
 
