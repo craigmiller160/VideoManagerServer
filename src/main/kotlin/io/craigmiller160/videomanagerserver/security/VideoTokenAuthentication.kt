@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 class VideoTokenAuthentication(
         private val userDetails: UserDetails,
-        private val claims: Map<String,Any>
+        val claims: Map<String,Any>
 ) : Authentication {
     private var innerIsAuth: Boolean = false
 
@@ -16,7 +16,7 @@ class VideoTokenAuthentication(
     override fun getName(): String = userDetails.username
     override fun getCredentials(): Any = ""
     override fun getDetails(): Any = userDetails
-    override fun getPrincipal(): Any = claims
+    override fun getPrincipal(): Any = userDetails
     override fun isAuthenticated(): Boolean = innerIsAuth
     override fun setAuthenticated(isAuthenticated: Boolean) {
         this.innerIsAuth = isAuthenticated

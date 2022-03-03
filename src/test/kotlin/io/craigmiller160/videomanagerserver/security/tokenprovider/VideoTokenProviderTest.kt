@@ -162,8 +162,10 @@ class VideoTokenProviderTest {
         assertThat(result, allOf(
                 hasProperty("principal", allOf<UserDetails>(
                         hasProperty("username", equalTo(USER_NAME)),
-                        hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0))
-                ))
+                        hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0)),
+                )),
+                hasProperty("filePath", equalTo(FILE_PATH)),
+                hasProperty("claims", aMapWithSize<String,Any>(4))
         ))
     }
 
