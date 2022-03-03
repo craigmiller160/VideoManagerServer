@@ -37,6 +37,9 @@ class AuthService (
     fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
         val rootDirectory = settingsService.getOrCreateSettings().rootDir
+        if (rootDirectory.isEmpty()) {
+            throw IllegalStateException("Root directory is not set")
+        }
         val videoFile = videoFileService.getVideoFile(videoId)
                 ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
         val filePath = videoFile.fileName
