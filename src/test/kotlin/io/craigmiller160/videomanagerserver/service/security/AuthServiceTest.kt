@@ -34,6 +34,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.assertFails
 
 
 @RunWith(MockitoJUnitRunner.Silent::class)
@@ -71,7 +72,10 @@ class AuthServiceTest {
 
         `when`(securityContextService.getUserName())
                 .thenReturn(userName)
-        `when`(videoTokenProvider.createToken(userName, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)))
+        `when`(videoTokenProvider.createToken(userName, mapOf(
+                TokenConstants.PARAM_VIDEO_ID to videoId,
+                TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR$FILE_PATH"
+        )))
                 .thenReturn(token)
         `when`(settingsService.getOrCreateSettings())
                 .thenReturn(settings)
@@ -84,7 +88,23 @@ class AuthServiceTest {
 
     @Test
     fun test_getVideoToken_noFileFound() {
-        TODO("Finish this")
+        val userName = "userName"
+        val videoId = 10L
+        val token = "ABCDEFG"
+
+        `when`(securityContextService.getUserName())
+                .thenReturn(userName)
+        `when`(videoTokenProvider.createToken(userName, mapOf(
+                TokenConstants.PARAM_VIDEO_ID to videoId,
+                TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR$FILE_PATH"
+        )))
+                .thenReturn(token)
+        `when`(settingsService.getOrCreateSettings())
+                .thenReturn(settings)
+
+        assertFails("No video file found for ID: $videoId") {
+            authService.getVideoToken(videoId)
+        }
     }
 
 }
