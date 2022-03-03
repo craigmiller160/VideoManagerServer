@@ -56,14 +56,15 @@ class VideoTokenProvider (
 
     private fun getTokenRegex(): Regex {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}""".toRegex()
+        return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$separator.+""".toRegex()
     }
 
     override fun createToken(userName: String, params: Map<String,Any>): String {
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        val tokenString = "$userName$separator$videoId$separator$exp"
+        val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
         return encryptHandler.doEncrypt(tokenString)
     }
 
@@ -124,7 +125,8 @@ class VideoTokenProvider (
         return mapOf(
                 TokenConstants.CLAIM_SUBJECT to tokenParams[0],
                 TokenConstants.CLAIM_VIDEO_ID to tokenParams[1],
-                TokenConstants.CLAIM_EXP to tokenParams[2]
+                TokenConstants.CLAIM_EXP to tokenParams[2],
+                TokenConstants.CLAIM_FILE_PATH to tokenParams[3]
         )
     }
 }

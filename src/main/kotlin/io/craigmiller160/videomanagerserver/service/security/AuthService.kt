@@ -21,17 +21,29 @@ package io.craigmiller160.videomanagerserver.service.security
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
+import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService (
         private val videoTokenProvider: VideoTokenProvider,
-        private val securityContextService: SecurityContextService
+        private val securityContextService: SecurityContextService,
+        private val settingsService: SettingsService,
+        private val videoFileService: VideoFileService
 ) {
 
+    // TODO update tests
     fun getVideoToken(videoId: Long): VideoTokenResponse {
         val userName = securityContextService.getUserName()
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to videoId)
+        val rootDirectory = settingsService.getOrCreateSettings().rootDir
+        val filePath = videoFileService.getVideoFile(videoId)
+                ?: throw RuntimeException("") // TODO custom/improved exception
+        val fullFilePath = "$rootDirectory$filePath"
+        val params = mapOf(
+                TokenConstants.PARAM_VIDEO_ID to videoId,
+                TokenConstants.PARAM_FILE_PATH to fullFilePath
+        )
         val token = videoTokenProvider.createToken(userName, params)
         return VideoTokenResponse(token)
     }
