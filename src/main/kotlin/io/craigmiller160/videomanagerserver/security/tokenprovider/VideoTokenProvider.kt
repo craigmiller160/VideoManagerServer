@@ -21,6 +21,7 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
+import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.util.parseQueryString
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -56,14 +57,15 @@ class VideoTokenProvider (
 
     private fun getTokenRegex(): Regex {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}""".toRegex()
+        return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$separator.+""".toRegex()
     }
 
     override fun createToken(userName: String, params: Map<String,Any>): String {
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        val tokenString = "$userName$separator$videoId$separator$exp"
+        val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
         return encryptHandler.doEncrypt(tokenString)
     }
 
@@ -115,7 +117,7 @@ class VideoTokenProvider (
                 .password("")
                 .authorities(ArrayList<GrantedAuthority>())
                 .build()
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+        return VideoTokenAuthentication(userDetails, claims)
     }
 
     override fun getClaims(token: String): Map<String, Any> {
@@ -124,7 +126,8 @@ class VideoTokenProvider (
         return mapOf(
                 TokenConstants.CLAIM_SUBJECT to tokenParams[0],
                 TokenConstants.CLAIM_VIDEO_ID to tokenParams[1],
-                TokenConstants.CLAIM_EXP to tokenParams[2]
+                TokenConstants.CLAIM_EXP to tokenParams[2],
+                TokenConstants.CLAIM_FILE_PATH to tokenParams[3]
         )
     }
 }

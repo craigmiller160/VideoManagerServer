@@ -20,6 +20,7 @@ package io.craigmiller160.videomanagerserver.service.videofile
 
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
@@ -39,12 +40,15 @@ import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
 import io.craigmiller160.videomanagerserver.repository.FileStarRepository
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
+import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
+import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
 import org.junit.Assert.assertEquals
 import org.hamcrest.Matchers
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -52,11 +56,18 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.context.SecurityContextImpl
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
@@ -113,12 +124,18 @@ class VideoFileServiceTest {
 
     @Before
     fun setup() {
+        SecurityContextHolder.clearContext()
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         fileScanRunning.set(false)
         val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
         lastScanSuccess.set(true)
 
         videoConfig.apiPageSize = 10
+    }
+
+    @After
+    fun cleanup() {
+        SecurityContextHolder.clearContext()
     }
 
     @Test
@@ -295,28 +312,21 @@ class VideoFileServiceTest {
 
     @Test
     fun test_playVideo() {
-        val settings = SettingsPayload(
-                rootDir = ROOT_DIR
+        val path = "$ROOT_DIR/${expectedFiles[0].fileName}"
+        val claims = mapOf(
+                TokenConstants.CLAIM_FILE_PATH to path
         )
-
-        Mockito.`when`(videoFileRepo.findById(1))
-                .thenReturn(Optional.of(expectedFiles[0]))
-        Mockito.`when`(settingsService.getOrCreateSettings())
-                .thenReturn(settings)
+        val details = User.withUsername("Hello")
+                .password("World")
+                .authorities(emptyList())
+                .build()
+        val auth = VideoTokenAuthentication(details, claims)
+        val context = SecurityContextImpl(auth)
+        SecurityContextHolder.setContext(context)
 
         val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-        Assert.assertThat(video.file.absolutePath, Matchers.containsString("$ROOT_DIR/${expectedFiles[0].fileName}"))
-    }
-
-    @Test(expected = InvalidSettingException::class)
-    fun test_playVideo_noRootDir() {
-        Mockito.`when`(videoFileRepo.findById(1))
-                .thenReturn(Optional.of(expectedFiles[0]))
-        Mockito.`when`(settingsService.getOrCreateSettings())
-                .thenReturn(SettingsPayload())
-
-        videoFileService.playVideo(expectedFiles[0].fileId)
+        Assert.assertThat(video.file.absolutePath, Matchers.containsString(path))
     }
 
     @Test

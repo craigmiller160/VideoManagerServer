@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
+import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -28,6 +29,11 @@ class VideoManagerControllerAdvice {
 
     @ExceptionHandler
     fun handleIllegalArgumentException(ex: IllegalArgumentException, response: HttpServletResponse) {
+        response.sendError(HttpStatus.BAD_REQUEST.value())
+    }
+
+    @ExceptionHandler
+    fun handleVideoFileNotFoundException(ex: VideoFileNotFoundException, response: HttpServletResponse) {
         response.sendError(HttpStatus.BAD_REQUEST.value())
     }
 
