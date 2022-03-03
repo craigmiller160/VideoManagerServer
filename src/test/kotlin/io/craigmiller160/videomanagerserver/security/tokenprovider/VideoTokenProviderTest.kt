@@ -167,6 +167,7 @@ class VideoTokenProviderTest {
                 hasProperty("filePath", equalTo(FILE_PATH)),
                 hasProperty("claims", aMapWithSize<String,Any>(4))
         ))
+        assertTrue { result.isAuthenticated }
     }
 
     @Test
