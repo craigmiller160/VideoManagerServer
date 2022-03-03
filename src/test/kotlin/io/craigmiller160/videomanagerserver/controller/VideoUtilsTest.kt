@@ -45,15 +45,11 @@ class VideoUtilsTest {
                 .thenReturn(contentLength)
         `when`(headers.range)
                 .thenReturn(listOf(range))
-        `when`(range.getRangeStart(contentLength))
-                .thenReturn(1)
-        `when`(range.getRangeEnd(contentLength))
-                .thenReturn(2)
 
         val result = resourceRegion(video, headers)
         assertThat(result, allOf(
-                hasProperty("count", equalTo(2L)),
-                hasProperty("position", equalTo(1L)),
+                hasProperty("count", equalTo(20L)),
+                hasProperty("position", equalTo(0L)),
                 hasProperty("resource", equalTo(video))
         ))
     }
