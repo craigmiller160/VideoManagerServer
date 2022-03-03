@@ -155,7 +155,7 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val date = LocalDateTime.now().plusHours(10)
         val dateString = EXP_FORMATTER.format(date)
-        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
         val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
 
         val result = videoTokenProvider.createAuthentication(tokenEncrypted)
@@ -172,14 +172,15 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val date = LocalDateTime.now().plusHours(10)
         val dateString = EXP_FORMATTER.format(date)
-        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString"
+        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
         val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
 
         val claims = videoTokenProvider.getClaims(tokenEncrypted)
         assertThat(claims, allOf<Map<String,Any>>(
                 hasEntry(TokenConstants.CLAIM_SUBJECT, USER_NAME),
                 hasEntry(TokenConstants.CLAIM_VIDEO_ID, VIDEO_ID),
-                hasEntry(TokenConstants.CLAIM_EXP, dateString)
+                hasEntry(TokenConstants.CLAIM_EXP, dateString),
+                hasEntry(TokenConstants.CLAIM_FILE_PATH, FILE_PATH)
         ))
     }
 
