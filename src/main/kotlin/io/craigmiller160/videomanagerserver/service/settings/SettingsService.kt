@@ -23,7 +23,9 @@ import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.SettingsRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import javax.annotation.PostConstruct
 import javax.transaction.Transactional
 
 @Service
@@ -31,6 +33,20 @@ class SettingsService (
         private val settingsRepository: SettingsRepository,
         private val modelMapper: VMModelMapper
 ) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
+    // TODO this is not cloud-safe
+    @Volatile
+    final var rootDirectory: String = ""
+        private set
+
+    @PostConstruct
+    @Transactional
+    fun refreshRootDirectory() {
+        log.debug("Refreshing in-memory root directory")
+        rootDirectory = getOrCreateSettings().rootDir
+    }
 
     @Transactional
     fun getOrCreateSettings(): SettingsPayload {
