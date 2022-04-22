@@ -27,6 +27,7 @@ import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
 import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import org.hamcrest.CoreMatchers.allOf
@@ -74,6 +75,8 @@ class VideoFileServiceIntegrationTest {
     private lateinit var videoFileService: VideoFileService
     @Autowired
     private lateinit var videoFileRepo: VideoFileRepository
+    @Autowired
+    private lateinit var modelMapper: VMModelMapper
 
     @MockBean
     private lateinit var oauthConfig: OAuth2Config
@@ -128,6 +131,59 @@ class VideoFileServiceIntegrationTest {
                 Matchers.hasProperty("currentPage", Matchers.equalTo(0)),
                 Matchers.hasProperty("videoList", Matchers.contains(
                         file1, file3, file2
+                ))
+        ))
+    }
+
+    @Test
+    fun test_searchForVideos_lastViewed_sortDesc() {
+        val search = VideoSearchRequest(
+                sortBy = VideoFileSortBy.LAST_VIEWED,
+                sortDir = Sort.Direction.ASC
+        )
+        val fileEntity1 = videoFileRepo.findById(file1.fileId).get()
+        val fileEntity2 = videoFileRepo.findById(file2.fileId).get()
+        fileEntity1.lastViewed = LocalDateTime.now().minusDays(1)
+        fileEntity2.lastViewed = LocalDateTime.now().minusDays(2)
+        videoFileRepo.save(fileEntity1)
+        videoFileRepo.save(fileEntity2)
+
+
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", Matchers.equalTo(3L)),
+                hasProperty("filesPerPage", Matchers.equalTo(10)),
+                hasProperty("currentPage", Matchers.equalTo(0)),
+                hasProperty("videoList", Matchers.contains(
+                        modelMapper.map(fileEntity2, VideoFilePayload::class.java),
+                        modelMapper.map(fileEntity1, VideoFilePayload::class.java),
+                        file3
+                ))
+        ))
+    }
+
+    @Test
+    fun test_searchForVideos_lastViewed_sortAsc() {
+        val search = VideoSearchRequest(
+                sortBy = VideoFileSortBy.LAST_VIEWED,
+                sortDir = Sort.Direction.DESC
+        )
+        val fileEntity1 = videoFileRepo.findById(file1.fileId).get()
+        val fileEntity2 = videoFileRepo.findById(file2.fileId).get()
+        fileEntity1.lastViewed = LocalDateTime.now().minusDays(1)
+        fileEntity2.lastViewed = LocalDateTime.now().minusDays(2)
+        videoFileRepo.save(fileEntity1)
+        videoFileRepo.save(fileEntity2)
+
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", Matchers.equalTo(3L)),
+                hasProperty("filesPerPage", Matchers.equalTo(10)),
+                hasProperty("currentPage", Matchers.equalTo(0)),
+                hasProperty("videoList", Matchers.contains(
+                        modelMapper.map(fileEntity1, VideoFilePayload::class.java),
+                        modelMapper.map(fileEntity2, VideoFilePayload::class.java),
+                        file3
                 ))
         ))
     }
