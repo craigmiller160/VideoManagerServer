@@ -134,12 +134,44 @@ class VideoFileServiceIntegrationTest {
 
     @Test
     fun test_searchForVideos_lastViewed_sortDesc() {
-        TODO("Finish this")
+        val search = VideoSearchRequest(
+                sortBy = VideoFileSortBy.LAST_VIEWED,
+                sortDir = Sort.Direction.ASC
+        )
+        file1.lastViewed = LocalDateTime.now().minusDays(1)
+        file2.lastViewed = LocalDateTime.now().minusDays(2)
+        videoFileRepo.flush()
+
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", Matchers.equalTo(3L)),
+                hasProperty("filesPerPage", Matchers.equalTo(10)),
+                hasProperty("currentPage", Matchers.equalTo(0)),
+                hasProperty("videoList", Matchers.contains(
+                        file2, file1, file3
+                ))
+        ))
     }
 
     @Test
     fun test_searchForVideos_lastViewed_sortAsc() {
-        TODO("Finish this")
+        val search = VideoSearchRequest(
+                sortBy = VideoFileSortBy.LAST_VIEWED,
+                sortDir = Sort.Direction.DESC
+        )
+        file1.lastViewed = LocalDateTime.now().minusDays(1)
+        file2.lastViewed = LocalDateTime.now().minusDays(2)
+        videoFileRepo.flush()
+
+        val results = videoFileService.searchForVideos(search)
+        assertThat(results, allOf(
+                hasProperty("totalFiles", Matchers.equalTo(3L)),
+                hasProperty("filesPerPage", Matchers.equalTo(10)),
+                hasProperty("currentPage", Matchers.equalTo(0)),
+                hasProperty("videoList", Matchers.contains(
+                        file1, file2, file3
+                ))
+        ))
     }
 
     @Test
