@@ -43,7 +43,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_noCriteria() {
         val expected = """
-            ORDER BY vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest()
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -53,7 +53,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_descOrder() {
         val expected = """
-            ORDER BY vf.displayName DESC, vf.fileName DESC
+            ORDER BY vf.displayName DESC NULLS LAST, vf.fileName DESC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest(sortDir = Sort.Direction.DESC)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -63,7 +63,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_sortByViewCount() {
         val expected = """
-            ORDER BY vf.viewCount ASC, vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.viewCount ASC NULLS LAST, vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest(sortBy = VideoFileSortBy.VIEW_COUNT)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -73,7 +73,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_sortByLastViewed() {
         val expected = """
-            ORDER BY vf.lastViewed ASC, vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.lastViewed ASC NULLS LAST, vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_VIEWED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -83,7 +83,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_sortByLastModified() {
         val expected = """
-            ORDER BY vf.lastModified ASC, vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.lastModified ASC NULLS LAST, vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_MODIFIED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
@@ -93,7 +93,7 @@ class SearchQueryBuilderTest {
     @Test
     fun test_buildQueryCriteria_sortByFileAdded() {
         val expected = """
-            ORDER BY vf.fileAdded ASC, vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.fileAdded ASC NULLS LAST, vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val search = VideoSearchRequest(sortBy = VideoFileSortBy.FILE_ADDED)
         val query = searchQueryBuilder.buildQueryOrderBy(search)
