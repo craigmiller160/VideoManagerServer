@@ -138,9 +138,13 @@ class VideoFileServiceIntegrationTest {
                 sortBy = VideoFileSortBy.LAST_VIEWED,
                 sortDir = Sort.Direction.ASC
         )
-        file1.lastViewed = LocalDateTime.now().minusDays(1)
-        file2.lastViewed = LocalDateTime.now().minusDays(2)
-        videoFileRepo.flush()
+        val fileEntity1 = videoFileRepo.findById(file1.fileId).get()
+        val fileEntity2 = videoFileRepo.findById(file2.fileId).get()
+        fileEntity1.lastViewed = LocalDateTime.now().minusDays(1)
+        fileEntity2.lastViewed = LocalDateTime.now().minusDays(2)
+        videoFileRepo.save(fileEntity1)
+        videoFileRepo.save(fileEntity2)
+
 
         val results = videoFileService.searchForVideos(search)
         assertThat(results, allOf(

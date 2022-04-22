@@ -62,15 +62,15 @@ class SearchQueryBuilder {
         val builder = StringBuilder()
                 .append("ORDER BY ")
         val columns = search.sortBy.orderByClause
-                .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
+                    .joinToString(", ") { colName -> "$colName ${search.sortDir} NULLS LAST" }
         val fullColumns = if (search.sortBy === VideoFileSortBy.NAME) {
             columns
         } else {
             val nameClause = VideoFileSortBy.NAME.orderByClause
-                    .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
+                    .joinToString(", ") { colName -> "$colName ${search.sortDir} NULLS LAST" }
             "$columns, $nameClause"
         }
-        builder.append(fullColumns).append(" NULLS LAST")
+        builder.append(fullColumns)
         return builder.toString().trim()
     }
 
