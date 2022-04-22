@@ -133,6 +133,16 @@ class VideoFileServiceIntegrationTest {
     }
 
     @Test
+    fun test_searchForVideos_lastViewed_sortDesc() {
+        TODO("Finish this")
+    }
+
+    @Test
+    fun test_searchForVideos_lastViewed_sortAsc() {
+        TODO("Finish this")
+    }
+
+    @Test
     fun test_searchForVideos_sortDesc() {
         val search = VideoSearchRequest(
                 sortBy = VideoFileSortBy.NAME,
