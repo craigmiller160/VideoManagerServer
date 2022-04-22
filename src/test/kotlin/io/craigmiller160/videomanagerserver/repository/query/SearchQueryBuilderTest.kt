@@ -245,7 +245,7 @@ class SearchQueryBuilderTest {
         val expected = """
             SELECT vf FROM VideoFile vf
             WHERE vf.active = true
-            ORDER BY vf.displayName ASC, vf.fileName ASC
+            ORDER BY vf.displayName ASC NULLS LAST, vf.fileName ASC NULLS LAST
         """.trimIndent()
         val actual = searchQueryBuilder.buildEntitySearchQuery(VideoSearchRequest())
         assertEquals(expected, actual)
