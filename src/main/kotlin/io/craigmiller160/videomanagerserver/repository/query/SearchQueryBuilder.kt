@@ -70,7 +70,7 @@ class SearchQueryBuilder {
                     .joinToString(", ") { colName -> "$colName ${search.sortDir}" }
             "$columns, $nameClause"
         }
-        builder.append(fullColumns)
+        builder.append(fullColumns).append(" NULLS LAST")
         return builder.toString().trim()
     }
 
