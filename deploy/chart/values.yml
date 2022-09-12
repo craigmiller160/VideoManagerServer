@@ -29,3 +29,8 @@ app-deployment:
     type: ClusterIP
     ports:
       - containerPort: 8443
+  volumes:
+    - name: video-manager-server-volume-homedir
+      type: HostPath
+      deploymentMountPath: /opt/video-manager/homeDir
+      hostPath: /opt/kubernetes/data/video-manager-server/homeDir
