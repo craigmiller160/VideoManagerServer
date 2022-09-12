@@ -1,0 +1,37 @@
+app-deployment:
+  appName: video-manager-server
+  deployment:
+    image: nexus-docker-craigmiller160.ddns.net/video-manager-server:latest
+    configMaps:
+      - auth-management-service-configmap
+    ports:
+      - 8443
+    secrets:
+      - envVariable: spring.datasource.username
+        secretName: postgres-root-account
+        secretKey: username
+      - envVariable: spring.datasource.password
+        secretName: postgres-root-account
+        secretKey: password
+      - envVariable: oauth2.client-key
+        secretName: video-manager-server-oauth2-keys
+        secretKey: clientKey
+      - envVariable: oauth2.client-secret
+        secretName: video-manager-server-oauth2-keys
+        secretKey: clientSecret
+    livenessProbe:
+      httpGet:
+        path: /actuator/health
+        port: 8443
+        scheme: HTTPS
+  service:
+    enable: true
+    type: ClusterIP
+    ports:
+      - containerPort: 8443
+  volumes:
+    - name: video-manager-server-volume-homedir
+      type: HostPath
+      deploymentMountPath: /opt/video-manager/homeDir
+      # TODO see if you can make this point to the real home directory instead
+      hostPath: /opt/kubernetes/data/video-manager-server/homeDir

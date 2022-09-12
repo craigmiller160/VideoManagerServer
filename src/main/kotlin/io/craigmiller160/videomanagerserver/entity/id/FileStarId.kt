@@ -23,4 +23,22 @@ import java.io.Serializable
 class FileStarId : Serializable {
     var fileId: Long = 0
     var starId: Long = 0
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FileStarId
+
+        if (fileId != other.fileId) return false
+        if (starId != other.starId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fileId.hashCode()
+        result = 31 * result + starId.hashCode()
+        return result
+    }
+
 }

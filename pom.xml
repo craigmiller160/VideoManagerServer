@@ -37,12 +37,12 @@
         <repository>
             <id>nexus</id>
             <name>Releases</name>
-            <url>https://craigmiller160.ddns.net:30003/repository/maven-releases</url>
+            <url>https://nexus-craigmiller160.ddns.net/repository/maven-releases</url>
         </repository>
         <snapshotRepository>
             <id>nexus</id>
             <name>Snapshot</name>
-            <url>https://craigmiller160.ddns.net:30003/repository/maven-snapshots</url>
+            <url>https://nexus-craigmiller160.ddns.net/repository/maven-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
