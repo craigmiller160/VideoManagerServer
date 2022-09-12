@@ -33,4 +33,5 @@ app-deployment:
     - name: video-manager-server-volume-homedir
       type: HostPath
       deploymentMountPath: /opt/video-manager/homeDir
+      # TODO see if you can make this point to the real home directory instead
       hostPath: /opt/kubernetes/data/video-manager-server/homeDir
