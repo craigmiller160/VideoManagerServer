@@ -8,5 +8,3 @@ data:
   spring.datasource.host: postgres.infra-prod
   spring.datasource.port: "5432"
   oauth2.auth-server-host: https://sso-oauth2-server:8443
-  # TODO move to secret
-  oauth2.client-key: 932a25e5-0071-4174-b33f-ea0e8170c470
