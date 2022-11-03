@@ -2,8 +2,8 @@ spring:
   datasource:
     db: vm_dev
     host: craigmiller160.ddns.net
-    port: 30001
-    username: postgres_root
+    port: 30019
+    username: ${POSTGRES_ROOT_USER}
     password: ${POSTGRES_ROOT_PASSWORD}
 
 logging:
@@ -19,6 +19,7 @@ video:
       key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
 
 oauth2:
-  auth-server-host: https://localhost:7003
-  client-key: ba8ea173-b5eb-4ccf-9ca6-0ea7c3b4b417
-  client-secret: fa618231-49e1-47cf-8edf-d406832d6ead
+  auth-server-host: https://apps-craigmiller160.ddns.net/oauth2
+  client-name: (Dev) video-manager-server
+  client-key: ea9156de-f5eb-4ed3-a04a-7baeb26cb59d
+  client-secret: 7ab84f05-f2d7-4ed7-9a49-17c6611d8ef0

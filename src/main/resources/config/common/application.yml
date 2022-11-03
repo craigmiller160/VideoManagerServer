@@ -70,7 +70,6 @@ oauth2:
   cookie-name: vm_token
   cookie-max-age-secs: 86400
   cookie-path: "/video-manager"
-  client-name: video-manager-server
   auth-login-base-uri: "/video-manager/oauth2"
   auth-code-redirect-uri: "/video-manager/api/oauth/authcode/code"
   post-auth-redirect: "/video-manager"

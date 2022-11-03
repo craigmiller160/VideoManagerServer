@@ -15,3 +15,6 @@ logging:
 
 localfile:
   homeDir: /opt/video-manager/homeDir
+
+oauth2:
+  client-name: video-manager-server
