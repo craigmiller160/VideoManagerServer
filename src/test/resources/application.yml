@@ -11,6 +11,8 @@ spring:
     properties:
       hibernate.jdbc.time_zone: UTC
       hibernate.dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
 
 cors:
   origins: abc
