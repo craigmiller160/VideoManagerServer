@@ -18,6 +18,8 @@ spring:
     docker: true
   mvc:
     dispatch-options-request: true
+  flyway:
+    enabled: true
 
 cors:
   origins: http://localhost:3000
