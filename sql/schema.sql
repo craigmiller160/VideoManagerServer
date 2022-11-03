@@ -23,13 +23,13 @@ CREATE TABLE stars (
 CREATE SEQUENCE video_files_file_id_seq START 1;
 CREATE TABLE video_files (
      file_id BIGINT NOT NULL DEFAULT nextval('video_files_file_id_seq'::regclass),
-     file_name VARCHAR(255) NOT NULL,
-     display_name VARCHAR(255),
-     description VARCHAR(255),
+     file_name TEXT NOT NULL,
+     display_name TEXT,
+     description TEXT,
      last_modified TIMESTAMP NOT NULL,
      file_added TIMESTAMP NOT NULL,
      last_viewed TIMESTAMP NOT NULL,
-     active BOOLEAN NOT NULL DEFAULT false,
+     active BOOLEAN NOT NULL DEFAULT true,
      last_scan_timestamp TIMESTAMP NOT NULL,
      view_count INT NOT NULL DEFAULT 0,
      PRIMARY KEY (file_id),
@@ -38,7 +38,7 @@ CREATE TABLE video_files (
 
 CREATE TABLE settings (
     settings_id BIGINT NOT NULL,
-    root_dir VARCHAR(255) NOT NULL,
+    root_dir TEXT NOT NULL,
     PRIMARY KEY (settings_id)
 );
 
