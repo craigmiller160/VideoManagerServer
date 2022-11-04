@@ -4,14 +4,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate.jdbc.time_zone: UTC
-#      hibernate.jdbc.lob.non_contextual_creation: true
-#      hibernate.hbm2ddl.delimiter: ';'
       hibernate.dialect: org.hibernate.dialect.PostgreSQL9Dialect
-#      javax.persistence.schema-generation.create-source: metadata
-#      javax.persistence.schema-generation.scripts.action: drop-and-create
-#      javax.persistence.schema-generation.scripts.create-target: sql/create-schema.sql
-#      javax.persistence.schema-generation.scripts.drop-target: sql/drop-schema.sql
-    generate-ddl: true
   datasource:
     jdbc-url: jdbc:postgresql://${spring.datasource.host}:${spring.datasource.port}
     url: ${spring.datasource.jdbc-url}/${spring.datasource.db}
@@ -47,6 +40,7 @@ logging:
     org.hibernate: INFO
     io.craigmiller160: DEBUG
     io.craigmiller160.webutils: DEBUG
+    org.flywaydb: INFO
   file:
     common-path: video-manager/server-logs/${spring.profiles.active}.log
     path: ${HOME}/${logging.file.common-path}

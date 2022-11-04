@@ -2,7 +2,7 @@ app-deployment:
   appName: video-manager-server
   image: nexus-docker-craigmiller160.ddns.net/video-manager-server:latest
   configMaps:
-    - auth-management-service-configmap
+    - video-manager-server-config
   ports:
     - containerPort: 8443
   secrets:
