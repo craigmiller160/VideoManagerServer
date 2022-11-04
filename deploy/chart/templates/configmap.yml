@@ -10,3 +10,4 @@ data:
   oauth2.auth-server-host: https://sso-oauth2-server:8443
   # TODO remove this
   logging.level.org.flywaydb: DEBUG
+  spring.flyway.enabled: true
