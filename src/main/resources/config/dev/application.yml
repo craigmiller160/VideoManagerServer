@@ -12,7 +12,6 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: INFO
     io.craigmiller160: DEBUG
-    org.flywaydb: DEBUG
 
 video:
   security:
