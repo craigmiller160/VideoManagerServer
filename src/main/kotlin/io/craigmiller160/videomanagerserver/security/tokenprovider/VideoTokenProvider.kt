@@ -62,11 +62,12 @@ class VideoTokenProvider (
     }
 
     override fun createToken(userName: String, params: Map<String,Any>): String {
-        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]
+        val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
+        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
+        val userId = params[TokenConstants.PARAM_USER_ID]!!
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
+        val tokenString = "$userName$separator$userId$separator$videoId$separator$exp$separator$fullFilePath"
         return encryptHandler.doEncrypt(tokenString)
     }
 
