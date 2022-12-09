@@ -317,6 +317,11 @@ class VideoFileControllerTest : AbstractControllerTest() {
     }
 
     @Test
+    fun test_playVideo_wrongUser() {
+        TODO()
+    }
+
+    @Test
     fun test_recordNewVideoPlay() {
         mockMvcHandler.token = token
         val response = mockMvcHandler.doGet("/api/video-files/record-play/1")

@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import java.lang.RuntimeException
 import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -66,7 +67,8 @@ class VideoTokenProvider (
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
-        return encryptHandler.doEncrypt(tokenString)
+//        return encryptHandler.doEncrypt(tokenString)
+        throw RuntimeException() // TODO delete this
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
