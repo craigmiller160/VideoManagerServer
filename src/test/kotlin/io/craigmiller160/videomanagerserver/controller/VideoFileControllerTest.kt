@@ -300,6 +300,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_playVideo() {
+        mockMvcHandler.token = token
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
         val token = videoTokenProvider.createToken("user", params)
         val file = File(".")
@@ -318,7 +319,14 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_playVideo_wrongUser() {
-        TODO()
+        mockMvcHandler.token = token
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to "2")
+        val token = videoTokenProvider.createToken("user", params)
+        val file = File(".")
+        `when`(videoFileService.playVideo(1L))
+            .thenReturn(UrlResource(file.toURI()))
+        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+        assertEquals(403, response.status)
     }
 
     @Test

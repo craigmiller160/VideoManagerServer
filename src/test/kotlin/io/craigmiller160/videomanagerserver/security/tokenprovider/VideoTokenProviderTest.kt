@@ -48,6 +48,7 @@ class VideoTokenProviderTest {
     companion object {
         private const val USER_NAME = "userName"
         private const val VIDEO_ID = "10"
+        private const val USER_ID = "1"
         private const val FILE_PATH = "/full/file/path"
         private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
         private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -76,7 +77,7 @@ class VideoTokenProviderTest {
     fun test_createToken() {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
-        val tokenRegex = "$USER_NAME$separator$VIDEO_ID$separator$dateRegex$separator.*".toRegex()
+        val tokenRegex = "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateRegex$separator.*".toRegex()
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_FILE_PATH to FILE_PATH)
         val token = videoTokenProvider.createToken("userName", params)
         val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
