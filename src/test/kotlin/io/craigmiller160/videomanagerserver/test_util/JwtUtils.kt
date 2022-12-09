@@ -48,6 +48,7 @@ object JwtUtils {
     const val FIRST_NAME = "firstName"
     const val LAST_NAME = "lastName"
     const val TOKEN_ID = "JWTID"
+    const val USER_ID = "1"
 
     fun createKeyPair(): KeyPair {
         val keyPairGen = KeyPairGenerator.getInstance("RSA")
@@ -79,6 +80,7 @@ object JwtUtils {
                 .claim("clientName", CLIENT_NAME)
                 .claim("firstName", FIRST_NAME)
                 .claim("lastName", LAST_NAME)
+                .claim("userId", USER_ID)
                 .build()
         return SignedJWT(header, claims)
     }
