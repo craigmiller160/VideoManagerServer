@@ -67,8 +67,7 @@ class VideoTokenProvider (
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
-//        return encryptHandler.doEncrypt(tokenString)
-        throw RuntimeException() // TODO delete this
+        return encryptHandler.doEncrypt(tokenString)
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
