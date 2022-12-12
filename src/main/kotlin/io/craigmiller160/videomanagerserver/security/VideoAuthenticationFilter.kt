@@ -61,7 +61,6 @@ class VideoAuthenticationFilter (
         token?.let {
             try {
                 val decodedToken = URLDecoder.decode(token, Charsets.UTF_8)
-                println("Decoded: $decodedToken")
                 val status = tokenProvider.validateToken(decodedToken, params)
                 logger.debug("Token Validation Status: $status")
                 when (status) {
