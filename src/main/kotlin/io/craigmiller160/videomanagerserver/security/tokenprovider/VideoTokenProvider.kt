@@ -23,12 +23,10 @@ import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.util.parseQueryString
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
-import java.lang.RuntimeException
 import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -95,7 +93,7 @@ class VideoTokenProvider (
 
         val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
         try {
-            val expDateTime = LocalDateTime.parse(tokenParts[2], EXP_FORMATTER)
+            val expDateTime = LocalDateTime.parse(tokenParts[3], EXP_FORMATTER)
             val now = LocalDateTime.now()
             if (now > expDateTime) {
                 return TokenValidationStatus.EXPIRED
@@ -106,7 +104,12 @@ class VideoTokenProvider (
         }
 
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        if (videoId != tokenParts[1]) {
+        if (videoId != tokenParts[2]) {
+            return TokenValidationStatus.RESOURCE_FORBIDDEN
+        }
+
+        val userId = params[TokenConstants.PARAM_USER_ID]
+        if (userId != tokenParts[1]) {
             return TokenValidationStatus.RESOURCE_FORBIDDEN
         }
 
