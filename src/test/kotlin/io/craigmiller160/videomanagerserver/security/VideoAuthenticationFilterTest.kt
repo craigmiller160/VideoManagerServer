@@ -49,12 +49,12 @@ class VideoAuthenticationFilterTest {
     companion object {
         private const val VIDEO_PATH = "/api/video-files/play/1"
         private const val JWT_PATH = "/api/categories"
+        private const val COOKIE_NAME = "cookie"
     }
 
     @Mock
     private lateinit var videoTokenProvider: VideoTokenProvider
 
-    @InjectMocks
     private lateinit var videoAuthenticationFilter: VideoAuthenticationFilter
 
     @Mock
@@ -71,6 +71,7 @@ class VideoAuthenticationFilterTest {
     @Before
     fun setup() {
         SecurityContextHolder.setContext(securityContext)
+        videoAuthenticationFilter = VideoAuthenticationFilter(videoTokenProvider, COOKIE_NAME)
     }
 
     @After
@@ -89,7 +90,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_valid() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -112,7 +113,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_badSignature() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -122,15 +123,17 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_exception() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -140,15 +143,17 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 500
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_expiredToken() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -158,15 +163,17 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
     fun test_doFilterInternal_video_resourceForbidden() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -176,8 +183,10 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 403
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
@@ -185,8 +194,10 @@ class VideoAuthenticationFilterTest {
         setupRequest(VIDEO_PATH)
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
 }

@@ -28,6 +28,7 @@ object TokenConstants {
 
     const val PARAM_VIDEO_ID = "videoId"
     const val PARAM_FILE_PATH = "filePath"
+    const val PARAM_USER_ID = "userId"
 
     const val VIDEO_TOKEN_SEPARATOR = "::"
 

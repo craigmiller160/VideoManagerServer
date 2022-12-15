@@ -1,5 +1,7 @@
 
 spring:
+  profiles:
+    active: test
   datasource:
     url: jdbc:h2:mem:testdb
     username: user
@@ -36,3 +38,6 @@ video:
 
 localfile:
   homeDir: ${user.home}
+
+oauth2:
+  cookie-name: vm_token

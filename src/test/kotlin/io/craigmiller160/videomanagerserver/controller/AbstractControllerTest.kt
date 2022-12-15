@@ -39,7 +39,9 @@ abstract class AbstractControllerTest {
 
     companion object {
 
+        @JvmStatic
         protected lateinit var keyPair: KeyPair
+        @JvmStatic
         protected lateinit var jwkSet: JWKSet
 
         @BeforeClass

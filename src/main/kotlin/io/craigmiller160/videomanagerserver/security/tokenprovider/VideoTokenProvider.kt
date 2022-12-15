@@ -23,7 +23,6 @@ import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.util.parseQueryString
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -61,11 +60,12 @@ class VideoTokenProvider (
     }
 
     override fun createToken(userName: String, params: Map<String,Any>): String {
-        val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]
+        val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
+        val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
+        val userId = params[TokenConstants.PARAM_USER_ID]!!
         val exp = generateExpiration()
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-        val tokenString = "$userName$separator$videoId$separator$exp$separator$fullFilePath"
+        val tokenString = "$userName$separator$userId$separator$videoId$separator$exp$separator$fullFilePath"
         return encryptHandler.doEncrypt(tokenString)
     }
 
@@ -93,7 +93,7 @@ class VideoTokenProvider (
 
         val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
         try {
-            val expDateTime = LocalDateTime.parse(tokenParts[2], EXP_FORMATTER)
+            val expDateTime = LocalDateTime.parse(tokenParts[3], EXP_FORMATTER)
             val now = LocalDateTime.now()
             if (now > expDateTime) {
                 return TokenValidationStatus.EXPIRED
@@ -104,7 +104,12 @@ class VideoTokenProvider (
         }
 
         val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-        if (videoId != tokenParts[1]) {
+        if (videoId != tokenParts[2]) {
+            return TokenValidationStatus.RESOURCE_FORBIDDEN
+        }
+
+        val userId = params[TokenConstants.PARAM_USER_ID]
+        if (userId != tokenParts[1].toLong()) {
             return TokenValidationStatus.RESOURCE_FORBIDDEN
         }
 

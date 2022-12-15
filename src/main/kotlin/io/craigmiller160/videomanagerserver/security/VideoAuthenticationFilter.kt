@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.security
 
+import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -25,14 +26,13 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenPro
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import java.net.URLDecoder
-import java.net.URLEncoder
-import java.nio.charset.Charset
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class VideoAuthenticationFilter (
-        private val videoTokenProvider: VideoTokenProvider
+        private val videoTokenProvider: VideoTokenProvider,
+        private val cookieName: String
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -47,12 +47,35 @@ class VideoAuthenticationFilter (
         val pathUri = getPathUri(req)
         if (VIDEO_URI.matches(pathUri)) {
             val fileId = pathUri.split("/")[3]
-            val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
+            val userId = getUserId(req) ?: 0
+            val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId, TokenConstants.PARAM_USER_ID to userId)
             validateToken(req, resp, chain, videoTokenProvider, params)
+            return
         }
 
         chain.doFilter(req, resp)
     }
+
+    private fun getUserId(req: HttpServletRequest): Long? {
+        val jwt = getBearerToken(req)
+            ?: getCookie(req)
+        return jwt?.let { extractUserIdFromJwt(it) }
+    }
+
+    private fun extractUserIdFromJwt(token: String): Long =
+        SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId")
+
+    private fun getCookie(req: HttpServletRequest): String? =
+        req.cookies?.find { it.name == cookieName }?.value
+
+    private fun getBearerToken(req: HttpServletRequest): String? =
+        req.getHeader("Authorization")
+            ?.let {
+                if (it.startsWith("Bearer")) {
+                    return it.replace("Bearer ", "")
+                }
+                return null
+            }
 
     private fun validateToken(req: HttpServletRequest, resp: HttpServletResponse,
                               chain: FilterChain, tokenProvider: TokenProvider,
@@ -67,6 +90,7 @@ class VideoAuthenticationFilter (
                     TokenValidationStatus.VALID -> {
                         val auth = tokenProvider.createAuthentication(decodedToken)
                         SecurityContextHolder.getContext().authentication = auth
+                        chain.doFilter(req, resp)
                     }
                     else -> unauthenticated(req, resp, chain, status)
                 }
@@ -82,5 +106,10 @@ class VideoAuthenticationFilter (
         val request = "${req.method} ${getPathUri(req)}"
         logger.error("Attempted unauthenticated access. Request: $request Status: $status")
         SecurityContextHolder.clearContext()
+        when(status) {
+            TokenValidationStatus.RESOURCE_FORBIDDEN -> resp.status = 403
+            TokenValidationStatus.VALIDATION_ERROR -> resp.status = 500
+            else -> resp.status = 401
+        }
     }
 }
