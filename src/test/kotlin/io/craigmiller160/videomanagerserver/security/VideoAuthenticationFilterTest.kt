@@ -122,8 +122,10 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
@@ -140,8 +142,10 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 500
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
@@ -158,8 +162,10 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
@@ -176,8 +182,10 @@ class VideoAuthenticationFilterTest {
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
 
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 403
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
     @Test
@@ -185,8 +193,10 @@ class VideoAuthenticationFilterTest {
         setupRequest(VIDEO_PATH)
         videoAuthenticationFilter.doFilterInternal(request, response, chain)
         assertThat(securityContext, not(equalTo(SecurityContextHolder.getContext())))
-        verify(chain, times(1))
-                .doFilter(request, response)
+        verify(response, times(1))
+            .status = 401
+        verify(chain, times(0))
+            .doFilter(request, response)
     }
 
 }
