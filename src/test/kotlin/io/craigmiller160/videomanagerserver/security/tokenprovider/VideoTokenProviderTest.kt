@@ -48,7 +48,7 @@ class VideoTokenProviderTest {
     companion object {
         private const val USER_NAME = "userName"
         private const val VIDEO_ID = "10"
-        private const val USER_ID = "1"
+        private const val USER_ID = 1L
         private const val FILE_PATH = "/full/file/path"
         private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
         private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
