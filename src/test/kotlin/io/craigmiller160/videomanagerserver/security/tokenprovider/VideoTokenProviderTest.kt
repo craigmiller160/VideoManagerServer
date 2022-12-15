@@ -132,7 +132,7 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val date = LocalDateTime.now().plusHours(10)
         val dateString = EXP_FORMATTER.format(date)
-        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+        val token = "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
         val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "11")
         val result = videoTokenProvider.validateToken(tokenEncrypted, params)
@@ -144,7 +144,7 @@ class VideoTokenProviderTest {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val date = LocalDateTime.now().plusHours(10)
         val dateString = EXP_FORMATTER.format(date)
-        val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+        val token = "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
         val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
         val params = mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID)
         val result = videoTokenProvider.validateToken(tokenEncrypted, params)
