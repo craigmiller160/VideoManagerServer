@@ -19,6 +19,7 @@
 package io.craigmiller160.videomanagerserver.security
 
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.DefaultSecurityFilterChain
@@ -27,11 +28,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class VideoAuthenticationFilterConfigurer (
-        private val videoTokenProvider: VideoTokenProvider
+        private val videoTokenProvider: VideoTokenProvider,
+        @Value("\${oauth2.cookie-name}")
+        private val cookieName: String
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 
     override fun configure(http: HttpSecurity?) {
-        val authFilter = VideoAuthenticationFilter(videoTokenProvider)
+        val authFilter = VideoAuthenticationFilter(videoTokenProvider, cookieName)
         http?.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 }
