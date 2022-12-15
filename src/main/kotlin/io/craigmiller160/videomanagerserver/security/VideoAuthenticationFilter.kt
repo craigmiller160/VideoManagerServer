@@ -19,9 +19,6 @@
 package io.craigmiller160.videomanagerserver.security
 
 import com.nimbusds.jwt.SignedJWT
-import io.craigmiller160.oauth2.exception.InvalidTokenException
-import io.craigmiller160.oauth2.security.RequestWrapper
-import io.craigmiller160.oauth2.security.impl.AuthenticationFilterServiceImpl
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -29,8 +26,6 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenPro
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import java.net.URLDecoder
-import java.net.URLEncoder
-import java.nio.charset.Charset
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -61,12 +56,13 @@ class VideoAuthenticationFilter (
         chain.doFilter(req, resp)
     }
 
-    private fun getUserId(req: HttpServletRequest): Long? =
-        getBearerToken(req)
-            ?.let { getCookie(req) }
-            ?.let { extractUserIdFromToken(it) }
+    private fun getUserId(req: HttpServletRequest): Long? {
+        val jwt = getBearerToken(req)
+            ?: getCookie(req)
+        return jwt?.let { extractUserIdFromJwt(it) }
+    }
 
-    private fun extractUserIdFromToken(token: String): Long =
+    private fun extractUserIdFromJwt(token: String): Long =
         SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId")
 
     private fun getCookie(req: HttpServletRequest): String? =
