@@ -312,6 +312,11 @@ class VideoFileControllerTest : AbstractControllerTest() {
     }
 
     @Test
+    fun test_playVideo_expiredJwt_validVideoToken() {
+        TODO()
+    }
+
+    @Test
     fun test_playVideo_unauthorized() {
         val response = mockMvcHandler.doGet("/api/video-files/play/1")
         assertThat(response, hasProperty("status", equalTo(401)))
