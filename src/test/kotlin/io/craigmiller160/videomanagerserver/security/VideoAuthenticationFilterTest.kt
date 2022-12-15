@@ -90,7 +90,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_valid() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
         `when`(videoTokenProvider.validateToken(token, params))
@@ -113,7 +113,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_badSignature() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -153,7 +153,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_expiredToken() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
@@ -173,7 +173,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_resourceForbidden() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
