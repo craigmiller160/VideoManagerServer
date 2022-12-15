@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.security
 
+import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.oauth2.exception.InvalidTokenException
 import io.craigmiller160.oauth2.security.RequestWrapper
 import io.craigmiller160.oauth2.security.impl.AuthenticationFilterServiceImpl
@@ -51,7 +52,8 @@ class VideoAuthenticationFilter (
         val pathUri = getPathUri(req)
         if (VIDEO_URI.matches(pathUri)) {
             val fileId = pathUri.split("/")[3]
-            val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId)
+            val userId = getUserId(req) ?: 0
+            val params = mapOf(TokenConstants.PARAM_VIDEO_ID to fileId, TokenConstants.PARAM_USER_ID to userId)
             validateToken(req, resp, chain, videoTokenProvider, params)
             return
         }
@@ -62,11 +64,10 @@ class VideoAuthenticationFilter (
     private fun getUserId(req: HttpServletRequest): Long? =
         getBearerToken(req)
             ?.let { getCookie(req) }
-            ?.let { getUserId(it) }
+            ?.let { extractUserIdFromToken(it) }
 
-    private fun getUserId(token: String): Long {
-
-    }
+    private fun extractUserIdFromToken(token: String): Long =
+        SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId")
 
     private fun getCookie(req: HttpServletRequest): String? =
         req.cookies.find { it.name == cookieName }?.value
