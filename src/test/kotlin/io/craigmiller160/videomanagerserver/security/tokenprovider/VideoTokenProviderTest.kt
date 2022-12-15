@@ -128,7 +128,7 @@ class VideoTokenProviderTest {
     }
 
     @Test
-    fun test_valdateToken_resourceForbidden() {
+    fun test_validateToken_resourceForbidden() {
         val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
         val date = LocalDateTime.now().plusHours(10)
         val dateString = EXP_FORMATTER.format(date)
