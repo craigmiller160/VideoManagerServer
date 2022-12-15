@@ -314,7 +314,13 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
     @Test
     fun test_playVideo_noJwt_withVideoToken() {
-        TODO()
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_FILE_PATH to "/foo/bar", TokenConstants.PARAM_USER_ID to "1")
+        val token = videoTokenProvider.createToken("user", params)
+        val file = File(".")
+        `when`(videoFileService.playVideo(1L))
+            .thenReturn(UrlResource(file.toURI()))
+        val response = mockMvcHandler.doGet("/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+        assertEquals(403, response.status)
     }
 
     @Test

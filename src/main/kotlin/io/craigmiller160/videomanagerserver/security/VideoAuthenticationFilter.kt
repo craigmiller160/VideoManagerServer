@@ -66,7 +66,7 @@ class VideoAuthenticationFilter (
         SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId")
 
     private fun getCookie(req: HttpServletRequest): String? =
-        req.cookies.find { it.name == cookieName }?.value
+        req.cookies?.find { it.name == cookieName }?.value
 
     private fun getBearerToken(req: HttpServletRequest): String? =
         req.getHeader("Authorization")
