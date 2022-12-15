@@ -49,12 +49,12 @@ class VideoAuthenticationFilterTest {
     companion object {
         private const val VIDEO_PATH = "/api/video-files/play/1"
         private const val JWT_PATH = "/api/categories"
+        private const val COOKIE_NAME = "cookie"
     }
 
     @Mock
     private lateinit var videoTokenProvider: VideoTokenProvider
 
-    @InjectMocks
     private lateinit var videoAuthenticationFilter: VideoAuthenticationFilter
 
     @Mock
@@ -71,6 +71,7 @@ class VideoAuthenticationFilterTest {
     @Before
     fun setup() {
         SecurityContextHolder.setContext(securityContext)
+        videoAuthenticationFilter = VideoAuthenticationFilter(videoTokenProvider, COOKIE_NAME)
     }
 
     @After
