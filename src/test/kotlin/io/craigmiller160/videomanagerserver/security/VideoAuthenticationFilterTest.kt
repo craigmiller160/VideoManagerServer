@@ -133,7 +133,7 @@ class VideoAuthenticationFilterTest {
     fun test_doFilterInternal_video_exception() {
         val token = "TOKEN"
 
-        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1")
+        val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "1", TokenConstants.PARAM_USER_ID to 0L)
         setupRequest(VIDEO_PATH)
         `when`(videoTokenProvider.resolveToken(request))
                 .thenReturn(token)
