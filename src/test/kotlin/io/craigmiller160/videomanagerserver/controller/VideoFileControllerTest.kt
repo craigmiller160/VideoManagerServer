@@ -313,6 +313,11 @@ class VideoFileControllerTest : AbstractControllerTest() {
     }
 
     @Test
+    fun test_playVideo_noJwt_withVideoToken() {
+        TODO()
+    }
+
+    @Test
     fun test_playVideo_expiredJwt_validVideoToken() {
         val expiredToken = JwtUtils.createJwt(-10)
             .let { JwtUtils.signAndSerializeJwt(it, keyPair.private) }
