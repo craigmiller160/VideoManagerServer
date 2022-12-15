@@ -38,3 +38,6 @@ video:
 
 localfile:
   homeDir: ${user.home}
+
+oauth2:
+  cookie-name: vm_token
