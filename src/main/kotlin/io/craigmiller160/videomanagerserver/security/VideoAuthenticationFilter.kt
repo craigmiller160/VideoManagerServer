@@ -18,6 +18,9 @@
 
 package io.craigmiller160.videomanagerserver.security
 
+import io.craigmiller160.oauth2.exception.InvalidTokenException
+import io.craigmiller160.oauth2.security.RequestWrapper
+import io.craigmiller160.oauth2.security.impl.AuthenticationFilterServiceImpl
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
@@ -32,7 +35,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class VideoAuthenticationFilter (
-        private val videoTokenProvider: VideoTokenProvider
+        private val videoTokenProvider: VideoTokenProvider,
+        private val cookieName: String
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -54,6 +58,27 @@ class VideoAuthenticationFilter (
 
         chain.doFilter(req, resp)
     }
+
+    private fun getUserId(req: HttpServletRequest): Long? =
+        getBearerToken(req)
+            ?.let { getCookie(req) }
+            ?.let { getUserId(it) }
+
+    private fun getUserId(token: String): Long {
+
+    }
+
+    private fun getCookie(req: HttpServletRequest): String? =
+        req.cookies.find { it.name == cookieName }?.value
+
+    private fun getBearerToken(req: HttpServletRequest): String? =
+        req.getHeader("Authorization")
+            ?.let {
+                if (it.startsWith("Bearer")) {
+                    return it.replace("Bearer ", "")
+                }
+                return null
+            }
 
     private fun validateToken(req: HttpServletRequest, resp: HttpServletResponse,
                               chain: FilterChain, tokenProvider: TokenProvider,
