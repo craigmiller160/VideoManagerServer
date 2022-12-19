@@ -277,6 +277,11 @@ class VideoFileServiceTest {
     }
 
     @Test
+    fun test_startVideoFileScan_scanRunning() {
+        TODO()
+    }
+
+    @Test
     fun testIsVideoFileScanRunning() {
         val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
         val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
