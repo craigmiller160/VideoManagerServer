@@ -35,7 +35,7 @@ class TokenConfigIntegrationTest {
         private const val EXP_SECS = 300
         private const val VIDEO_EXP_SECS = 10000
         private const val REFRESH_EXP_SECS = 1200
-        private const val KEY_SIZE_BITS = 256
+        private const val KEY = "/RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM="
     }
 
     @MockBean
@@ -60,8 +60,8 @@ class TokenConfigIntegrationTest {
     }
 
     @Test
-    fun test_keySizeBits() {
-        assertEquals(KEY_SIZE_BITS, tokenConfig.keySizeBits)
+    fun test_key() {
+        assertEquals(KEY, tokenConfig.key)
     }
 
 }
