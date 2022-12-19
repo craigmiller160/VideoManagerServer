@@ -18,6 +18,9 @@ app-deployment:
     - envVariable: oauth2.client-secret
       secretName: video-manager-server-oauth2-keys
       secretKey: clientSecret
+    - envVariable: video.security.token.key
+      secretName: video-manager-server-video-token-key
+      secretKey: key
   livenessProbe:
     httpGet:
       path: /actuator/health

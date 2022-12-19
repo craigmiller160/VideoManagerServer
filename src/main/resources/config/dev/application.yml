@@ -16,7 +16,7 @@ logging:
 video:
   security:
     token:
-      key: ThisIsMySecretKeyThisIsMySecretKeyThisIsMySecretKey
+      key: /RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM=
 
 oauth2:
   auth-server-host: https://apps-craigmiller160.ddns.net/oauth2
