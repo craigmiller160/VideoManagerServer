@@ -56,7 +56,6 @@ video:
     token:
       expSecs: 300
       refreshExpSecs: 1200
-      key: /RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM=
       videoExpSecs: 21600
 
 localfile:
