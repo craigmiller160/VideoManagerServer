@@ -117,10 +117,6 @@ class VideoFileServiceTest {
     @Before
     fun setup() {
         SecurityContextHolder.clearContext()
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        fileScanRunning.set(false)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-        lastScanSuccess.set(true)
 
         videoConfig.apiPageSize = 10
     }
