@@ -23,12 +23,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @Configuration
-@EnableJpaRepositories(basePackages = [
-    "io.craigmiller160.oauth2.repository",
-    "io.craigmiller160.videomanagerserver.repository"
-])
-@EntityScan(basePackages = [
-    "io.craigmiller160.oauth2.entity",
-    "io.craigmiller160.videomanagerserver.entity"
-])
+@EnableJpaRepositories(
+  basePackages =
+    ["io.craigmiller160.oauth2.repository", "io.craigmiller160.videomanagerserver.repository"])
+@EntityScan(
+  basePackages = ["io.craigmiller160.oauth2.entity", "io.craigmiller160.videomanagerserver.entity"])
 class JpaConfig

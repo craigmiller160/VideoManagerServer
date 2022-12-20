@@ -18,17 +18,17 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
+import kotlin.math.min
 import org.springframework.core.io.UrlResource
 import org.springframework.core.io.support.ResourceRegion
 import org.springframework.http.HttpHeaders
-import kotlin.math.min
 
 fun resourceRegion(video: UrlResource, headers: HttpHeaders): ResourceRegion {
-    val contentLength = video.contentLength()
-    val range = headers.range.firstOrNull()
-    return range?.toResourceRegion(video)
-            ?: run {
-                val rangeLength = min(1 * 1024 * 1024, contentLength)
-                ResourceRegion(video, 0, rangeLength)
-            }
+  val contentLength = video.contentLength()
+  val range = headers.range.firstOrNull()
+  return range?.toResourceRegion(video)
+    ?: run {
+      val rangeLength = min(1 * 1024 * 1024, contentLength)
+      ResourceRegion(video, 0, rangeLength)
+    }
 }

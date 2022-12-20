@@ -26,9 +26,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "stars")
-data class Star (
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var starId: Long = 0,
-        var starName: String = ""
+data class Star(
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var starId: Long = 0,
+  var starName: String = ""
 )

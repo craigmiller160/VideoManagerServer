@@ -18,19 +18,18 @@
 
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
-import org.springframework.security.core.Authentication
 import javax.servlet.http.HttpServletRequest
+import org.springframework.security.core.Authentication
 
 interface TokenProvider {
 
-    fun createToken(userName: String, params: Map<String,Any> = HashMap()): String
+  fun createToken(userName: String, params: Map<String, Any> = HashMap()): String
 
-    fun resolveToken(req: HttpServletRequest): String?
+  fun resolveToken(req: HttpServletRequest): String?
 
-    fun validateToken(token: String, params: Map<String,Any> = HashMap()): TokenValidationStatus
+  fun validateToken(token: String, params: Map<String, Any> = HashMap()): TokenValidationStatus
 
-    fun createAuthentication(token: String): Authentication
+  fun createAuthentication(token: String): Authentication
 
-    fun getClaims(token: String): Map<String,Any>
-
+  fun getClaims(token: String): Map<String, Any>
 }

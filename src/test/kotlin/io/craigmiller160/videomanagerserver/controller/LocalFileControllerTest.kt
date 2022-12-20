@@ -41,83 +41,66 @@ import org.springframework.test.context.web.WebAppConfiguration
 @ContextConfiguration
 class LocalFileControllerTest : AbstractControllerTest() {
 
-    @MockBean
-    private lateinit var localFileService: LocalFileService
+  @MockBean private lateinit var localFileService: LocalFileService
 
-    @Autowired
-    private lateinit var localFileController: LocalFileController
+  @Autowired private lateinit var localFileController: LocalFileController
 
-    private lateinit var jacksonLocalFileList: JacksonTester<LocalFileListResponse>
+  private lateinit var jacksonLocalFileList: JacksonTester<LocalFileListResponse>
 
-    private fun mockFiles(): LocalFileListResponse {
-        val file1 = LocalFileResponse(
-                fileName = "file1",
-                filePath = "dir/file1",
-                isDirectory = false
-        )
-        val file2 = LocalFileResponse(
-                fileName = "file2",
-                filePath = "dir/file2",
-                isDirectory = false
-        )
-        val dir1 = LocalFileResponse(
-                fileName = "dir1",
-                filePath = "dir/dir1",
-                isDirectory = true
-        )
-        val files = listOf(file1, file2, dir1)
-        return LocalFileListResponse(
-                rootPath = "dir",
-                files = files
-        )
-    }
+  private fun mockFiles(): LocalFileListResponse {
+    val file1 = LocalFileResponse(fileName = "file1", filePath = "dir/file1", isDirectory = false)
+    val file2 = LocalFileResponse(fileName = "file2", filePath = "dir/file2", isDirectory = false)
+    val dir1 = LocalFileResponse(fileName = "dir1", filePath = "dir/dir1", isDirectory = true)
+    val files = listOf(file1, file2, dir1)
+    return LocalFileListResponse(rootPath = "dir", files = files)
+  }
 
-    @Test
-    fun test_getFilesFromDirectory() {
-        val path = "dir"
-        val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(path, false))
-                .thenReturn(files)
+  @Test
+  fun test_getFilesFromDirectory() {
+    val path = "dir"
+    val files = mockFiles()
+    `when`(localFileService.getFilesFromDirectory(path, false)).thenReturn(files)
 
-        mockMvcHandler.token = adminToken
-        val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonLocalFileList.write(files).json))
-        ))
-    }
+    mockMvcHandler.token = adminToken
+    val response = mockMvcHandler.doGet("/api/localfiles/directory?path=$path")
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonLocalFileList.write(files).json))))
+  }
 
-    @Test
-    fun test_getFilesFromDirectory_noPath() {
-        val files = mockFiles()
-        `when`(localFileService.getFilesFromDirectory(null, false))
-                .thenReturn(files)
+  @Test
+  fun test_getFilesFromDirectory_noPath() {
+    val files = mockFiles()
+    `when`(localFileService.getFilesFromDirectory(null, false)).thenReturn(files)
 
-        mockMvcHandler.token = adminToken
-        var response = mockMvcHandler.doGet("/api/localfiles/directory")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonLocalFileList.write(files).json))
-        ))
+    mockMvcHandler.token = adminToken
+    var response = mockMvcHandler.doGet("/api/localfiles/directory")
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonLocalFileList.write(files).json))))
 
-        response = mockMvcHandler.doGet("/api/localfiles/directory?path=")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonLocalFileList.write(files).json))
-        ))
-    }
+    response = mockMvcHandler.doGet("/api/localfiles/directory?path=")
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonLocalFileList.write(files).json))))
+  }
 
-    @Test
-    fun test_getFilesFromDirectory_unauthorized() {
-        val response = mockMvcHandler.doGet("/api/localfiles/directory")
-        assertThat(response, hasProperty("status", equalTo(401)))
-    }
+  @Test
+  fun test_getFilesFromDirectory_unauthorized() {
+    val response = mockMvcHandler.doGet("/api/localfiles/directory")
+    assertThat(response, hasProperty("status", equalTo(401)))
+  }
 
-    @Test
-    fun test_getFilesFromDirectory_missingRole() {
-        mockMvcHandler.token = token
-        val response = mockMvcHandler.doGet("/api/localfiles/directory")
-        assertThat(response, hasProperty("status", equalTo(403)))
-    }
-
+  @Test
+  fun test_getFilesFromDirectory_missingRole() {
+    mockMvcHandler.token = token
+    val response = mockMvcHandler.doGet("/api/localfiles/directory")
+    assertThat(response, hasProperty("status", equalTo(403)))
+  }
 }

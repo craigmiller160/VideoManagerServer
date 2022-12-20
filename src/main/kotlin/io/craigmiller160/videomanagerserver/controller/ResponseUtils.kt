@@ -18,12 +18,11 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
-import org.springframework.http.ResponseEntity
 import java.util.Optional
+import org.springframework.http.ResponseEntity
 
 fun <T> okOrNoContent(result: Optional<T>): ResponseEntity<T> =
-        result.map { ResponseEntity.ok(it) }
-                .orElseGet { ResponseEntity.noContent().build() }
+  result.map { ResponseEntity.ok(it) }.orElseGet { ResponseEntity.noContent().build() }
 
 fun <T> okOrNoContent(result: T?): ResponseEntity<T> =
-        result?.let { ResponseEntity.ok(result) } ?: ResponseEntity.noContent().build()
+  result?.let { ResponseEntity.ok(result) } ?: ResponseEntity.noContent().build()

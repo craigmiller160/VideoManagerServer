@@ -40,80 +40,69 @@ import org.springframework.test.context.web.WebAppConfiguration
 @ContextConfiguration
 class SettingsControllerTest : AbstractControllerTest() {
 
-    companion object {
-        private const val ROOT_DIR = "rootDir"
-    }
+  companion object {
+    private const val ROOT_DIR = "rootDir"
+  }
 
-    @MockBean
-    private lateinit var settingsService: SettingsService
+  @MockBean private lateinit var settingsService: SettingsService
 
-    @Autowired
-    private lateinit var settingsController: SettingsController
+  @Autowired private lateinit var settingsController: SettingsController
 
-    private lateinit var jacksonSettings: JacksonTester<SettingsPayload>
+  private lateinit var jacksonSettings: JacksonTester<SettingsPayload>
 
-    @Test
-    fun test_getSettings() {
-        val settings = SettingsPayload(
-                rootDir = ROOT_DIR
-        )
-        `when`(settingsService.getOrCreateSettings())
-                .thenReturn(settings)
+  @Test
+  fun test_getSettings() {
+    val settings = SettingsPayload(rootDir = ROOT_DIR)
+    `when`(settingsService.getOrCreateSettings()).thenReturn(settings)
 
-        mockMvcHandler.token = adminToken
-        val response = mockMvcHandler.doGet("/api/settings")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonSettings.write(settings).json))
-        ))
-    }
+    mockMvcHandler.token = adminToken
+    val response = mockMvcHandler.doGet("/api/settings")
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonSettings.write(settings).json))))
+  }
 
-    @Test
-    fun test_getSettings_unauthorized() {
-        val response = mockMvcHandler.doGet("/api/settings")
-        assertThat(response, hasProperty("status", equalTo(401)))
-    }
+  @Test
+  fun test_getSettings_unauthorized() {
+    val response = mockMvcHandler.doGet("/api/settings")
+    assertThat(response, hasProperty("status", equalTo(401)))
+  }
 
-    @Test
-    fun test_getSettings_missingRole() {
-        mockMvcHandler.token = token
-        val response = mockMvcHandler.doGet("/api/settings")
-        assertThat(response, hasProperty("status", equalTo(403)))
-    }
+  @Test
+  fun test_getSettings_missingRole() {
+    mockMvcHandler.token = token
+    val response = mockMvcHandler.doGet("/api/settings")
+    assertThat(response, hasProperty("status", equalTo(403)))
+  }
 
-    @Test
-    fun test_updateSettings() {
-        val settings = SettingsPayload(
-                rootDir = ROOT_DIR
-        )
-        `when`(settingsService.updateSettings(settings))
-                .thenReturn(settings)
+  @Test
+  fun test_updateSettings() {
+    val settings = SettingsPayload(rootDir = ROOT_DIR)
+    `when`(settingsService.updateSettings(settings)).thenReturn(settings)
 
-        mockMvcHandler.token = adminToken
-        val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonSettings.write(settings).json))
-        ))
-    }
+    mockMvcHandler.token = adminToken
+    val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonSettings.write(settings).json))))
+  }
 
-    @Test
-    fun test_updateSettings_unauthorized() {
-        val settings = SettingsPayload(
-                rootDir = ROOT_DIR
-        )
-        val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
-        assertThat(response, hasProperty("status", equalTo(401)))
-    }
+  @Test
+  fun test_updateSettings_unauthorized() {
+    val settings = SettingsPayload(rootDir = ROOT_DIR)
+    val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
+    assertThat(response, hasProperty("status", equalTo(401)))
+  }
 
-    @Test
-    fun test_updateSettings_missingRole() {
-        val settings = SettingsPayload(
-                rootDir = ROOT_DIR
-        )
-        mockMvcHandler.token = token
-        val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
-        assertThat(response, hasProperty("status", equalTo(403)))
-    }
-
+  @Test
+  fun test_updateSettings_missingRole() {
+    val settings = SettingsPayload(rootDir = ROOT_DIR)
+    mockMvcHandler.token = token
+    val response = mockMvcHandler.doPut("/api/settings", jacksonSettings.write(settings).json)
+    assertThat(response, hasProperty("status", equalTo(403)))
+  }
 }

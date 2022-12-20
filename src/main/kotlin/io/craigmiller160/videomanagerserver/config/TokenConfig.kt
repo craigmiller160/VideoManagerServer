@@ -18,30 +18,30 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Configuration
-import org.springframework.validation.annotation.Validated
 import java.util.*
 import javax.annotation.PostConstruct
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
+import org.springframework.validation.annotation.Validated
 
 @Suppress("ConfigurationProperties")
 @Configuration
 @Validated
 @ConfigurationProperties(prefix = "video.security.token")
-data class TokenConfig (
-        var expSecs: Int = 0,
-        var refreshExpSecs: Int = 0,
-        var videoExpSecs: Int = 0,
-        var key: String = ""
+data class TokenConfig(
+  var expSecs: Int = 0,
+  var refreshExpSecs: Int = 0,
+  var videoExpSecs: Int = 0,
+  var key: String = ""
 ) {
 
-    lateinit var secretKey: SecretKey
+  lateinit var secretKey: SecretKey
 
-    @PostConstruct
-    fun createKey() {
-        val decodedKey = Base64.getDecoder().decode(key);
-        secretKey = SecretKeySpec(decodedKey, 0, decodedKey.size, "AES");
-    }
+  @PostConstruct
+  fun createKey() {
+    val decodedKey = Base64.getDecoder().decode(key)
+    secretKey = SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
+  }
 }

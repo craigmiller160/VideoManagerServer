@@ -28,22 +28,18 @@ import org.junit.Test
 
 class CategoryPayloadToCategoryHandlerTest {
 
-    private val handler = CategoryPayloadToCategoryHandler()
+  private val handler = CategoryPayloadToCategoryHandler()
 
-    @Test
-    fun test_handleExisting() {
-        val source = CategoryPayload()
-        val existing = Category(
-                hidden = true
-        )
-        val destination = Category(
-                categoryName = "Category"
-        )
-        handler.handleExisting(source, existing, destination)
-        assertThat(destination, allOf(
-                hasProperty("categoryName", equalTo(destination.categoryName)),
-                hasProperty("hidden", equalTo(existing.hidden))
-        ))
-    }
-
+  @Test
+  fun test_handleExisting() {
+    val source = CategoryPayload()
+    val existing = Category(hidden = true)
+    val destination = Category(categoryName = "Category")
+    handler.handleExisting(source, existing, destination)
+    assertThat(
+      destination,
+      allOf(
+        hasProperty("categoryName", equalTo(destination.categoryName)),
+        hasProperty("hidden", equalTo(existing.hidden))))
+  }
 }

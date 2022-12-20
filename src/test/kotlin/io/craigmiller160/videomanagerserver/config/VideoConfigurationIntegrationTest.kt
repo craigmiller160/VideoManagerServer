@@ -31,26 +31,23 @@ import org.springframework.test.context.junit4.SpringRunner
 @SpringBootTest
 class VideoConfigurationIntegrationTest {
 
-    companion object {
-        private const val FILE_PATH_ROOT = "FILE_PATH_ROOT"
-        private const val PAGE_SIZE = 10
-        private const val FILE_EXTS = "FILE_EXTS"
-    }
+  companion object {
+    private const val FILE_PATH_ROOT = "FILE_PATH_ROOT"
+    private const val PAGE_SIZE = 10
+    private const val FILE_EXTS = "FILE_EXTS"
+  }
 
-    @MockBean
-    private lateinit var oauthConfig: OAuth2Config
+  @MockBean private lateinit var oauthConfig: OAuth2Config
 
-    @Autowired
-    private lateinit var videoConfig: VideoConfiguration
+  @Autowired private lateinit var videoConfig: VideoConfiguration
 
-    @Test
-    fun testApiPageSize() {
-        assertEquals(PAGE_SIZE, videoConfig.apiPageSize)
-    }
+  @Test
+  fun testApiPageSize() {
+    assertEquals(PAGE_SIZE, videoConfig.apiPageSize)
+  }
 
-    @Test
-    fun testFileExts() {
-        assertEquals(FILE_EXTS, videoConfig.fileExts)
-    }
-
+  @Test
+  fun testFileExts() {
+    assertEquals(FILE_EXTS, videoConfig.fileExts)
+  }
 }

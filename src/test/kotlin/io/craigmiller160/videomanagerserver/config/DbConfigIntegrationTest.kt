@@ -32,48 +32,45 @@ import org.springframework.test.context.junit4.SpringRunner
 @SpringBootTest
 class DbConfigIntegrationTest {
 
-    companion object {
-        private const val URL = "jdbc:h2:mem:testdb"
-        private const val USERNAME = "user"
-        private const val PASSWORD = "password"
-        private const val DRIVER_CLASS_NAME = "org.h2.Driver"
-        private const val DB = "test"
-    }
+  companion object {
+    private const val URL = "jdbc:h2:mem:testdb"
+    private const val USERNAME = "user"
+    private const val PASSWORD = "password"
+    private const val DRIVER_CLASS_NAME = "org.h2.Driver"
+    private const val DB = "test"
+  }
 
-    @MockBean
-    private lateinit var oauthConfig: OAuth2Config
+  @MockBean private lateinit var oauthConfig: OAuth2Config
 
-    @Autowired
-    private lateinit var dbConfig: DbConfig
+  @Autowired private lateinit var dbConfig: DbConfig
 
-    @Test
-    fun testUrl() {
-        assertEquals(URL, dbConfig.url)
-    }
+  @Test
+  fun testUrl() {
+    assertEquals(URL, dbConfig.url)
+  }
 
-    @Test
-    fun testUsername() {
-        assertEquals(USERNAME, dbConfig.username)
-    }
+  @Test
+  fun testUsername() {
+    assertEquals(USERNAME, dbConfig.username)
+  }
 
-    @Test
-    fun testPassword() {
-        assertEquals(PASSWORD, dbConfig.password)
-    }
+  @Test
+  fun testPassword() {
+    assertEquals(PASSWORD, dbConfig.password)
+  }
 
-    @Test
-    fun testDriverClassName() {
-        assertEquals(DRIVER_CLASS_NAME, dbConfig.driverClassName)
-    }
+  @Test
+  fun testDriverClassName() {
+    assertEquals(DRIVER_CLASS_NAME, dbConfig.driverClassName)
+  }
 
-    @Test
-    fun testDb() {
-        assertEquals(DB, dbConfig.db)
-    }
+  @Test
+  fun testDb() {
+    assertEquals(DB, dbConfig.db)
+  }
 
-    @Test
-    fun testDocker() {
-        assertTrue(dbConfig.docker)
-    }
-
+  @Test
+  fun testDocker() {
+    assertTrue(dbConfig.docker)
+  }
 }

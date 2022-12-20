@@ -20,18 +20,17 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 
 object TokenConstants {
 
-    const val CLAIM_SUBJECT = "sub"
-    const val CLAIM_ROLES = "roles"
-    const val CLAIM_VIDEO_ID = "videoId"
-    const val CLAIM_EXP = "exp"
-    const val CLAIM_FILE_PATH = "filePath"
+  const val CLAIM_SUBJECT = "sub"
+  const val CLAIM_ROLES = "roles"
+  const val CLAIM_VIDEO_ID = "videoId"
+  const val CLAIM_EXP = "exp"
+  const val CLAIM_FILE_PATH = "filePath"
 
-    const val PARAM_VIDEO_ID = "videoId"
-    const val PARAM_FILE_PATH = "filePath"
-    const val PARAM_USER_ID = "userId"
+  const val PARAM_VIDEO_ID = "videoId"
+  const val PARAM_FILE_PATH = "filePath"
+  const val PARAM_USER_ID = "userId"
 
-    const val VIDEO_TOKEN_SEPARATOR = "::"
+  const val VIDEO_TOKEN_SEPARATOR = "::"
 
-    const val QUERY_PARAM_VIDEO_TOKEN = "videoToken"
-
+  const val QUERY_PARAM_VIDEO_TOKEN = "videoToken"
 }

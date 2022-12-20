@@ -28,29 +28,28 @@ import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.springframework.stereotype.Service
 
 @Service
-class AuthService (
-        private val videoTokenProvider: VideoTokenProvider,
-        private val securityContextService: SecurityContextService,
-        private val settingsService: SettingsService,
-        private val videoFileService: VideoFileService
+class AuthService(
+  private val videoTokenProvider: VideoTokenProvider,
+  private val securityContextService: SecurityContextService,
+  private val settingsService: SettingsService,
+  private val videoFileService: VideoFileService
 ) {
 
-    fun getVideoToken(videoId: Long): VideoTokenResponse {
-        val userName = securityContextService.getUserName()
-        val rootDirectory = settingsService.getOrCreateSettings().rootDir
-        if (rootDirectory.isEmpty()) {
-            throw IllegalStateException("Root directory is not set")
-        }
-        val videoFile = videoFileService.getVideoFile(videoId)
-                ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
-        val filePath = videoFile.fileName
-        val fullFilePath = "${ensureTrailingSlash(rootDirectory)}$filePath"
-        val params = mapOf(
-                TokenConstants.PARAM_VIDEO_ID to videoId,
-                TokenConstants.PARAM_FILE_PATH to fullFilePath
-        )
-        val token = videoTokenProvider.createToken(userName, params)
-        return VideoTokenResponse(token)
+  fun getVideoToken(videoId: Long): VideoTokenResponse {
+    val userName = securityContextService.getUserName()
+    val rootDirectory = settingsService.getOrCreateSettings().rootDir
+    if (rootDirectory.isEmpty()) {
+      throw IllegalStateException("Root directory is not set")
     }
-
+    val videoFile =
+      videoFileService.getVideoFile(videoId)
+        ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
+    val filePath = videoFile.fileName
+    val fullFilePath = "${ensureTrailingSlash(rootDirectory)}$filePath"
+    val params =
+      mapOf(
+        TokenConstants.PARAM_VIDEO_ID to videoId, TokenConstants.PARAM_FILE_PATH to fullFilePath)
+    val token = videoTokenProvider.createToken(userName, params)
+    return VideoTokenResponse(token)
+  }
 }

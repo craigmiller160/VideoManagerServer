@@ -35,40 +35,40 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/series")
-class SeriesController @Autowired constructor(
-        private val seriesService: SeriesService
-) {
+class SeriesController @Autowired constructor(private val seriesService: SeriesService) {
 
-    @GetMapping
-    fun getAllSeries(): ResponseEntity<List<SeriesPayload>> {
-        val series = seriesService.getAllSeries()
-        if (series.isEmpty()) {
-            return ResponseEntity.noContent().build()
-        }
-        return ResponseEntity.ok(series)
+  @GetMapping
+  fun getAllSeries(): ResponseEntity<List<SeriesPayload>> {
+    val series = seriesService.getAllSeries()
+    if (series.isEmpty()) {
+      return ResponseEntity.noContent().build()
     }
+    return ResponseEntity.ok(series)
+  }
 
-    @GetMapping("/{seriesId}")
-    fun getSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
-        return okOrNoContent(seriesService.getSeries(seriesId))
-    }
+  @GetMapping("/{seriesId}")
+  fun getSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
+    return okOrNoContent(seriesService.getSeries(seriesId))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PostMapping
-    fun addSeries(@RequestBody series: SeriesPayload): ResponseEntity<SeriesPayload> {
-        return ResponseEntity.ok(seriesService.addSeries(series))
-    }
+  @Secured(ROLE_EDIT)
+  @PostMapping
+  fun addSeries(@RequestBody series: SeriesPayload): ResponseEntity<SeriesPayload> {
+    return ResponseEntity.ok(seriesService.addSeries(series))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PutMapping("/{seriesId}")
-    fun updateSeries(@PathVariable seriesId: Long, @RequestBody series: SeriesPayload): ResponseEntity<SeriesPayload> {
-        return okOrNoContent(seriesService.updateSeries(seriesId, series))
-    }
+  @Secured(ROLE_EDIT)
+  @PutMapping("/{seriesId}")
+  fun updateSeries(
+    @PathVariable seriesId: Long,
+    @RequestBody series: SeriesPayload
+  ): ResponseEntity<SeriesPayload> {
+    return okOrNoContent(seriesService.updateSeries(seriesId, series))
+  }
 
-    @Secured(ROLE_EDIT)
-    @DeleteMapping("/{seriesId}")
-    fun deleteSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
-        return okOrNoContent(seriesService.deleteSeries(seriesId))
-    }
-
+  @Secured(ROLE_EDIT)
+  @DeleteMapping("/{seriesId}")
+  fun deleteSeries(@PathVariable seriesId: Long): ResponseEntity<SeriesPayload> {
+    return okOrNoContent(seriesService.deleteSeries(seriesId))
+  }
 }

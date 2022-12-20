@@ -26,15 +26,14 @@ import org.springframework.stereotype.Service
 @Service
 class SecurityContextService {
 
-    fun getSecurityContext(): SecurityContext = SecurityContextHolder.getContext()
+  fun getSecurityContext(): SecurityContext = SecurityContextHolder.getContext()
 
-    fun getUserName(): String {
-        val principal = getSecurityContext().authentication.principal
-        if (principal is UserDetails) {
-            return principal.username
-        }
-
-        return principal.toString()
+  fun getUserName(): String {
+    val principal = getSecurityContext().authentication.principal
+    if (principal is UserDetails) {
+      return principal.username
     }
 
+    return principal.toString()
+  }
 }

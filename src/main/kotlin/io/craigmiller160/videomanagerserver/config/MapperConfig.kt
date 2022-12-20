@@ -27,14 +27,13 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class MapperConfig {
 
-    @Bean
-    fun modelMapper(): VMModelMapper {
-        val videoFilePayloadHandler = VideoFilePayloadToVideoFileHandler()
-        val categoryPayloadHandler = CategoryPayloadToCategoryHandler()
-        val mapper = VMModelMapper()
-        mapper.existingPropHandlers += videoFilePayloadHandler.key to videoFilePayloadHandler
-        mapper.existingPropHandlers += categoryPayloadHandler.key to categoryPayloadHandler
-        return mapper
-    }
-
+  @Bean
+  fun modelMapper(): VMModelMapper {
+    val videoFilePayloadHandler = VideoFilePayloadToVideoFileHandler()
+    val categoryPayloadHandler = CategoryPayloadToCategoryHandler()
+    val mapper = VMModelMapper()
+    mapper.existingPropHandlers += videoFilePayloadHandler.key to videoFilePayloadHandler
+    mapper.existingPropHandlers += categoryPayloadHandler.key to categoryPayloadHandler
+    return mapper
+  }
 }
