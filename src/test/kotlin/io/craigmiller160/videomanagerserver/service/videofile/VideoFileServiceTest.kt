@@ -18,27 +18,16 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SettingsPayload
-import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.dto.*
+import io.craigmiller160.videomanagerserver.entity.IsScanning
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
-import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
-import io.craigmiller160.videomanagerserver.repository.FileStarRepository
-import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
@@ -46,6 +35,7 @@ import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.assertEquals
 import org.hamcrest.Matchers
 import org.junit.After
@@ -59,6 +49,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -103,6 +94,8 @@ class VideoFileServiceTest {
     private lateinit var searchQueryBuilder: SearchQueryBuilder
     @Mock
     private lateinit var videoFileRepo: VideoFileRepository
+    @Mock
+    private lateinit var isScanningRepo: IsScanningRepository
     @Spy
     private lateinit var videoConfig: VideoConfiguration
     @Mock
@@ -125,10 +118,6 @@ class VideoFileServiceTest {
     @Before
     fun setup() {
         SecurityContextHolder.clearContext()
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        fileScanRunning.set(false)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-        lastScanSuccess.set(true)
 
         videoConfig.apiPageSize = 10
     }
@@ -230,24 +219,18 @@ class VideoFileServiceTest {
 
     @Test
     fun testStartVideoFileScan() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-        lastScanSuccess.set(false)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(
+                IsScanning(
+                id = 1L
+            )
+            ))
 
-        var status = videoFileService.startVideoFileScan()
+        val status = videoFileService.startVideoFileScan()
         Assert.assertThat(status, Matchers.allOf(
                 Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
                 Matchers.hasProperty("alreadyRunning", Matchers.equalTo(false)),
                 Matchers.hasProperty("message", Matchers.equalTo(SCAN_STATUS_RUNNING)),
-                Matchers.hasProperty("scanError", Matchers.equalTo(false))
-        ))
-
-        fileScanRunning.set(true)
-        status = videoFileService.startVideoFileScan()
-        Assert.assertThat(status, Matchers.allOf(
-                Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
-                Matchers.hasProperty("alreadyRunning", Matchers.equalTo(true)),
-                Matchers.hasProperty("message", Matchers.equalTo(SCAN_STATUS_ALREADY_RUNNING)),
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
@@ -256,10 +239,11 @@ class VideoFileServiceTest {
 
     @Test
     fun test_startVideoFileScan_scanError() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-
-        Mockito.`when`(fileScanner.scanForFiles(any()))
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L
+            )))
+        whenever(fileScanner.scanForFiles(any()))
                 .thenThrow(InvalidSettingException())
 
         var exception: Exception? = null
@@ -271,15 +255,52 @@ class VideoFileServiceTest {
             exception = ex
         }
 
+        val captor = argumentCaptor<IsScanning>()
+
         Assert.assertNotNull(exception)
-        Assert.assertFalse(fileScanRunning.get())
-        Assert.assertFalse(lastScanSuccess.get())
+        verify(isScanningRepo, times(2))
+            .save(captor.capture())
+
+        assertEquals(2, captor.allValues.size)
+        val errorIsScanning = captor.allValues[1]
+        assertThat(errorIsScanning).hasFieldOrPropertyWithValue("isScanning", false)
+            .hasFieldOrPropertyWithValue("lastScanSuccess", false)
+    }
+
+    @Test
+    fun test_startVideoFileScan_scanRunning() {
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                isScanning = true
+            )))
+        val expectedStatus = createScanAlreadyRunningStatus()
+        val result = videoFileService.startVideoFileScan()
+        assertEquals(expectedStatus, result)
+    }
+
+    @Test
+    fun test_startVideoFileScan_optimisticLockingException() {
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L
+            )))
+        whenever(isScanningRepo.save(any<IsScanning>()))
+            .thenThrow(OptimisticLockingFailureException("Dying"))
+
+        val expectedStatus = createScanAlreadyRunningStatus()
+        val result = videoFileService.startVideoFileScan()
+        assertEquals(expectedStatus, result)
     }
 
     @Test
     fun testIsVideoFileScanRunning() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(
+                IsScanning(
+                id = 1L
+            )
+            ))
         var status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
                 Matchers.hasProperty("inProgress", Matchers.equalTo(false)),
@@ -288,7 +309,11 @@ class VideoFileServiceTest {
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
-        fileScanRunning.set(true)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                isScanning = true
+            )))
 
         status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
@@ -298,8 +323,11 @@ class VideoFileServiceTest {
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
-        fileScanRunning.set(false)
-        lastScanSuccess.set(false)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                lastScanSuccess = false
+            )))
 
         status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
