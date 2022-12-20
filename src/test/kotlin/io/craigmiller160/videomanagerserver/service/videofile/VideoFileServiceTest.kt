@@ -188,7 +188,7 @@ class VideoFileServiceTest {
 
     var actualFile = videoFileService.deleteVideoFile(1)
     assertNotNull(actualFile)
-    assertEquals(expectedFilePayloads[0], actualFile)
+    assertEquals(modelMapper.map(videoFile, VideoFilePayload::class.java), actualFile)
 
     assertFalse { Files.exists(filePath) }
 
