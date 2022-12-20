@@ -35,8 +35,11 @@ import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
+import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import java.io.File
 import java.lang.IllegalStateException
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import javax.persistence.EntityManager
 import org.springframework.core.io.UrlResource
@@ -57,7 +60,8 @@ class VideoFileService(
   private val fileSeriesRepo: FileSeriesRepository,
   private val fileStarRepo: FileStarRepository,
   private val modelMapper: VMModelMapper,
-  private val isScanningRepo: IsScanningRepository
+  private val isScanningRepo: IsScanningRepository,
+  private val settingsService: SettingsService
 ) {
 
   private fun getIsScanning(): IsScanning =
@@ -115,9 +119,16 @@ class VideoFileService(
     fileStarRepo.deleteAllByFileId(fileId)
     fileSeriesRepo.deleteAllByFileId(fileId)
     videoFileRepo.deleteById(fileId)
+    videoFileOptional.ifPresent { deleteFile(it.fileName) }
     return videoFileOptional
       .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
       .orElse(null)
+  }
+
+  private fun deleteFile(filePath: String) {
+    val rootDir = settingsService.getOrCreateSettings().rootDir
+    val path = Paths.get(rootDir, filePath)
+    Files.deleteIfExists(path)
   }
 
   fun startVideoFileScan(): FileScanStatusResponse {
