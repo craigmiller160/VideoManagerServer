@@ -24,13 +24,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ALREADY_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_ERROR
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_NOT_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SCAN_STATUS_RUNNING
-import io.craigmiller160.videomanagerserver.dto.SettingsPayload
-import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
@@ -278,7 +272,9 @@ class VideoFileServiceTest {
 
     @Test
     fun test_startVideoFileScan_scanRunning() {
-        TODO()
+        val expectedStatus = createScanAlreadyRunningStatus()
+        val result = videoFileService.startVideoFileScan()
+        assertEquals(expectedStatus, result)
     }
 
     @Test
