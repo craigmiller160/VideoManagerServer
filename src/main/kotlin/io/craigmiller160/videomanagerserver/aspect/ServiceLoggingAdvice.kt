@@ -29,14 +29,14 @@ import org.springframework.stereotype.Component
 @Aspect
 class ServiceLoggingAdvice {
 
-    private val logger = LoggerFactory.getLogger(ServiceLoggingAdvice::class.java)
+  private val logger = LoggerFactory.getLogger(ServiceLoggingAdvice::class.java)
 
-    @Pointcut("execution(public * io.craigmiller160.videomanagerserver.service.impl.*ServiceImpl.*(..))")
-    fun servicePublicMethods() { }
+  @Pointcut(
+    "execution(public * io.craigmiller160.videomanagerserver.service.impl.*ServiceImpl.*(..))")
+  fun servicePublicMethods() {}
 
-    @Before("servicePublicMethods()")
-    fun logMethodCall(joinPoint: JoinPoint) {
-        logger.trace("Entering: ${joinPoint.signature.name}")
-    }
-
+  @Before("servicePublicMethods()")
+  fun logMethodCall(joinPoint: JoinPoint) {
+    logger.trace("Entering: ${joinPoint.signature.name}")
+  }
 }

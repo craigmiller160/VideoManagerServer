@@ -26,8 +26,4 @@ const val SETTINGS_ID = 1L
 
 @Entity
 @Table(name = "settings")
-data class Settings (
-        @Id
-        var settingsId: Long = 0,
-        var rootDir: String = ""
-)
+data class Settings(@Id var settingsId: Long = 0, var rootDir: String = "")

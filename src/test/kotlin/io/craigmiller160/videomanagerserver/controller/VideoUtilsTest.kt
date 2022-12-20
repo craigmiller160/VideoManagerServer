@@ -24,8 +24,8 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
@@ -34,41 +34,39 @@ import org.springframework.http.HttpRange
 @RunWith(MockitoJUnitRunner::class)
 class VideoUtilsTest {
 
-    @Test
-    fun test_resourceRegion() {
-        val contentLength = 20L
-        val video = mock(UrlResource::class.java)
-        val headers = mock(HttpHeaders::class.java)
-        val range = mock(HttpRange::class.java)
+  @Test
+  fun test_resourceRegion() {
+    val contentLength = 20L
+    val video = mock(UrlResource::class.java)
+    val headers = mock(HttpHeaders::class.java)
+    val range = mock(HttpRange::class.java)
 
-        `when`(video.contentLength())
-                .thenReturn(contentLength)
-        `when`(headers.range)
-                .thenReturn(listOf(range))
+    `when`(video.contentLength()).thenReturn(contentLength)
+    `when`(headers.range).thenReturn(listOf(range))
 
-        val result = resourceRegion(video, headers)
-        assertThat(result, allOf(
-                hasProperty("count", equalTo(20L)),
-                hasProperty("position", equalTo(0L)),
-                hasProperty("resource", equalTo(video))
-        ))
-    }
+    val result = resourceRegion(video, headers)
+    assertThat(
+      result,
+      allOf(
+        hasProperty("count", equalTo(20L)),
+        hasProperty("position", equalTo(0L)),
+        hasProperty("resource", equalTo(video))))
+  }
 
-    @Test
-    fun test_resourceRegion_noRange() {
-        val contentLength = 20L
-        val video = mock(UrlResource::class.java)
-        val headers = mock(HttpHeaders::class.java)
+  @Test
+  fun test_resourceRegion_noRange() {
+    val contentLength = 20L
+    val video = mock(UrlResource::class.java)
+    val headers = mock(HttpHeaders::class.java)
 
-        `when`(video.contentLength())
-                .thenReturn(contentLength)
+    `when`(video.contentLength()).thenReturn(contentLength)
 
-        val result = resourceRegion(video, headers)
-        assertThat(result, allOf(
-                hasProperty("count", equalTo(20L)),
-                hasProperty("position", equalTo(0L)),
-                hasProperty("resource", equalTo(video))
-        ))
-    }
-
+    val result = resourceRegion(video, headers)
+    assertThat(
+      result,
+      allOf(
+        hasProperty("count", equalTo(20L)),
+        hasProperty("position", equalTo(0L)),
+        hasProperty("resource", equalTo(video))))
+  }
 }

@@ -35,40 +35,40 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/categories")
-class CategoryController @Autowired constructor(
-        private val categoryService: CategoryService
-) {
+class CategoryController @Autowired constructor(private val categoryService: CategoryService) {
 
-    @GetMapping
-    fun getAllCategories(): ResponseEntity<List<CategoryPayload>> {
-        val categories = categoryService.getAllCategories()
-        if (categories.isEmpty()) {
-            return ResponseEntity.noContent().build()
-        }
-        return ResponseEntity.ok(categories)
+  @GetMapping
+  fun getAllCategories(): ResponseEntity<List<CategoryPayload>> {
+    val categories = categoryService.getAllCategories()
+    if (categories.isEmpty()) {
+      return ResponseEntity.noContent().build()
     }
+    return ResponseEntity.ok(categories)
+  }
 
-    @GetMapping("/{categoryId}")
-    fun getCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
-        return okOrNoContent(categoryService.getCategory(categoryId))
-    }
+  @GetMapping("/{categoryId}")
+  fun getCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
+    return okOrNoContent(categoryService.getCategory(categoryId))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PostMapping
-    fun addCategory(@RequestBody category: CategoryPayload): ResponseEntity<CategoryPayload> {
-        return ResponseEntity.ok(categoryService.addCategory(category))
-    }
+  @Secured(ROLE_EDIT)
+  @PostMapping
+  fun addCategory(@RequestBody category: CategoryPayload): ResponseEntity<CategoryPayload> {
+    return ResponseEntity.ok(categoryService.addCategory(category))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PutMapping("/{categoryId}")
-    fun updateCategory(@PathVariable categoryId: Long, @RequestBody category: CategoryPayload): ResponseEntity<CategoryPayload> {
-        return okOrNoContent(categoryService.updateCategory(categoryId, category))
-    }
+  @Secured(ROLE_EDIT)
+  @PutMapping("/{categoryId}")
+  fun updateCategory(
+    @PathVariable categoryId: Long,
+    @RequestBody category: CategoryPayload
+  ): ResponseEntity<CategoryPayload> {
+    return okOrNoContent(categoryService.updateCategory(categoryId, category))
+  }
 
-    @Secured(ROLE_EDIT)
-    @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
-        return okOrNoContent(categoryService.deleteCategory(categoryId))
-    }
-
+  @Secured(ROLE_EDIT)
+  @DeleteMapping("/{categoryId}")
+  fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<CategoryPayload> {
+    return okOrNoContent(categoryService.deleteCategory(categoryId))
+  }
 }

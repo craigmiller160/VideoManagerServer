@@ -35,170 +35,172 @@ import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
+import java.io.File
+import java.lang.IllegalStateException
+import java.time.LocalDateTime
+import javax.persistence.EntityManager
 import org.springframework.core.io.UrlResource
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import java.io.File
-import java.lang.IllegalStateException
-import java.time.LocalDateTime
-import javax.persistence.EntityManager
 
 @Service
-class VideoFileService (
-        private val videoFileRepo: VideoFileRepository,
-        private val videoConfig: VideoConfiguration,
-        private val fileScanner: FileScanner,
-        private val entityManager: EntityManager,
-        private val searchQueryBuilder: SearchQueryBuilder,
-        private val fileCategoryRepo: FileCategoryRepository,
-        private val fileSeriesRepo: FileSeriesRepository,
-        private val fileStarRepo: FileStarRepository,
-        private val modelMapper: VMModelMapper,
-        private val isScanningRepo: IsScanningRepository
+class VideoFileService(
+  private val videoFileRepo: VideoFileRepository,
+  private val videoConfig: VideoConfiguration,
+  private val fileScanner: FileScanner,
+  private val entityManager: EntityManager,
+  private val searchQueryBuilder: SearchQueryBuilder,
+  private val fileCategoryRepo: FileCategoryRepository,
+  private val fileSeriesRepo: FileSeriesRepository,
+  private val fileStarRepo: FileStarRepository,
+  private val modelMapper: VMModelMapper,
+  private val isScanningRepo: IsScanningRepository
 ) {
 
-    private fun getIsScanning(): IsScanning =
-        isScanningRepo.findById(1L)
-            .orElseThrow { IllegalStateException("Missing required Is Scanning record") }
-
-    private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
-        return Sort.by(
-                Sort.Order(sortDirection, "displayName", Sort.NullHandling.NULLS_FIRST),
-                Sort.Order(sortDirection, "fileName", Sort.NullHandling.NULLS_FIRST)
-        )
+  private fun getIsScanning(): IsScanning =
+    isScanningRepo.findById(1L).orElseThrow {
+      IllegalStateException("Missing required Is Scanning record")
     }
 
-    fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFilePayload> {
-        val sort = getVideoFileSort(Sort.Direction.valueOf(value = sortDirection))
-        val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
-        return videoFileRepo.findAll(pageable)
-                .stream()
-                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
-                .toList()
-    }
+  private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
+    return Sort.by(
+      Sort.Order(sortDirection, "displayName", Sort.NullHandling.NULLS_FIRST),
+      Sort.Order(sortDirection, "fileName", Sort.NullHandling.NULLS_FIRST))
+  }
 
-    fun getVideoFile(fileId: Long): VideoFilePayload? {
-        return videoFileRepo.findById(fileId)
-                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
-                .orElse(null)
-    }
+  fun getAllVideoFiles(page: Int, sortDirection: String): List<VideoFilePayload> {
+    val sort = getVideoFileSort(Sort.Direction.valueOf(value = sortDirection))
+    val pageable = PageRequest.of(page, videoConfig.apiPageSize, sort)
+    return videoFileRepo
+      .findAll(pageable)
+      .stream()
+      .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+      .toList()
+  }
 
-    fun addVideoFile(payload: VideoFilePayload): VideoFilePayload {
-        val videoFile = modelMapper.map(payload, VideoFile::class.java)
-        videoFile.active = true
+  fun getVideoFile(fileId: Long): VideoFilePayload? {
+    return videoFileRepo
+      .findById(fileId)
+      .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+      .orElse(null)
+  }
+
+  fun addVideoFile(payload: VideoFilePayload): VideoFilePayload {
+    val videoFile = modelMapper.map(payload, VideoFile::class.java)
+    videoFile.active = true
+    val savedVideoFile = videoFileRepo.save(videoFile)
+    return modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
+  }
+
+  fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
+    return videoFileRepo
+      .findById(fileId)
+      .map { existingFile ->
+        val videoFile = modelMapper.mapFromExisting(payload, existingFile)
+        videoFile.fileId = fileId
+        videoFile.viewCount = existingFile.viewCount
+        videoFile.lastViewed = existingFile.lastViewed
         val savedVideoFile = videoFileRepo.save(videoFile)
-        return modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
+        modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
+      }
+      .orElse(null)
+  }
+
+  fun deleteVideoFile(fileId: Long): VideoFilePayload? {
+    val videoFileOptional = videoFileRepo.findById(fileId)
+    fileCategoryRepo.deleteAllByFileId(fileId)
+    fileStarRepo.deleteAllByFileId(fileId)
+    fileSeriesRepo.deleteAllByFileId(fileId)
+    videoFileRepo.deleteById(fileId)
+    return videoFileOptional
+      .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
+      .orElse(null)
+  }
+
+  fun startVideoFileScan(): FileScanStatusResponse {
+    val isScanning = getIsScanning()
+    if (isScanning.isScanning) {
+      return createScanAlreadyRunningStatus()
+    }
+    isScanning.isScanning = true
+    isScanning.lastScanSuccess = true
+    try {
+      isScanningRepo.save(isScanning)
+    } catch (ex: OptimisticLockingFailureException) {
+      return createScanAlreadyRunningStatus()
     }
 
-    fun updateVideoFile(fileId: Long, payload: VideoFilePayload): VideoFilePayload? {
-        return videoFileRepo.findById(fileId)
-                .map { existingFile ->
-                    val videoFile = modelMapper.mapFromExisting(payload, existingFile)
-                    videoFile.fileId = fileId
-                    videoFile.viewCount = existingFile.viewCount
-                    videoFile.lastViewed = existingFile.lastViewed
-                    val savedVideoFile = videoFileRepo.save(videoFile)
-                    modelMapper.map(savedVideoFile, VideoFilePayload::class.java)
-                }
-                .orElse(null)
+    try {
+      fileScanner.scanForFiles { result ->
+        val isScanningForResult = getIsScanning()
+        isScanningForResult.isScanning = false
+        isScanningForResult.lastScanSuccess = result
+        isScanningRepo.save(isScanningForResult)
+      }
+    } catch (ex: Exception) {
+      val isScanningForError = getIsScanning()
+      isScanningForError.isScanning = false
+      isScanningForError.lastScanSuccess = false
+      isScanningRepo.save(isScanningForError)
+      throw ex
     }
 
-    fun deleteVideoFile(fileId: Long): VideoFilePayload? {
-        val videoFileOptional = videoFileRepo.findById(fileId)
-        fileCategoryRepo.deleteAllByFileId(fileId)
-        fileStarRepo.deleteAllByFileId(fileId)
-        fileSeriesRepo.deleteAllByFileId(fileId)
-        videoFileRepo.deleteById(fileId)
-        return videoFileOptional
-                .map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
-                .orElse(null)
+    return createScanRunningStatus()
+  }
+
+  fun isVideoFileScanRunning(): FileScanStatusResponse {
+    val isScanning = getIsScanning()
+    if (isScanning.isScanning) {
+      return createScanRunningStatus()
     }
 
-    fun startVideoFileScan(): FileScanStatusResponse {
-        val isScanning = getIsScanning()
-        if (isScanning.isScanning) {
-            return createScanAlreadyRunningStatus()
-        }
-        isScanning.isScanning = true
-        isScanning.lastScanSuccess = true
-        try {
-            isScanningRepo.save(isScanning)
-        } catch (ex: OptimisticLockingFailureException) {
-            return createScanAlreadyRunningStatus()
-        }
-
-        try {
-            fileScanner.scanForFiles { result ->
-                val isScanningForResult = getIsScanning()
-                isScanningForResult.isScanning = false
-                isScanningForResult.lastScanSuccess = result
-                isScanningRepo.save(isScanningForResult)
-            }
-        }
-        catch (ex: Exception) {
-            val isScanningForError = getIsScanning()
-            isScanningForError.isScanning = false
-            isScanningForError.lastScanSuccess = false
-            isScanningRepo.save(isScanningForError)
-            throw ex
-        }
-
-        return createScanRunningStatus()
+    if (isScanning.lastScanSuccess) {
+      return createScanNotRunningStatus()
     }
 
-    fun isVideoFileScanRunning(): FileScanStatusResponse {
-        val isScanning = getIsScanning()
-        if (isScanning.isScanning) {
-            return createScanRunningStatus()
-        }
+    return createScanErrorStatus()
+  }
 
-        if (isScanning.lastScanSuccess) {
-            return createScanNotRunningStatus()
-        }
+  fun playVideo(fileId: Long): UrlResource {
+    val auth = SecurityContextHolder.getContext().authentication as VideoTokenAuthentication
+    return UrlResource(File(auth.filePath).toURI())
+  }
 
-        return createScanErrorStatus()
+  fun recordNewVideoPlay(fileId: Long) {
+    val dbVideoFile =
+      videoFileRepo.findById(fileId).orElseThrow {
+        VideoFileNotFoundException("Could not find video file in DB by ID: $fileId")
+      }
+    dbVideoFile.viewCount++
+    dbVideoFile.lastViewed = LocalDateTime.now()
+    videoFileRepo.save(dbVideoFile)
+  }
+
+  fun searchForVideos(search: VideoSearchRequest): VideoSearchResponse {
+    val page = search.page
+    val pageSize = videoConfig.apiPageSize
+
+    val searchQueryString = searchQueryBuilder.buildEntitySearchQuery(search)
+    val countQueryString = searchQueryBuilder.buildCountSearchQuery(search)
+
+    val searchQuery = entityManager.createQuery(searchQueryString)
+    val countQuery = entityManager.createQuery(countQueryString)
+    searchQueryBuilder.addParamsToQuery(search, searchQuery)
+    searchQueryBuilder.addParamsToQuery(search, countQuery)
+
+    val videoList =
+      searchQuery.setFirstResult(page * pageSize).setMaxResults(pageSize).resultList
+        as List<VideoFile>
+    val totalCount = countQuery.singleResult as Long
+
+    return VideoSearchResponse().apply {
+      totalFiles = totalCount
+      filesPerPage = pageSize
+      currentPage = page
+      this.videoList = videoList.map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
     }
-
-    fun playVideo(fileId: Long): UrlResource {
-        val auth = SecurityContextHolder.getContext().authentication as VideoTokenAuthentication
-        return UrlResource(File(auth.filePath).toURI())
-    }
-
-    fun recordNewVideoPlay(fileId: Long) {
-        val dbVideoFile = videoFileRepo.findById(fileId)
-                .orElseThrow { VideoFileNotFoundException("Could not find video file in DB by ID: $fileId") }
-        dbVideoFile.viewCount++
-        dbVideoFile.lastViewed = LocalDateTime.now()
-        videoFileRepo.save(dbVideoFile)
-    }
-
-    fun searchForVideos(search: VideoSearchRequest): VideoSearchResponse {
-        val page = search.page
-        val pageSize = videoConfig.apiPageSize
-
-        val searchQueryString = searchQueryBuilder.buildEntitySearchQuery(search)
-        val countQueryString = searchQueryBuilder.buildCountSearchQuery(search)
-
-        val searchQuery = entityManager.createQuery(searchQueryString)
-        val countQuery = entityManager.createQuery(countQueryString)
-        searchQueryBuilder.addParamsToQuery(search, searchQuery)
-        searchQueryBuilder.addParamsToQuery(search, countQuery)
-
-        val videoList = searchQuery
-                .setFirstResult(page * pageSize)
-                .setMaxResults(pageSize)
-                .resultList as List<VideoFile>
-        val totalCount = countQuery.singleResult as Long
-
-        return VideoSearchResponse().apply {
-            totalFiles = totalCount
-            filesPerPage = pageSize
-            currentPage = page
-            this.videoList = videoList.map { file -> modelMapper.map(file, VideoFilePayload::class.java) }
-        }
-    }
-
+  }
 }

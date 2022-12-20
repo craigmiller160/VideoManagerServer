@@ -27,14 +27,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component
 
 @Component
-class VideoAuthenticationFilterConfigurer (
-        private val videoTokenProvider: VideoTokenProvider,
-        @Value("\${oauth2.cookie-name}")
-        private val cookieName: String
+class VideoAuthenticationFilterConfigurer(
+  private val videoTokenProvider: VideoTokenProvider,
+  @Value("\${oauth2.cookie-name}") private val cookieName: String
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
 
-    override fun configure(http: HttpSecurity?) {
-        val authFilter = VideoAuthenticationFilter(videoTokenProvider, cookieName)
-        http?.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter::class.java)
-    }
+  override fun configure(http: HttpSecurity?) {
+    val authFilter = VideoAuthenticationFilter(videoTokenProvider, cookieName)
+    http?.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter::class.java)
+  }
 }

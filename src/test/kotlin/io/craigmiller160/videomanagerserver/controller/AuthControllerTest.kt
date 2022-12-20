@@ -34,52 +34,48 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.web.WebAppConfiguration
 
-
 @RunWith(SpringJUnit4ClassRunner::class)
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
 class AuthControllerTest : AbstractControllerTest() {
 
-    companion object {
-        private const val ROLE = "MyRole"
-        private const val USER_NAME = "UserName"
-        private const val PASSWORD = "password"
-    }
+  companion object {
+    private const val ROLE = "MyRole"
+    private const val USER_NAME = "UserName"
+    private const val PASSWORD = "password"
+  }
 
-    @MockBean
-    private lateinit var authService: AuthService
+  @MockBean private lateinit var authService: AuthService
 
-    @Autowired
-    private lateinit var authController: AuthController
+  @Autowired private lateinit var authController: AuthController
 
-    private lateinit var jacksonRoles: JacksonTester<List<RolePayload>>
-    private lateinit var jacksonVideoToken: JacksonTester<VideoTokenResponse>
-    private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
-    private lateinit var jacksonUserRequest: JacksonTester<AppUserRequest>
-    private lateinit var jacksonUserResponse: JacksonTester<AppUserResponse>
-    private lateinit var jacksonUserResponseList: JacksonTester<List<AppUserResponse>>
+  private lateinit var jacksonRoles: JacksonTester<List<RolePayload>>
+  private lateinit var jacksonVideoToken: JacksonTester<VideoTokenResponse>
+  private lateinit var jacksonLoginRequest: JacksonTester<LoginRequest>
+  private lateinit var jacksonUserRequest: JacksonTester<AppUserRequest>
+  private lateinit var jacksonUserResponse: JacksonTester<AppUserResponse>
+  private lateinit var jacksonUserResponseList: JacksonTester<List<AppUserResponse>>
 
-    @Test
-    fun test_getVideoToken() {
-        val videoId = 10L
-        val token = VideoTokenResponse("ABCDEFG")
+  @Test
+  fun test_getVideoToken() {
+    val videoId = 10L
+    val token = VideoTokenResponse("ABCDEFG")
 
-        `when`(authService.getVideoToken(videoId))
-                .thenReturn(token)
-        mockMvcHandler.token = this.token
+    `when`(authService.getVideoToken(videoId)).thenReturn(token)
+    mockMvcHandler.token = this.token
 
-        val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
-        assertThat(response, allOf(
-                hasProperty("status", equalTo(200)),
-                responseBody(equalTo(jacksonVideoToken.write(token).json))
-        ))
-    }
+    val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
+    assertThat(
+      response,
+      allOf(
+        hasProperty("status", equalTo(200)),
+        responseBody(equalTo(jacksonVideoToken.write(token).json))))
+  }
 
-    @Test
-    fun test_getVideoToken_unauthorized() {
-        val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
-        assertThat(response, hasProperty("status", equalTo(401)))
-    }
-
+  @Test
+  fun test_getVideoToken_unauthorized() {
+    val response = mockMvcHandler.doGet("/api/auth/videotoken/10")
+    assertThat(response, hasProperty("status", equalTo(401)))
+  }
 }

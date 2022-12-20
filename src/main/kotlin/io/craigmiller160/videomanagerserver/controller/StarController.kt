@@ -19,7 +19,6 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.dto.StarPayload
-import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.security.ROLE_EDIT
 import io.craigmiller160.videomanagerserver.service.videofile.StarService
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,40 +35,40 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/stars")
-class StarController @Autowired constructor(
-        private val starService: StarService
-) {
+class StarController @Autowired constructor(private val starService: StarService) {
 
-    @GetMapping
-    fun getAllStars(): ResponseEntity<List<StarPayload>> {
-        val stars = starService.getAllStars()
-        if (stars.isEmpty()) {
-            return ResponseEntity.noContent().build()
-        }
-        return ResponseEntity.ok(stars)
+  @GetMapping
+  fun getAllStars(): ResponseEntity<List<StarPayload>> {
+    val stars = starService.getAllStars()
+    if (stars.isEmpty()) {
+      return ResponseEntity.noContent().build()
     }
+    return ResponseEntity.ok(stars)
+  }
 
-    @GetMapping("/{starId}")
-    fun getStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
-        return okOrNoContent(starService.getStar(starId))
-    }
+  @GetMapping("/{starId}")
+  fun getStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
+    return okOrNoContent(starService.getStar(starId))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PostMapping
-    fun addStar(@RequestBody star: StarPayload): ResponseEntity<StarPayload> {
-        return ResponseEntity.ok(starService.addStar(star))
-    }
+  @Secured(ROLE_EDIT)
+  @PostMapping
+  fun addStar(@RequestBody star: StarPayload): ResponseEntity<StarPayload> {
+    return ResponseEntity.ok(starService.addStar(star))
+  }
 
-    @Secured(ROLE_EDIT)
-    @PutMapping("/{starId}")
-    fun updateStar(@PathVariable starId: Long, @RequestBody star: StarPayload): ResponseEntity<StarPayload> {
-        return okOrNoContent(starService.updateStar(starId, star))
-    }
+  @Secured(ROLE_EDIT)
+  @PutMapping("/{starId}")
+  fun updateStar(
+    @PathVariable starId: Long,
+    @RequestBody star: StarPayload
+  ): ResponseEntity<StarPayload> {
+    return okOrNoContent(starService.updateStar(starId, star))
+  }
 
-    @Secured(ROLE_EDIT)
-    @DeleteMapping("/{starId}")
-    fun deleteStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
-        return okOrNoContent(starService.deleteStar(starId))
-    }
-
+  @Secured(ROLE_EDIT)
+  @DeleteMapping("/{starId}")
+  fun deleteStar(@PathVariable starId: Long): ResponseEntity<StarPayload> {
+    return okOrNoContent(starService.deleteStar(starId))
+  }
 }

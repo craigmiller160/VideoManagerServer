@@ -22,5 +22,4 @@ import io.craigmiller160.videomanagerserver.entity.Series
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.stereotype.Repository
 
-@Repository
-interface SeriesRepository : PagingAndSortingRepository<Series,Long>
+@Repository interface SeriesRepository : PagingAndSortingRepository<Series, Long>

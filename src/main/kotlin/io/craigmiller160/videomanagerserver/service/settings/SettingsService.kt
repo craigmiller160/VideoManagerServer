@@ -23,31 +23,30 @@ import io.craigmiller160.videomanagerserver.entity.SETTINGS_ID
 import io.craigmiller160.videomanagerserver.entity.Settings
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
 import io.craigmiller160.videomanagerserver.repository.SettingsRepository
-import org.springframework.stereotype.Service
 import javax.transaction.Transactional
+import org.springframework.stereotype.Service
 
 @Service
-class SettingsService (
-        private val settingsRepository: SettingsRepository,
-        private val modelMapper: VMModelMapper
+class SettingsService(
+  private val settingsRepository: SettingsRepository,
+  private val modelMapper: VMModelMapper
 ) {
 
-    @Transactional
-    fun getOrCreateSettings(): SettingsPayload {
-        val settings = settingsRepository.findById(SETTINGS_ID)
-                .orElseGet {
-                    val newSettings = Settings(settingsId = SETTINGS_ID)
-                    settingsRepository.save(newSettings)
-                }
-        return modelMapper.map(settings, SettingsPayload::class.java)
-    }
+  @Transactional
+  fun getOrCreateSettings(): SettingsPayload {
+    val settings =
+      settingsRepository.findById(SETTINGS_ID).orElseGet {
+        val newSettings = Settings(settingsId = SETTINGS_ID)
+        settingsRepository.save(newSettings)
+      }
+    return modelMapper.map(settings, SettingsPayload::class.java)
+  }
 
-    @Transactional
-    fun updateSettings(payload: SettingsPayload): SettingsPayload {
-        val settings = modelMapper.map(payload, Settings::class.java)
-        settings.settingsId = SETTINGS_ID
-        settingsRepository.save(settings)
-        return payload
-    }
-
+  @Transactional
+  fun updateSettings(payload: SettingsPayload): SettingsPayload {
+    val settings = modelMapper.map(payload, Settings::class.java)
+    settings.settingsId = SETTINGS_ID
+    settingsRepository.save(settings)
+    return payload
+  }
 }

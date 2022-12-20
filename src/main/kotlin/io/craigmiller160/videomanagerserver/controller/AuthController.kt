@@ -28,14 +28,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/auth")
-class AuthController (
-        private val authService: AuthService
-) {
+class AuthController(private val authService: AuthService) {
 
-    @GetMapping("/videotoken/{fileId}")
-    fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoTokenResponse> {
-        val token = authService.getVideoToken(fileId)
-        return ResponseEntity.ok(token)
-    }
-
+  @GetMapping("/videotoken/{fileId}")
+  fun getVideoToken(@PathVariable fileId: Long): ResponseEntity<VideoTokenResponse> {
+    val token = authService.getVideoToken(fileId)
+    return ResponseEntity.ok(token)
+  }
 }

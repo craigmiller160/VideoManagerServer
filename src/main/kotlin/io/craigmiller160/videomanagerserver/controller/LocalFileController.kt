@@ -32,15 +32,14 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/localfiles")
 class LocalFileController(private val localFileService: LocalFileService) {
 
-    @Secured(ROLE_ADMIN)
-    @GetMapping("/directory")
-    fun getFilesFromDirectory(
-            @RequestParam(required = false) path: String?,
-            @RequestParam(required = false, defaultValue = "false") onlyDirectories: Boolean
-    ): ResponseEntity<LocalFileListResponse> {
-        val actualPath = if (path == null || path.isEmpty()) null else path
-        val fileList = localFileService.getFilesFromDirectory(actualPath, onlyDirectories)
-        return ResponseEntity.ok(fileList)
-    }
-
+  @Secured(ROLE_ADMIN)
+  @GetMapping("/directory")
+  fun getFilesFromDirectory(
+    @RequestParam(required = false) path: String?,
+    @RequestParam(required = false, defaultValue = "false") onlyDirectories: Boolean
+  ): ResponseEntity<LocalFileListResponse> {
+    val actualPath = if (path == null || path.isEmpty()) null else path
+    val fileList = localFileService.getFilesFromDirectory(actualPath, onlyDirectories)
+    return ResponseEntity.ok(fileList)
+  }
 }

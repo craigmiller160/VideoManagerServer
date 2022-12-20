@@ -47,6 +47,9 @@
     </distributionManagement>
 
     <properties>
+        <spotless.version>2.26.0</spotless.version>
+        <maven.git.hooks.version>1.0.1</maven.git.hooks.version>
+        <git.hooks.plugin.version>3.3.0</git.hooks.plugin.version>
         <log4j2.version>2.17.0</log4j2.version>
         <java.version>17</java.version>
         <kotlin.version>1.7.21</kotlin.version>
@@ -283,13 +286,55 @@
                     </filesets>
                 </configuration>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.owasp</groupId>-->
+<!--                <artifactId>dependency-check-maven</artifactId>-->
+<!--                <version>6.0.3</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>6.0.3</version>
+                <groupId>com.rudikershaw.gitbuildhook</groupId>
+                <artifactId>git-build-hook-maven-plugin</artifactId>
+                <version>${git.hooks.plugin.version}</version>
+                <configuration>
+                    <installHooks>
+                        <pre-commit>spotless-apply</pre-commit>
+                    </installHooks>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
+                            <goal>install</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.craigmiller160</groupId>
+                        <artifactId>maven-git-hooks</artifactId>
+                        <version>${maven.git.hooks.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <kotlin>
+                        <ktfmt />
+                    </kotlin>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
                             <goal>check</goal>
                         </goals>
                     </execution>

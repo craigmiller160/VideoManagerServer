@@ -21,24 +21,23 @@ package io.craigmiller160.videomanagerserver.entity.id
 import java.io.Serializable
 
 class FileStarId : Serializable {
-    var fileId: Long = 0
-    var starId: Long = 0
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+  var fileId: Long = 0
+  var starId: Long = 0
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
 
-        other as FileStarId
+    other as FileStarId
 
-        if (fileId != other.fileId) return false
-        if (starId != other.starId) return false
+    if (fileId != other.fileId) return false
+    if (starId != other.starId) return false
 
-        return true
-    }
+    return true
+  }
 
-    override fun hashCode(): Int {
-        var result = fileId.hashCode()
-        result = 31 * result + starId.hashCode()
-        return result
-    }
-
+  override fun hashCode(): Int {
+    var result = fileId.hashCode()
+    result = 31 * result + starId.hashCode()
+    return result
+  }
 }

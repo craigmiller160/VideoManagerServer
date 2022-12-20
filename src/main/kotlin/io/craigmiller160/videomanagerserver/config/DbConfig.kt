@@ -26,11 +26,11 @@ import org.springframework.validation.annotation.Validated
 @Configuration
 @Validated
 @ConfigurationProperties(prefix = "spring.datasource")
-data class DbConfig (
-    var url: String = "",
-    var username: String = "",
-    var password: String = "",
-    var driverClassName: String = "",
-    var db: String = "",
-    var docker: Boolean = false
+data class DbConfig(
+  var url: String = "",
+  var username: String = "",
+  var password: String = "",
+  var driverClassName: String = "",
+  var db: String = "",
+  var docker: Boolean = false
 )

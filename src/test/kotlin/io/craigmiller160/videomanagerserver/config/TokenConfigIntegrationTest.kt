@@ -19,49 +19,46 @@
 package io.craigmiller160.videomanagerserver.config
 
 import io.craigmiller160.oauth2.config.OAuth2Config
+import kotlin.test.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
-import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
 class TokenConfigIntegrationTest {
 
-    companion object {
-        private const val EXP_SECS = 300
-        private const val VIDEO_EXP_SECS = 10000
-        private const val REFRESH_EXP_SECS = 1200
-        private const val KEY = "/RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM="
-    }
+  companion object {
+    private const val EXP_SECS = 300
+    private const val VIDEO_EXP_SECS = 10000
+    private const val REFRESH_EXP_SECS = 1200
+    private const val KEY = "/RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM="
+  }
 
-    @MockBean
-    private lateinit var oauthConfig: OAuth2Config
+  @MockBean private lateinit var oauthConfig: OAuth2Config
 
-    @Autowired
-    private lateinit var tokenConfig: TokenConfig
+  @Autowired private lateinit var tokenConfig: TokenConfig
 
-    @Test
-    fun test_expSecs() {
-        assertEquals(EXP_SECS, tokenConfig.expSecs)
-    }
+  @Test
+  fun test_expSecs() {
+    assertEquals(EXP_SECS, tokenConfig.expSecs)
+  }
 
-    @Test
-    fun test_videoExpSecs() {
-        assertEquals(VIDEO_EXP_SECS, tokenConfig.videoExpSecs)
-    }
+  @Test
+  fun test_videoExpSecs() {
+    assertEquals(VIDEO_EXP_SECS, tokenConfig.videoExpSecs)
+  }
 
-    @Test
-    fun test_refreshExpSecs() {
-        assertEquals(REFRESH_EXP_SECS, tokenConfig.refreshExpSecs)
-    }
+  @Test
+  fun test_refreshExpSecs() {
+    assertEquals(REFRESH_EXP_SECS, tokenConfig.refreshExpSecs)
+  }
 
-    @Test
-    fun test_key() {
-        assertEquals(KEY, tokenConfig.key)
-    }
-
+  @Test
+  fun test_key() {
+    assertEquals(KEY, tokenConfig.key)
+  }
 }
