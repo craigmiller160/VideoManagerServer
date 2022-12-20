@@ -18,21 +18,16 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.argumentCaptor
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import io.craigmiller160.videomanagerserver.config.MapperConfig
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
 import io.craigmiller160.videomanagerserver.dto.*
+import io.craigmiller160.videomanagerserver.entity.IsScanning
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
-import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
-import io.craigmiller160.videomanagerserver.repository.FileStarRepository
-import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
@@ -97,6 +92,8 @@ class VideoFileServiceTest {
     private lateinit var searchQueryBuilder: SearchQueryBuilder
     @Mock
     private lateinit var videoFileRepo: VideoFileRepository
+    @Mock
+    private lateinit var isScanningRepo: IsScanningRepository
     @Spy
     private lateinit var videoConfig: VideoConfiguration
     @Mock
@@ -272,6 +269,12 @@ class VideoFileServiceTest {
 
     @Test
     fun test_startVideoFileScan_scanRunning() {
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                isScanning = true,
+                version = 1L
+            )))
         val expectedStatus = createScanAlreadyRunningStatus()
         val result = videoFileService.startVideoFileScan()
         assertEquals(expectedStatus, result)

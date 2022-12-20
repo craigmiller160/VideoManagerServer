@@ -1,9 +1,8 @@
-CREATE SEQUENCE is_scanning_id_seq START 1;
 CREATE TABLE is_scanning (
-    id BIGINT NOT NULL DEFAULT nextval('is_scanning_id_seq'::regclass),
+    id BIGINT NOT NULL,
     is_scanning BOOLEAN NOT NULL DEFAULT FALSE,
-    version BIGINT NOT NULL DEFAULT 1
+    version BIGINT NOT NULL DEFAULT 1,
     PRIMARY KEY (id)
 );
 
-INSERT INTO is_scanning (is_scanning) VALUES (false);
+INSERT INTO is_scanning (id, is_scanning) VALUES (1, false);
