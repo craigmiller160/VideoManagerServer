@@ -144,13 +144,12 @@ class VideoFileService (
     }
 
     fun isVideoFileScanRunning(): FileScanStatusResponse {
-        val scanRunning = fileScanRunning.get()
-        val lastScanSuccess = lastScanSuccess.get()
-        if (scanRunning) {
+        val isScanning = getIsScanning()
+        if (isScanning.isScanning) {
             return createScanRunningStatus()
         }
 
-        if (lastScanSuccess) {
+        if (isScanning.lastScanSuccess) {
             return createScanNotRunningStatus()
         }
 
