@@ -128,8 +128,8 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     val tokenParams = tokenString.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
     return mapOf(
       TokenConstants.CLAIM_SUBJECT to tokenParams[0],
-      TokenConstants.CLAIM_VIDEO_ID to tokenParams[1],
-      TokenConstants.CLAIM_EXP to tokenParams[2],
-      TokenConstants.CLAIM_FILE_PATH to tokenParams[3])
+      TokenConstants.CLAIM_VIDEO_ID to tokenParams[2],
+      TokenConstants.CLAIM_EXP to tokenParams[3],
+      TokenConstants.CLAIM_FILE_PATH to tokenParams[4])
   }
 }
