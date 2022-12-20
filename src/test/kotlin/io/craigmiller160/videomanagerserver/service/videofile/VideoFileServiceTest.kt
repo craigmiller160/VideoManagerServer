@@ -35,6 +35,7 @@ import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.getField
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert.assertEquals
 import org.hamcrest.Matchers
 import org.junit.After
@@ -238,10 +239,7 @@ class VideoFileServiceTest {
 
     @Test
     fun test_startVideoFileScan_scanError() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-
-        Mockito.`when`(fileScanner.scanForFiles(any()))
+        whenever(fileScanner.scanForFiles(any()))
                 .thenThrow(InvalidSettingException())
 
         var exception: Exception? = null
@@ -253,9 +251,16 @@ class VideoFileServiceTest {
             exception = ex
         }
 
+        val captor = argumentCaptor<IsScanning>()
+
         Assert.assertNotNull(exception)
-        Assert.assertFalse(fileScanRunning.get())
-        Assert.assertFalse(lastScanSuccess.get())
+        verify(isScanningRepo, times(2))
+            .save(captor.capture())
+
+        assertEquals(2, captor.allValues.size)
+        val errorIsScanning = captor.allValues[1]
+        assertThat(errorIsScanning).hasFieldOrPropertyWithValue("isScanning", false)
+            .hasFieldOrPropertyWithValue("lastScanSuccess", false)
     }
 
     @Test
