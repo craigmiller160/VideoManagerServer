@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import io.craigmiller160.oauth2.service.OAuth2Service
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
@@ -30,13 +31,13 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(
   private val videoTokenProvider: VideoTokenProvider,
-  private val securityContextService: SecurityContextService,
   private val settingsService: SettingsService,
-  private val videoFileService: VideoFileService
+  private val videoFileService: VideoFileService,
+  private val oAuth2Service: OAuth2Service
 ) {
 
   fun getVideoToken(videoId: Long): VideoTokenResponse {
-    val userName = securityContextService.getUserName()
+    val authUser = oAuth2Service.getAuthenticatedUser()
     val rootDirectory = settingsService.getOrCreateSettings().rootDir
     if (rootDirectory.isEmpty()) {
       throw IllegalStateException("Root directory is not set")
@@ -48,8 +49,10 @@ class AuthService(
     val fullFilePath = "${ensureTrailingSlash(rootDirectory)}$filePath"
     val params =
       mapOf(
-        TokenConstants.PARAM_VIDEO_ID to videoId, TokenConstants.PARAM_FILE_PATH to fullFilePath)
-    val token = videoTokenProvider.createToken(userName, params)
+        TokenConstants.PARAM_VIDEO_ID to videoId,
+        TokenConstants.PARAM_FILE_PATH to fullFilePath,
+        TokenConstants.PARAM_USER_ID to authUser.userId)
+    val token = videoTokenProvider.createToken(authUser.username, params)
     return VideoTokenResponse(token)
   }
 }
