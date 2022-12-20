@@ -33,11 +33,14 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstant
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.test_util.isA
 import io.craigmiller160.videomanagerserver.util.DEFAULT_TIMESTAMP
+import java.nio.file.Files
 import java.util.Optional
 import javax.persistence.EntityManager
 import javax.persistence.Query
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers
 import org.junit.After
@@ -169,13 +172,25 @@ class VideoFileServiceTest {
 
   @Test
   fun test_deleteVideoFile() {
-    Mockito.`when`(videoFileRepo.findById(1))
-      .thenReturn(Optional.of(expectedFiles[0]))
+    val tempDir = Files.createTempDirectory("a")
+    val filePath = tempDir.resolve("file.txt")
+    Files.write(filePath, "Hello World".toByteArray())
+    val videoFile = expectedFiles[0].copy(fileName = "file.txt")
+
+    assertTrue { Files.exists(filePath) }
+
+    whenever(videoFileRepo.findById(1))
+      .thenReturn(Optional.of(videoFile))
       .thenReturn(Optional.empty())
+
+    whenever(settingsService.getOrCreateSettings())
+      .thenReturn(SettingsPayload(rootDir = tempDir.toString()))
 
     var actualFile = videoFileService.deleteVideoFile(1)
     assertNotNull(actualFile)
     assertEquals(expectedFilePayloads[0], actualFile)
+
+    assertFalse { Files.exists(filePath) }
 
     actualFile = videoFileService.deleteVideoFile(1)
     assertNull(actualFile)
