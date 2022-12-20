@@ -58,13 +58,13 @@ class AuthServiceTest {
 
   @Test
   fun test_getVideoToken() {
-    val userName = "userName"
+    val userName = "bobsaget"
     val videoId = 10L
     val token = "ABCDEFG"
 
     val authUser =
       AuthUserDto(
-        firstName = "Bob", lastName = "Saget", userId = 1L, username = "bobsaget", roles = listOf())
+        firstName = "Bob", lastName = "Saget", userId = 1L, username = userName, roles = listOf())
     whenever(oAuth2Service.getAuthenticatedUser()).thenReturn(authUser)
 
     whenever(
