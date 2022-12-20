@@ -276,7 +276,7 @@ class VideoFileServiceTest {
             .thenReturn(Optional.of(IsScanning(
                 id = 1L
             )))
-        whenever(isScanningRepo.save(any()))
+        whenever(isScanningRepo.save(any<IsScanning>()))
             .thenThrow(OptimisticLockingFailureException("Dying"))
 
         val expectedStatus = createScanAlreadyRunningStatus()
