@@ -218,24 +218,18 @@ class VideoFileServiceTest {
 
     @Test
     fun testStartVideoFileScan() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
-        lastScanSuccess.set(false)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(
+                IsScanning(
+                id = 1L
+            )
+            ))
 
-        var status = videoFileService.startVideoFileScan()
+        val status = videoFileService.startVideoFileScan()
         Assert.assertThat(status, Matchers.allOf(
                 Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
                 Matchers.hasProperty("alreadyRunning", Matchers.equalTo(false)),
                 Matchers.hasProperty("message", Matchers.equalTo(SCAN_STATUS_RUNNING)),
-                Matchers.hasProperty("scanError", Matchers.equalTo(false))
-        ))
-
-        fileScanRunning.set(true)
-        status = videoFileService.startVideoFileScan()
-        Assert.assertThat(status, Matchers.allOf(
-                Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
-                Matchers.hasProperty("alreadyRunning", Matchers.equalTo(true)),
-                Matchers.hasProperty("message", Matchers.equalTo(SCAN_STATUS_ALREADY_RUNNING)),
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
@@ -292,8 +286,12 @@ class VideoFileServiceTest {
 
     @Test
     fun testIsVideoFileScanRunning() {
-        val fileScanRunning = getField(videoFileService, "fileScanRunning", AtomicBoolean::class.java)
-        val lastScanSuccess = getField(videoFileService, "lastScanSuccess", AtomicBoolean::class.java)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(
+                IsScanning(
+                id = 1L
+            )
+            ))
         var status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
                 Matchers.hasProperty("inProgress", Matchers.equalTo(false)),
@@ -302,7 +300,11 @@ class VideoFileServiceTest {
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
-        fileScanRunning.set(true)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                isScanning = true
+            )))
 
         status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
@@ -312,8 +314,11 @@ class VideoFileServiceTest {
                 Matchers.hasProperty("scanError", Matchers.equalTo(false))
         ))
 
-        fileScanRunning.set(false)
-        lastScanSuccess.set(false)
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L,
+                lastScanSuccess = false
+            )))
 
         status = videoFileService.isVideoFileScanRunning()
         Assert.assertThat(status, Matchers.allOf(
