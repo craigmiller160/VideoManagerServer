@@ -239,6 +239,10 @@ class VideoFileServiceTest {
 
     @Test
     fun test_startVideoFileScan_scanError() {
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L
+            )))
         whenever(fileScanner.scanForFiles(any()))
                 .thenThrow(InvalidSettingException())
 
