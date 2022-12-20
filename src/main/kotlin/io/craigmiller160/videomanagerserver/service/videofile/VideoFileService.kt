@@ -27,14 +27,12 @@ import io.craigmiller160.videomanagerserver.dto.createScanAlreadyRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanErrorStatus
 import io.craigmiller160.videomanagerserver.dto.createScanNotRunningStatus
 import io.craigmiller160.videomanagerserver.dto.createScanRunningStatus
+import io.craigmiller160.videomanagerserver.entity.IsScanning
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.file.FileScanner
 import io.craigmiller160.videomanagerserver.mapper.VMModelMapper
-import io.craigmiller160.videomanagerserver.repository.FileCategoryRepository
-import io.craigmiller160.videomanagerserver.repository.FileSeriesRepository
-import io.craigmiller160.videomanagerserver.repository.FileStarRepository
-import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import org.springframework.core.io.UrlResource
@@ -43,10 +41,9 @@ import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.io.File
+import java.lang.IllegalStateException
 import java.time.LocalDateTime
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.persistence.EntityManager
-import kotlin.streams.toList
 
 @Service
 class VideoFileService (
@@ -58,11 +55,13 @@ class VideoFileService (
         private val fileCategoryRepo: FileCategoryRepository,
         private val fileSeriesRepo: FileSeriesRepository,
         private val fileStarRepo: FileStarRepository,
-        private val modelMapper: VMModelMapper
+        private val modelMapper: VMModelMapper,
+        private val isScanningRepo: IsScanningRepository
 ) {
 
-    private val fileScanRunning = AtomicBoolean(false)
-    private val lastScanSuccess = AtomicBoolean(true)
+    private fun getIsScanning(): IsScanning =
+        isScanningRepo.findById(1L)
+            .orElseThrow { IllegalStateException("Missing required Is Scanning record") }
 
     private fun getVideoFileSort(sortDirection: Sort.Direction): Sort {
         return Sort.by(
@@ -118,20 +117,26 @@ class VideoFileService (
     }
 
     fun startVideoFileScan(): FileScanStatusResponse {
-        if (fileScanRunning.get()) {
+        val isScanning = getIsScanning()
+        if (isScanning.isScanning) {
             return createScanAlreadyRunningStatus()
         }
-        fileScanRunning.set(true)
-        lastScanSuccess.set(true)
+        isScanning.isScanning = true
+        isScanning.lastScanSuccess = true
+        isScanningRepo.save(isScanning)
         try {
             fileScanner.scanForFiles { result ->
-                fileScanRunning.set(false)
-                lastScanSuccess.set(result)
+                val isScanningForResult = getIsScanning()
+                isScanningForResult.isScanning = false
+                isScanningForResult.lastScanSuccess = result
+                isScanningRepo.save(isScanningForResult)
             }
         }
         catch (ex: Exception) {
-            fileScanRunning.set(false)
-            lastScanSuccess.set(false)
+            val isScanningForError = getIsScanning()
+            isScanningForError.isScanning = false
+            isScanningForError.lastScanSuccess = false
+            isScanningRepo.save(isScanningForError)
             throw ex
         }
 
