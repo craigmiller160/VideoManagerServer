@@ -48,6 +48,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -272,9 +273,22 @@ class VideoFileServiceTest {
         whenever(isScanningRepo.findById(1L))
             .thenReturn(Optional.of(IsScanning(
                 id = 1L,
-                isScanning = true,
-                version = 1L
+                isScanning = true
             )))
+        val expectedStatus = createScanAlreadyRunningStatus()
+        val result = videoFileService.startVideoFileScan()
+        assertEquals(expectedStatus, result)
+    }
+
+    @Test
+    fun test_startVideoFileScan_optimisticLockingException() {
+        whenever(isScanningRepo.findById(1L))
+            .thenReturn(Optional.of(IsScanning(
+                id = 1L
+            )))
+        whenever(isScanningRepo.save(any()))
+            .thenThrow(OptimisticLockingFailureException("Dying"))
+
         val expectedStatus = createScanAlreadyRunningStatus()
         val result = videoFileService.startVideoFileScan()
         assertEquals(expectedStatus, result)

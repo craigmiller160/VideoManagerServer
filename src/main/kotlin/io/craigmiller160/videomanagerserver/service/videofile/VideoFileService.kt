@@ -36,6 +36,7 @@ import io.craigmiller160.videomanagerserver.repository.*
 import io.craigmiller160.videomanagerserver.repository.query.SearchQueryBuilder
 import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
 import org.springframework.core.io.UrlResource
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.security.core.context.SecurityContextHolder
@@ -123,7 +124,12 @@ class VideoFileService (
         }
         isScanning.isScanning = true
         isScanning.lastScanSuccess = true
-        isScanningRepo.save(isScanning)
+        try {
+            isScanningRepo.save(isScanning)
+        } catch (ex: OptimisticLockingFailureException) {
+            return createScanAlreadyRunningStatus()
+        }
+
         try {
             fileScanner.scanForFiles { result ->
                 val isScanningForResult = getIsScanning()
