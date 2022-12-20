@@ -8,6 +8,7 @@ class IsScanning(
     @Id
     var id: Long = 0,
     var isScanning: Boolean = false,
+    var lastScanSuccess: Boolean = true,
     @Version
     var version: Long = 1
 )
