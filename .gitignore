@@ -30,3 +30,4 @@ sql/create-schema.sql
 sql/drop-schema.sql
 deploy/build
 deploy/chart/charts
+*.tgz

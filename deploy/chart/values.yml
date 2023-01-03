@@ -1,16 +1,27 @@
-app-deployment:
+app_deployment:
   appName: video-manager-server
   image: nexus-docker-craigmiller160.ddns.net/video-manager-server:latest
-  configMaps:
-    - video-manager-server-config
+  configMap:
+    spring.profiles.active: prod
+    spring.config.location: classpath:/config/common/,classpath:/config/prod/
+    spring.datasource.host: postgres.infra-prod
+    spring.datasource.port: "5432"
+    oauth2.auth-server-host: https://sso-oauth2-server:8443
+  onepassworditems:
+    - name: video-manager-server-oauth2-keys
+      itemPath: vaults/Home Server (Prod)/items/Video Manager Server OAuth2 Keys
+    - name: video-manager-server-video-token-key
+      itemPath: vaults/Home Server (Prod)/items/VideoManager Video Token Key
+    - name: video-manager-postgres
+      itemPath: vaults/Home Server (Prod)/items/Postgres Root Account
   ports:
     - containerPort: 8443
   secrets:
     - envVariable: spring.datasource.username
-      secretName: postgres-root-account
+      secretName: video-manager-postgres
       secretKey: username
     - envVariable: spring.datasource.password
-      secretName: postgres-root-account
+      secretName: video-manager-postgres
       secretKey: password
     - envVariable: oauth2.client-key
       secretName: video-manager-server-oauth2-keys
