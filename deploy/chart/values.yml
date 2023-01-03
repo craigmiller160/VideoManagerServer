@@ -12,14 +12,16 @@ app_deployment:
       itemPath: vaults/Home Server (Prod)/items/Video Manager Server OAuth2 Keys
     - name: video-manager-server-video-token-key
       itemPath: vaults/Home Server (Prod)/items/VideoManager Video Token Key
+    - name: video-manager-postgres
+      itemPath: vaults/Home Server (Prod)/items/Postgres Root Account
   ports:
     - containerPort: 8443
   secrets:
     - envVariable: spring.datasource.username
-      secretName: postgres-root-account
+      secretName: video-manager-postgres
       secretKey: username
     - envVariable: spring.datasource.password
-      secretName: postgres-root-account
+      secretName: video-manager-postgres
       secretKey: password
     - envVariable: oauth2.client-key
       secretName: video-manager-server-oauth2-keys
