@@ -21,8 +21,8 @@ package io.craigmiller160.videomanagerserver.util
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class LegacyDateConverterTest {
 

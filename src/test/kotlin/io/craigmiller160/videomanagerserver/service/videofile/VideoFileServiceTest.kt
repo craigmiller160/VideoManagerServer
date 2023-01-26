@@ -43,18 +43,16 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers
-import org.junit.After
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -63,7 +61,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.core.userdetails.User
 
-@RunWith(MockitoJUnitRunner.Silent::class)
+@ExtendWith(MockitoExtension::class)
 class VideoFileServiceTest {
 
   companion object {
@@ -98,14 +96,14 @@ class VideoFileServiceTest {
   @InjectMocks private lateinit var videoFileService: VideoFileService
   @Spy private var modelMapper = MapperConfig().modelMapper()
 
-  @Before
+  @BeforeEach
   fun setup() {
     SecurityContextHolder.clearContext()
 
     videoConfig.apiPageSize = 10
   }
 
-  @After
+  @AfterEach
   fun cleanup() {
     SecurityContextHolder.clearContext()
   }
@@ -117,7 +115,7 @@ class VideoFileServiceTest {
     Mockito.`when`(videoConfig.apiPageSize).thenReturn(20)
 
     val actualFiles = videoFileService.getAllVideoFiles(1, Sort.Direction.DESC.toString())
-    Assert.assertNotNull(actualFiles)
+    assertNotNull(actualFiles)
     assertEquals(expectedFilePayloads.size, actualFiles.size)
     assertEquals(expectedFilePayloads, actualFiles)
   }
@@ -149,7 +147,7 @@ class VideoFileServiceTest {
     Mockito.`when`(videoFileRepo.save(newFile)).thenReturn(newFileWithId)
 
     val actualFile = videoFileService.addVideoFile(newFilePayload)
-    Assert.assertEquals(newFilePayloadWithId, actualFile)
+    assertEquals(newFilePayloadWithId, actualFile)
   }
 
   @Test
@@ -164,7 +162,7 @@ class VideoFileServiceTest {
 
     var actualFile = videoFileService.updateVideoFile(1, newFilePayload)
     assertNotNull(actualFile)
-    Assert.assertEquals(newFilePayloadWithId, actualFile)
+    assertEquals(newFilePayloadWithId, actualFile)
 
     actualFile = videoFileService.updateVideoFile(3, newFilePayload)
     assertNull(actualFile)
@@ -206,7 +204,7 @@ class VideoFileServiceTest {
     whenever(isScanningRepo.findById(1L)).thenReturn(Optional.of(IsScanning(id = 1L)))
 
     val status = videoFileService.startVideoFileScan()
-    Assert.assertThat(
+    assertThat(
       status,
       Matchers.allOf(
         Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
@@ -232,7 +230,7 @@ class VideoFileServiceTest {
 
     val captor = argumentCaptor<IsScanning>()
 
-    Assert.assertNotNull(exception)
+    assertNotNull(exception)
     verify(isScanningRepo, times(2)).save(captor.capture())
 
     assertEquals(2, captor.allValues.size)
@@ -266,7 +264,7 @@ class VideoFileServiceTest {
   fun testIsVideoFileScanRunning() {
     whenever(isScanningRepo.findById(1L)).thenReturn(Optional.of(IsScanning(id = 1L)))
     var status = videoFileService.isVideoFileScanRunning()
-    Assert.assertThat(
+    assertThat(
       status,
       Matchers.allOf(
         Matchers.hasProperty("inProgress", Matchers.equalTo(false)),
@@ -278,7 +276,7 @@ class VideoFileServiceTest {
       .thenReturn(Optional.of(IsScanning(id = 1L, isScanning = true)))
 
     status = videoFileService.isVideoFileScanRunning()
-    Assert.assertThat(
+    assertThat(
       status,
       Matchers.allOf(
         Matchers.hasProperty("inProgress", Matchers.equalTo(true)),
@@ -290,7 +288,7 @@ class VideoFileServiceTest {
       .thenReturn(Optional.of(IsScanning(id = 1L, lastScanSuccess = false)))
 
     status = videoFileService.isVideoFileScanRunning()
-    Assert.assertThat(
+    assertThat(
       status,
       Matchers.allOf(
         Matchers.hasProperty("inProgress", Matchers.equalTo(false)),
@@ -310,7 +308,7 @@ class VideoFileServiceTest {
 
     val video = videoFileService.playVideo(expectedFiles[0].fileId)
 
-    Assert.assertThat(video.file.absolutePath, Matchers.containsString(path))
+    assertThat(video.file.absolutePath, Matchers.containsString(path))
   }
 
   @Test
@@ -322,8 +320,8 @@ class VideoFileServiceTest {
     val argumentCaptor =
       argumentCaptor<VideoFile>().apply { verify(videoFileRepo, Mockito.times(1)).save(capture()) }
 
-    Assert.assertEquals(1, argumentCaptor.allValues.size)
-    Assert.assertThat(
+    assertEquals(1, argumentCaptor.allValues.size)
+    assertThat(
       argumentCaptor.firstValue,
       Matchers.allOf(
         Matchers.hasProperty("viewCount", Matchers.equalTo(1)),
@@ -354,7 +352,7 @@ class VideoFileServiceTest {
     Mockito.`when`(countQuery.singleResult).thenReturn(10L)
 
     val results = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       results,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(10L)),
