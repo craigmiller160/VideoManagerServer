@@ -23,7 +23,6 @@ import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
-import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import io.craigmiller160.videomanagerserver.test_util.isA
 import java.io.File
 import org.hamcrest.MatcherAssert.assertThat
@@ -335,23 +334,24 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Test
   fun test_playVideo_expiredJwt_validVideoToken() {
-    val expiredToken =
-      JwtUtils.createJwt(-10).let { JwtUtils.signAndSerializeJwt(it, keyPair.private) }
-    mockMvcHandler.token = expiredToken
-
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken("user", params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(206, response.status)
-    assertTrue(response.contentAsByteArray.isNotEmpty())
+    //    val expiredToken =
+    //      JwtUtils.createJwt(-10).let { JwtUtils.signAndSerializeJwt(it, keyPair.private) }
+    //    mockMvcHandler.token = expiredToken
+    //
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to "1",
+    //        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
+    //        TokenConstants.PARAM_USER_ID to "1")
+    //    val token = videoTokenProvider.createToken("user", params)
+    //    val file = File(".")
+    //    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
+    //    val response =
+    //      mockMvcHandler.doGet(
+    //        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+    //    assertEquals(206, response.status)
+    //    assertTrue(response.contentAsByteArray.isNotEmpty())
+    TODO()
   }
 
   @Test
