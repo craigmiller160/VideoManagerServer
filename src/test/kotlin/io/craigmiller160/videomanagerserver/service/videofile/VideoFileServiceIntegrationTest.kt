@@ -18,12 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
-import io.craigmiller160.oauth2.config.OAuth2Config
-import io.craigmiller160.videomanagerserver.dto.CategoryPayload
-import io.craigmiller160.videomanagerserver.dto.SeriesPayload
-import io.craigmiller160.videomanagerserver.dto.StarPayload
-import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
@@ -36,10 +31,7 @@ import kotlin.test.assertEquals
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -47,7 +39,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.junit4.SpringRunner
 
@@ -73,8 +64,6 @@ class VideoFileServiceIntegrationTest {
   @Autowired private lateinit var videoFileService: VideoFileService
   @Autowired private lateinit var videoFileRepo: VideoFileRepository
   @Autowired private lateinit var modelMapper: VMModelMapper
-
-  @MockBean private lateinit var oauthConfig: OAuth2Config
 
   private lateinit var file1: VideoFilePayload
   private lateinit var file2: VideoFilePayload
