@@ -27,19 +27,18 @@ import io.craigmiller160.videomanagerserver.repository.SeriesRepository
 import java.util.Optional
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.Sort
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class SeriesServiceTest {
 
   companion object {
@@ -70,7 +69,7 @@ class SeriesServiceTest {
       .thenReturn(expectedSeries)
 
     val actualSeries = seriesService.getAllSeries()
-    Assert.assertNotNull(actualSeries)
+    assertNotNull(actualSeries)
     assertEquals(expectedSeriesPayloads, actualSeries)
   }
 
@@ -101,7 +100,7 @@ class SeriesServiceTest {
     Mockito.`when`(seriesRepo.save(newSeries)).thenReturn(newSeriesWithId)
 
     val actualSeries = seriesService.addSeries(newSeriesPayload)
-    Assert.assertEquals(newSeriesWithIdPayload, actualSeries)
+    assertEquals(newSeriesWithIdPayload, actualSeries)
   }
 
   @Test
@@ -116,7 +115,7 @@ class SeriesServiceTest {
 
     var actualSeries = seriesService.updateSeries(3, newSeriesPayload)
     assertNotNull(actualSeries)
-    Assert.assertEquals(newSeriesWithIdPayload, actualSeries)
+    assertEquals(newSeriesWithIdPayload, actualSeries)
 
     actualSeries = seriesService.updateSeries(1, newSeriesPayload)
     assertNull(actualSeries)

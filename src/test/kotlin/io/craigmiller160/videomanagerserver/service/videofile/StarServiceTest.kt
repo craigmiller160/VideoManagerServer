@@ -26,19 +26,18 @@ import io.craigmiller160.videomanagerserver.repository.StarRepository
 import java.util.Optional
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.Sort
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class StarServiceTest {
 
   companion object {
@@ -67,7 +66,7 @@ class StarServiceTest {
       .thenReturn(expectedStars)
 
     val actualStars = starService.getAllStars()
-    Assert.assertNotNull(actualStars)
+    assertNotNull(actualStars)
     assertEquals(expectedStarPayloads.size, actualStars.size)
     assertEquals(expectedStarPayloads, actualStars)
   }
@@ -99,7 +98,7 @@ class StarServiceTest {
     Mockito.`when`(starRepo.save(newStar)).thenReturn(newStarWithId)
 
     val actualStar = starService.addStar(newStarPayload)
-    Assert.assertEquals(newStarPayloadWithId, actualStar)
+    assertEquals(newStarPayloadWithId, actualStar)
   }
 
   @Test
@@ -114,7 +113,7 @@ class StarServiceTest {
 
     var actualStar = starService.updateStar(1, newStarPayload)
     assertNotNull(actualStar)
-    Assert.assertEquals(newStarPayloadWithId, actualStar)
+    assertEquals(newStarPayloadWithId, actualStar)
 
     actualStar = starService.updateStar(3, newStarPayload)
     assertNull(actualStar)
