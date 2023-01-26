@@ -39,5 +39,12 @@ video:
 localfile:
   homeDir: ${user.home}
 
-oauth2:
-  cookie-name: vm_token
+keycloak:
+  auth-server-url: ${testcontainers.common.keycloak.url}
+  realm: ${testcontainers.common.keycloak.realm}
+  resource: ${testcontainers.common.keycloak.client.id}
+  credentials:
+    secret: ${testcontainers.common.keycloak.client.secret}
+  ssl-required: all
+  use-resource-role-mappings: true
+  bearer-only: true
