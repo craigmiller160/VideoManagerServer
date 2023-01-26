@@ -17,6 +17,6 @@ ONEPASSWORD_TOKEN=XXXXXXX
 
 The SSO OAuth Server must be running before this can run.
 
-Please use the `run.sh` script to run it. The name of the environment it is being run in (dev/qa/prod) is a requirement. For example:
+Please use the `run.sh` script to run it.
 
-`sh run.sh dev`
+`sh run.sh`
