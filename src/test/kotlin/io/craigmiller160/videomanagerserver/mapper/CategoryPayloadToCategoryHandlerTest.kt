@@ -24,7 +24,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class CategoryPayloadToCategoryHandlerTest {
 

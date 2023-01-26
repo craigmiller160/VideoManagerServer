@@ -21,13 +21,13 @@ package io.craigmiller160.videomanagerserver.crypto
 import java.util.Base64
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.junit.jupiter.MockitoExtension
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class AesEncryptHandlerTest {
 
   companion object {
@@ -38,7 +38,7 @@ class AesEncryptHandlerTest {
 
   private lateinit var aesEncryptHandler: AesEncryptHandler
 
-  @Before
+  @BeforeEach
   fun setup() {
     val keyBytes = Base64.getDecoder().decode(KEY)
     this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")

@@ -32,6 +32,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
@@ -39,11 +40,11 @@ import org.hamcrest.Matchers.greaterThan
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -54,7 +55,7 @@ class FileScannerTest {
 
     private lateinit var rootPath: String
 
-    @BeforeClass
+    @BeforeAll
     @JvmStatic
     fun findDirs() {
       val url =
@@ -74,7 +75,7 @@ class FileScannerTest {
 
   @Mock private lateinit var settingsService: SettingsService
 
-  @Before
+  @BeforeEach
   fun setup() {
     MockitoAnnotations.initMocks(this)
 
@@ -83,13 +84,13 @@ class FileScannerTest {
     fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService)
   }
 
-  @Test(expected = InvalidSettingException::class)
+  @Test
   fun test_scanForFiles_noRootDir() {
     `when`(settingsService.getOrCreateSettings()).thenReturn(SettingsPayload())
 
     val done = AtomicBoolean(false)
 
-    fileScanner.scanForFiles { done.set(true) }
+    assertThrows<InvalidSettingException> { fileScanner.scanForFiles { done.set(true) } }
   }
 
   @Test

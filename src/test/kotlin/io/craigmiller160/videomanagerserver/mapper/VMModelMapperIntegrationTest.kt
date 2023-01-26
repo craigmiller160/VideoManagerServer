@@ -29,14 +29,14 @@ import org.hamcrest.CoreMatchers.isA
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class VMModelMapperIntegrationTest {
 
   private lateinit var mapper: VMModelMapper
 
-  @Before
+  @BeforeEach
   fun setup() {
     val vfHandler = VideoFilePayloadToVideoFileHandler()
     val catHandler = CategoryPayloadToCategoryHandler()
