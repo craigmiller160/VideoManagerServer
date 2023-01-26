@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.nimbusds.jose.jwk.JWKSet
 import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import java.security.KeyPair
-import org.junit.Before
-import org.junit.BeforeClass
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -38,7 +38,7 @@ abstract class AbstractControllerTest {
     @JvmStatic protected lateinit var keyPair: KeyPair
     @JvmStatic protected lateinit var jwkSet: JWKSet
 
-    @BeforeClass
+    @BeforeAll
     @JvmStatic
     fun beforeAll() {
       keyPair = JwtUtils.createKeyPair()
@@ -57,7 +57,7 @@ abstract class AbstractControllerTest {
   protected lateinit var scanToken: String
   protected lateinit var adminToken: String
 
-  @Before
+  @BeforeEach
   open fun setup() {
     //    Mockito.`when`(oauthConfig.jwkSet).thenReturn(jwkSet)
     //    Mockito.`when`(oauthConfig.clientKey).thenReturn(JwtUtils.CLIENT_KEY)
