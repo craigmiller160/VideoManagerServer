@@ -30,6 +30,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.keycloak.bom</groupId>
+                <artifactId>keycloak-adapter-bom</artifactId>
+                <version>${keycloak.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -47,13 +54,13 @@
     </distributionManagement>
 
     <properties>
+        <keycloak.version>20.0.2</keycloak.version>
         <spotless.version>2.26.0</spotless.version>
         <maven.git.hooks.version>1.0.1</maven.git.hooks.version>
         <git.hooks.plugin.version>3.3.0</git.hooks.plugin.version>
         <log4j2.version>2.17.0</log4j2.version>
         <java.version>17</java.version>
         <kotlin.version>1.7.21</kotlin.version>
-        <oauth2.utils.version>1.11.0</oauth2.utils.version>
         <web.utils.version>1.1.4</web.utils.version>
         <api.test.processor.version>1.2.3</api.test.processor.version>
         <hamcrest.version>2.2</hamcrest.version>
@@ -71,6 +78,21 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.craigmiller160</groupId>
+            <artifactId>testcontainers-common</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>${flyway.version}</version>
@@ -85,11 +107,6 @@
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.craigmiller160</groupId>
-            <artifactId>spring-oauth2-utils</artifactId>
-            <version>${oauth2.utils.version}</version>
         </dependency>
         <dependency>
             <groupId>io.craigmiller160</groupId>
