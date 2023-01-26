@@ -32,7 +32,7 @@ app_deployment:
     - envVariable: video.security.token.key
       secretName: video-manager-server-video-token-key
       secretKey: key
-  livenessProbe:
+  commonProbe:
     httpGet:
       path: /actuator/health
       port: 8443
