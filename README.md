@@ -4,11 +4,14 @@
 
 This is the server application for the VideoManager application.
 
-### Auth Server Setup
+## Terraform
 
-1. Create a client for this app in the Auth Server UI
-    1. Update the properties of this app with the client key/secret.
-    1. Add the ADMIN, EDIT, and SCAN roles.
+For the Terraform script to run, the following environment variables must be present on the machine.
+
+```
+# The operator access token for communicating with 1Password
+ONEPASSWORD_TOKEN=XXXXXXX
+```
 
 ### Running Locally
 
