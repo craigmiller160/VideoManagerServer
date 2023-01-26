@@ -19,36 +19,24 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nimbusds.jose.jwk.JWKSet
-import io.craigmiller160.videomanagerserver.test_util.JwtUtils
-import java.security.KeyPair
-import org.junit.jupiter.api.BeforeAll
+import io.craigmiller160.videomanagerserver.test_util.DefaultUsers
+import io.craigmiller160.videomanagerserver.test_util.VideoManagerIntegrationTest
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.json.JacksonTester
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
+@VideoManagerIntegrationTest
 abstract class AbstractControllerTest {
-
-  companion object {
-
-    @JvmStatic protected lateinit var keyPair: KeyPair
-    @JvmStatic protected lateinit var jwkSet: JWKSet
-
-    @BeforeAll
-    @JvmStatic
-    fun beforeAll() {
-      keyPair = JwtUtils.createKeyPair()
-      jwkSet = JwtUtils.createJwkSet(keyPair)
-    }
-  }
 
   @Autowired private lateinit var webAppContext: WebApplicationContext
 
   @Autowired protected lateinit var objectMapper: ObjectMapper
+  @Autowired protected lateinit var defaultUsers: DefaultUsers
 
   protected lateinit var mockMvcHandler: MockMvcHandler
 
@@ -59,26 +47,12 @@ abstract class AbstractControllerTest {
 
   @BeforeEach
   open fun setup() {
-    //    Mockito.`when`(oauthConfig.jwkSet).thenReturn(jwkSet)
-    //    Mockito.`when`(oauthConfig.clientKey).thenReturn(JwtUtils.CLIENT_KEY)
-    //    Mockito.`when`(oauthConfig.clientName).thenReturn(JwtUtils.CLIENT_NAME)
-    //    Mockito.`when`(oauthConfig.cookieName).thenReturn("vm_token")
-    //
-    //    val jwt = JwtUtils.createJwt()
-    //    token = JwtUtils.signAndSerializeJwt(jwt, keyPair.private)
-    //
-    //    val editJwt = JwtUtils.createEditJwt()
-    //    editToken = JwtUtils.signAndSerializeJwt(editJwt, keyPair.private)
-    //
-    //    val scanJwt = JwtUtils.createScanJwt()
-    //    scanToken = JwtUtils.signAndSerializeJwt(scanJwt, keyPair.private)
-    //
-    //    val adminJwt = JwtUtils.createAdminJwt()
-    //    adminToken = JwtUtils.signAndSerializeJwt(adminJwt, keyPair.private)
-    //
-    //    mockMvcHandler = buildMockMvcHandler()
-    //    JacksonTester.initFields(this, objectMapper)
-    TODO()
+    token = defaultUsers.noRolesUser.token
+    editToken = defaultUsers.editOnlyUser.token
+    scanToken = defaultUsers.scanOnlyUser.token
+    adminToken = defaultUsers.adminOnlyUser.token
+    mockMvcHandler = buildMockMvcHandler()
+    JacksonTester.initFields(this, objectMapper)
   }
 
   protected fun buildMockMvcHandler(): MockMvcHandler {
