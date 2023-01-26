@@ -30,10 +30,8 @@ import javax.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
-class VideoAuthenticationFilter(
-  private val videoTokenProvider: VideoTokenProvider,
-  private val cookieName: String
-) : OncePerRequestFilter() {
+class VideoAuthenticationFilter(private val videoTokenProvider: VideoTokenProvider) :
+  OncePerRequestFilter() {
 
   companion object {
     val VIDEO_URI = Regex("""^\/video-files\/play\/\d{1,10}$""")
@@ -62,15 +60,11 @@ class VideoAuthenticationFilter(
   }
 
   private fun getUserId(req: HttpServletRequest): Long? {
-    val jwt = getBearerToken(req) ?: getCookie(req)
-    return jwt?.let { extractUserIdFromJwt(it) }
+    return getBearerToken(req)?.let { extractUserIdFromJwt(it) }
   }
 
   private fun extractUserIdFromJwt(token: String): Long =
-    SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId")
-
-  private fun getCookie(req: HttpServletRequest): String? =
-    req.cookies?.find { it.name == cookieName }?.value
+    SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId") // TODO this will be incorrect...
 
   private fun getBearerToken(req: HttpServletRequest): String? =
     req.getHeader("Authorization")?.let {

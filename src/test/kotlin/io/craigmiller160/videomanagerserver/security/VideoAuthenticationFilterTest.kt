@@ -64,7 +64,7 @@ class VideoAuthenticationFilterTest {
   @BeforeEach
   fun setup() {
     SecurityContextHolder.setContext(securityContext)
-    videoAuthenticationFilter = VideoAuthenticationFilter(videoTokenProvider, COOKIE_NAME)
+    videoAuthenticationFilter = VideoAuthenticationFilter(videoTokenProvider)
   }
 
   @AfterEach
