@@ -8,8 +8,8 @@ data "keycloak_realm" "apps_prod" {
 
 locals {
   client_common = {
-    client_id = "expense-tracker-api"
-    name = "expense-tracker-api"
+    client_id = "video-manager-server"
+    name = "video-manager-server"
     enabled = true
     access_type = "CONFIDENTIAL"
     service_accounts_enabled = true
@@ -20,7 +20,7 @@ locals {
   }
 }
 
-resource "keycloak_openid_client" "expense_tracker_api_dev" {
+resource "keycloak_openid_client" "video_manager_server_dev" {
   realm_id = data.keycloak_realm.apps_dev.id
   client_id = local.client_common.client_id
   name = local.client_common.name
@@ -29,7 +29,7 @@ resource "keycloak_openid_client" "expense_tracker_api_dev" {
   service_accounts_enabled = local.client_common.service_accounts_enabled
 }
 
-resource "keycloak_openid_client" "expense_tracker_api_prod" {
+resource "keycloak_openid_client" "video_manager_server_prod" {
   realm_id = data.keycloak_realm.apps_prod.id
   client_id = local.client_common.client_id
   name = local.client_common.name
@@ -38,14 +38,14 @@ resource "keycloak_openid_client" "expense_tracker_api_prod" {
   service_accounts_enabled = local.client_common.service_accounts_enabled
 }
 
-resource "keycloak_role" "expense_tracker_api_access_role_dev" {
+resource "keycloak_role" "video_manager_server_access_role_dev" {
   realm_id = data.keycloak_realm.apps_dev.id
-  client_id = keycloak_openid_client.expense_tracker_api_dev.id
+  client_id = keycloak_openid_client.video_manager_server_dev.id
   name = local.access_role_common.name
 }
 
-resource "keycloak_role" "expense_tracker_api_access_role_prod" {
+resource "keycloak_role" "video_manager_server_access_role_prod" {
   realm_id = data.keycloak_realm.apps_prod.id
-  client_id = keycloak_openid_client.expense_tracker_api_prod.id
+  client_id = keycloak_openid_client.video_manager_server_prod.id
   name = local.access_role_common.name
 }

@@ -1,6 +1,6 @@
 terraform {
   backend "kubernetes" {
-    secret_suffix = "expense-tracker-api-state"
+    secret_suffix = "video-manager-server-state"
     config_path   = "~/.kube/config"
   }
 
