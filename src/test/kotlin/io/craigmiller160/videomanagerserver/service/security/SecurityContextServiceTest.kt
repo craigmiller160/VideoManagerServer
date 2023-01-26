@@ -19,26 +19,26 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import kotlin.test.assertEquals
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class SecurityContextServiceTest {
 
   private lateinit var securityContext: SecurityContext
   private lateinit var authentication: Authentication
   private lateinit var securityContextService: SecurityContextService
 
-  @Before
+  @BeforeEach
   fun setup() {
     securityContext = mock(SecurityContext::class.java)
     authentication = mock(Authentication::class.java)
@@ -49,7 +49,7 @@ class SecurityContextServiceTest {
     securityContextService = SecurityContextService()
   }
 
-  @After
+  @AfterEach
   fun cleanup() {
     SecurityContextHolder.clearContext()
   }
