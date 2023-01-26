@@ -29,20 +29,20 @@ import javax.crypto.spec.SecretKeySpec
 import javax.servlet.http.HttpServletRequest
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class VideoTokenProviderTest {
 
   companion object {
@@ -62,7 +62,7 @@ class VideoTokenProviderTest {
 
   private lateinit var aesEncryptHandler: EncryptHandler
 
-  @Before
+  @BeforeEach
   fun setup() {
     val keyBytes = Base64.getDecoder().decode(KEY)
     this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")

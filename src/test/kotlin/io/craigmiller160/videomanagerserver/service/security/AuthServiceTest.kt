@@ -25,14 +25,14 @@ import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenPro
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import kotlin.test.assertFails
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 
-@RunWith(MockitoJUnitRunner.Silent::class)
+@ExtendWith(MockitoExtension::class)
 class AuthServiceTest {
 
   companion object {

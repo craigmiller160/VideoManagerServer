@@ -24,23 +24,22 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.notNullValue
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith
 class AuthEntryPointTest {
 
   private val authEntryPoint = AuthEntryPoint()
