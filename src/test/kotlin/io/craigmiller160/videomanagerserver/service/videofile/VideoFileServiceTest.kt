@@ -41,7 +41,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -235,7 +235,7 @@ class VideoFileServiceTest {
 
     assertEquals(2, captor.allValues.size)
     val errorIsScanning = captor.allValues[1]
-    assertThat(errorIsScanning)
+    org.assertj.core.api.Assertions.assertThat(errorIsScanning)
       .hasFieldOrPropertyWithValue("isScanning", false)
       .hasFieldOrPropertyWithValue("lastScanSuccess", false)
   }
