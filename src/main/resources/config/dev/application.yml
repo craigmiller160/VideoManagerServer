@@ -18,8 +18,7 @@ video:
     token:
       key: /RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM=
 
-oauth2:
-  auth-server-host: https://apps-craigmiller160.ddns.net/oauth2
-  client-name: (Dev) video-manager-server
-  client-key: ea9156de-f5eb-4ed3-a04a-7baeb26cb59d
-  client-secret: 7ab84f05-f2d7-4ed7-9a49-17c6611d8ef0
+keycloak:
+  realm: apps-dev
+  credentials:
+    secret: oIKLhWa2ORO61KLBUiVovBaSSw6cqXGZ
