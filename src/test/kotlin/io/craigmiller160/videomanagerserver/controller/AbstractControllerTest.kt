@@ -20,15 +20,11 @@ package io.craigmiller160.videomanagerserver.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nimbusds.jose.jwk.JWKSet
-import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import java.security.KeyPair
 import org.junit.Before
 import org.junit.BeforeClass
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.json.JacksonTester
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
@@ -56,8 +52,6 @@ abstract class AbstractControllerTest {
 
   protected lateinit var mockMvcHandler: MockMvcHandler
 
-  @MockBean protected lateinit var oauthConfig: OAuth2Config
-
   protected lateinit var token: String
   protected lateinit var editToken: String
   protected lateinit var scanToken: String
@@ -65,25 +59,26 @@ abstract class AbstractControllerTest {
 
   @Before
   open fun setup() {
-    Mockito.`when`(oauthConfig.jwkSet).thenReturn(jwkSet)
-    Mockito.`when`(oauthConfig.clientKey).thenReturn(JwtUtils.CLIENT_KEY)
-    Mockito.`when`(oauthConfig.clientName).thenReturn(JwtUtils.CLIENT_NAME)
-    Mockito.`when`(oauthConfig.cookieName).thenReturn("vm_token")
-
-    val jwt = JwtUtils.createJwt()
-    token = JwtUtils.signAndSerializeJwt(jwt, keyPair.private)
-
-    val editJwt = JwtUtils.createEditJwt()
-    editToken = JwtUtils.signAndSerializeJwt(editJwt, keyPair.private)
-
-    val scanJwt = JwtUtils.createScanJwt()
-    scanToken = JwtUtils.signAndSerializeJwt(scanJwt, keyPair.private)
-
-    val adminJwt = JwtUtils.createAdminJwt()
-    adminToken = JwtUtils.signAndSerializeJwt(adminJwt, keyPair.private)
-
-    mockMvcHandler = buildMockMvcHandler()
-    JacksonTester.initFields(this, objectMapper)
+    //    Mockito.`when`(oauthConfig.jwkSet).thenReturn(jwkSet)
+    //    Mockito.`when`(oauthConfig.clientKey).thenReturn(JwtUtils.CLIENT_KEY)
+    //    Mockito.`when`(oauthConfig.clientName).thenReturn(JwtUtils.CLIENT_NAME)
+    //    Mockito.`when`(oauthConfig.cookieName).thenReturn("vm_token")
+    //
+    //    val jwt = JwtUtils.createJwt()
+    //    token = JwtUtils.signAndSerializeJwt(jwt, keyPair.private)
+    //
+    //    val editJwt = JwtUtils.createEditJwt()
+    //    editToken = JwtUtils.signAndSerializeJwt(editJwt, keyPair.private)
+    //
+    //    val scanJwt = JwtUtils.createScanJwt()
+    //    scanToken = JwtUtils.signAndSerializeJwt(scanJwt, keyPair.private)
+    //
+    //    val adminJwt = JwtUtils.createAdminJwt()
+    //    adminToken = JwtUtils.signAndSerializeJwt(adminJwt, keyPair.private)
+    //
+    //    mockMvcHandler = buildMockMvcHandler()
+    //    JacksonTester.initFields(this, objectMapper)
+    TODO()
   }
 
   protected fun buildMockMvcHandler(): MockMvcHandler {

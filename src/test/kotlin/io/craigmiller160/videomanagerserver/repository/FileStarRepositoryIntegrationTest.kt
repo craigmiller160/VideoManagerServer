@@ -18,7 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
@@ -36,7 +35,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 @RunWith(SpringJUnit4ClassRunner::class)
@@ -54,8 +52,6 @@ class FileStarRepositoryIntegrationTest {
   @Autowired private lateinit var fileStarRepo: FileStarRepository
   @Autowired private lateinit var videoFileRepo: VideoFileRepository
   @Autowired private lateinit var dbTestUtils: DbTestUtils
-
-  @MockBean private lateinit var oauthConfig: OAuth2Config
 
   private var fileId = 0L
   private var starId = 0L

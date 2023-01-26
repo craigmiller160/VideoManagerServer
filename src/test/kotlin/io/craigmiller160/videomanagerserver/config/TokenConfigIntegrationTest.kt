@@ -18,13 +18,11 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuth2Config
 import kotlin.test.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
@@ -37,8 +35,6 @@ class TokenConfigIntegrationTest {
     private const val REFRESH_EXP_SECS = 1200
     private const val KEY = "/RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM="
   }
-
-  @MockBean private lateinit var oauthConfig: OAuth2Config
 
   @Autowired private lateinit var tokenConfig: TokenConfig
 

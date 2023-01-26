@@ -18,14 +18,12 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuth2Config
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
@@ -39,8 +37,6 @@ class DbConfigIntegrationTest {
     private const val DRIVER_CLASS_NAME = "org.h2.Driver"
     private const val DB = "test"
   }
-
-  @MockBean private lateinit var oauthConfig: OAuth2Config
 
   @Autowired private lateinit var dbConfig: DbConfig
 

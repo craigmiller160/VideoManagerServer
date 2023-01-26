@@ -18,41 +18,37 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
-import io.craigmiller160.oauth2.service.OAuth2Service
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
-import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
-import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
   private val videoTokenProvider: VideoTokenProvider,
   private val settingsService: SettingsService,
-  private val videoFileService: VideoFileService,
-  private val oAuth2Service: OAuth2Service
+  private val videoFileService: VideoFileService
 ) {
 
   fun getVideoToken(videoId: Long): VideoTokenResponse {
-    val authUser = oAuth2Service.getAuthenticatedUser()
-    val rootDirectory = settingsService.getOrCreateSettings().rootDir
-    if (rootDirectory.isEmpty()) {
-      throw IllegalStateException("Root directory is not set")
-    }
-    val videoFile =
-      videoFileService.getVideoFile(videoId)
-        ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
-    val filePath = videoFile.fileName
-    val fullFilePath = "${ensureTrailingSlash(rootDirectory)}$filePath"
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to videoId,
-        TokenConstants.PARAM_FILE_PATH to fullFilePath,
-        TokenConstants.PARAM_USER_ID to authUser.userId)
-    val token = videoTokenProvider.createToken(authUser.username, params)
-    return VideoTokenResponse(token)
+    //    val authUser = oAuth2Service.getAuthenticatedUser()
+    //    val rootDirectory = settingsService.getOrCreateSettings().rootDir
+    //    if (rootDirectory.isEmpty()) {
+    //      throw IllegalStateException("Root directory is not set")
+    //    }
+    //    val videoFile =
+    //      videoFileService.getVideoFile(videoId)
+    //        ?: throw VideoFileNotFoundException("No video file found for ID: $videoId")
+    //    val filePath = videoFile.fileName
+    //    val fullFilePath = "${ensureTrailingSlash(rootDirectory)}$filePath"
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to videoId,
+    //        TokenConstants.PARAM_FILE_PATH to fullFilePath,
+    //        TokenConstants.PARAM_USER_ID to authUser.userId)
+    //    val token = videoTokenProvider.createToken(authUser.username, params)
+    //    return VideoTokenResponse(token)
+    TODO()
   }
 }
