@@ -22,22 +22,22 @@ import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import kotlin.test.assertEquals
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
 import org.hamcrest.Matchers.not
-import org.junit.After
-import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringJUnit4ClassRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 class FileStarRepositoryIntegrationTest {
 
@@ -56,7 +56,7 @@ class FileStarRepositoryIntegrationTest {
   private var fileId = 0L
   private var starId = 0L
 
-  @Before
+  @BeforeEach
   fun setup() {
     val star = Star(starName = STAR_NAME)
     val file = VideoFile(fileName = FILE_NAME)
@@ -78,7 +78,7 @@ class FileStarRepositoryIntegrationTest {
     assertEquals(2, fileStarRepo.count())
   }
 
-  @After
+  @AfterEach
   fun clean() {
     dbTestUtils.cleanDb()
   }
