@@ -19,11 +19,13 @@
 package io.craigmiller160.videomanagerserver.service.security
 
 import com.nhaarman.mockito_kotlin.whenever
+import java.util.UUID
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.keycloak.KeycloakPrincipal
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.Authentication
@@ -35,6 +37,7 @@ class SecurityContextServiceTest {
 
   @Mock private lateinit var securityContext: SecurityContext
   @Mock private lateinit var authentication: Authentication
+  @Mock private lateinit var principal: KeycloakPrincipal<*>
   private lateinit var securityContextService: SecurityContextService
 
   @BeforeEach
@@ -52,7 +55,12 @@ class SecurityContextServiceTest {
 
   @Test
   fun test_getUserId() {
-    TODO()
+    val userId = UUID.randomUUID()
+    whenever(authentication.principal).thenReturn(principal)
+    whenever(principal.name).thenReturn(userId.toString())
+
+    val result = securityContextService.getUserId()
+    assertEquals(userId, result)
   }
 
   @Test
