@@ -31,10 +31,12 @@ import org.springframework.stereotype.Service
 class AuthService(
   private val videoTokenProvider: VideoTokenProvider,
   private val settingsService: SettingsService,
-  private val videoFileService: VideoFileService
+  private val videoFileService: VideoFileService,
+  private val securityContextService: SecurityContextService
 ) {
 
   fun getVideoToken(videoId: Long): VideoTokenResponse {
+    val userId = securityContextService.getUserId()
     val rootDirectory = settingsService.getOrCreateSettings().rootDir
     if (rootDirectory.isEmpty()) {
       throw IllegalStateException("Root directory is not set")
@@ -48,8 +50,8 @@ class AuthService(
       mapOf(
         TokenConstants.PARAM_VIDEO_ID to videoId,
         TokenConstants.PARAM_FILE_PATH to fullFilePath,
-        TokenConstants.PARAM_USER_ID to authUser.userId)
-    val token = videoTokenProvider.createToken(authUser.username, params)
+        TokenConstants.PARAM_USER_ID to userId)
+    val token = videoTokenProvider.createToken("dummyUserName", params)
     return VideoTokenResponse(token)
   }
 }
