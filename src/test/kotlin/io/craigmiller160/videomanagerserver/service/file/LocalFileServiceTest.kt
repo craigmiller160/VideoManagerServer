@@ -61,7 +61,7 @@ class LocalFileServiceTest {
     Files.write(File(targetDir, FILE_3_NAME).toPath(), TEXT.toByteArray())
     File(targetDir, DIR_2_NAME).mkdirs()
 
-    homeDir = Files.createTempDirectory(TARGET_DIR_NAME).toFile()
+    homeDir = Files.createTempDirectory(HOME_DIR_NAME).toFile()
     Files.write(File(homeDir, FILE_4_NAME).toPath(), TEXT.toByteArray())
     Files.write(File(homeDir, FILE_5_NAME).toPath(), TEXT.toByteArray())
     File(homeDir, DIR_1_NAME).mkdirs()
