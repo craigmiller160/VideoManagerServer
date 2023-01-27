@@ -20,6 +20,7 @@ package io.craigmiller160.videomanagerserver.service.file
 
 import io.craigmiller160.videomanagerserver.dto.LocalFileResponse
 import java.io.File
+import java.nio.file.Files
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -54,19 +55,18 @@ class LocalFileServiceTest {
 
   @BeforeEach
   fun setup() {
-    //    targetDir = tempFolder.newFolder(TARGET_DIR_NAME)
-    //    Files.write(File(targetDir, FILE_1_NAME).toPath(), TEXT.toByteArray())
-    //    Files.write(File(targetDir, FILE_2_NAME).toPath(), TEXT.toByteArray())
-    //    Files.write(File(targetDir, FILE_3_NAME).toPath(), TEXT.toByteArray())
-    //    File(targetDir, DIR_2_NAME).mkdirs()
-    //
-    //    homeDir = tempFolder.newFolder(HOME_DIR_NAME)
-    //    Files.write(File(homeDir, FILE_4_NAME).toPath(), TEXT.toByteArray())
-    //    Files.write(File(homeDir, FILE_5_NAME).toPath(), TEXT.toByteArray())
-    //    File(homeDir, DIR_1_NAME).mkdirs()
-    //
-    //    localFileService = LocalFileService(homeDir.absolutePath)
-    TODO()
+    targetDir = Files.createTempDirectory(TARGET_DIR_NAME).toFile()
+    Files.write(File(targetDir, FILE_1_NAME).toPath(), TEXT.toByteArray())
+    Files.write(File(targetDir, FILE_2_NAME).toPath(), TEXT.toByteArray())
+    Files.write(File(targetDir, FILE_3_NAME).toPath(), TEXT.toByteArray())
+    File(targetDir, DIR_2_NAME).mkdirs()
+
+    homeDir = Files.createTempDirectory(TARGET_DIR_NAME).toFile()
+    Files.write(File(homeDir, FILE_4_NAME).toPath(), TEXT.toByteArray())
+    Files.write(File(homeDir, FILE_5_NAME).toPath(), TEXT.toByteArray())
+    File(homeDir, DIR_1_NAME).mkdirs()
+
+    localFileService = LocalFileService(homeDir.absolutePath)
   }
 
   @Test
