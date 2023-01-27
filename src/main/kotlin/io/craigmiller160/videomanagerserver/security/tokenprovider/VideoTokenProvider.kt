@@ -105,11 +105,6 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
       return TokenValidationStatus.RESOURCE_FORBIDDEN
     }
 
-    val userId = params[TokenConstants.PARAM_USER_ID]
-    if (userId != tokenParts[1].toLong()) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
     return TokenValidationStatus.VALID
   }
 

@@ -18,9 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.security
 
-import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import java.net.URLDecoder
@@ -49,73 +47,24 @@ class VideoAuthenticationFilter(private val videoTokenProvider: VideoTokenProvid
     val pathUri = getPathUri(req)
     if (VIDEO_URI.matches(pathUri)) {
       val fileId = pathUri.split("/")[3]
-      val userId = getUserId(req) ?: 0
-      val params =
-        mapOf(TokenConstants.PARAM_VIDEO_ID to fileId, TokenConstants.PARAM_USER_ID to userId)
-      validateToken(req, resp, chain, videoTokenProvider, params)
-      return
+      validateToken(req, fileId)
     }
 
     chain.doFilter(req, resp)
   }
 
-  private fun getUserId(req: HttpServletRequest): Long? {
-    return getBearerToken(req)?.let { extractUserIdFromJwt(it) }
-  }
-
-  private fun extractUserIdFromJwt(token: String): Long =
-    SignedJWT.parse(token).jwtClaimsSet.getLongClaim("userId") // TODO this will be incorrect...
-
-  private fun getBearerToken(req: HttpServletRequest): String? =
-    req.getHeader("Authorization")?.let {
-      if (it.startsWith("Bearer")) {
-        return it.replace("Bearer ", "")
-      }
-      return null
-    }
-
-  private fun validateToken(
-    req: HttpServletRequest,
-    resp: HttpServletResponse,
-    chain: FilterChain,
-    tokenProvider: TokenProvider,
-    params: Map<String, Any> = HashMap()
-  ) {
-    val token = tokenProvider.resolveToken(req)
+  private fun validateToken(req: HttpServletRequest, videoId: String) {
+    val token = videoTokenProvider.resolveToken(req)
     token?.let {
-      try {
-        val decodedToken = URLDecoder.decode(token, Charsets.UTF_8)
-        val status = tokenProvider.validateToken(decodedToken, params)
-        logger.debug("Token Validation Status: $status")
-        when (status) {
-          TokenValidationStatus.VALID -> {
-            val auth = tokenProvider.createAuthentication(decodedToken)
-            SecurityContextHolder.getContext().authentication = auth
-            chain.doFilter(req, resp)
-          }
-          else -> unauthenticated(req, resp, chain, status)
-        }
-      } catch (ex: Exception) {
-        logger.error("Error handling token", ex)
-        unauthenticated(req, resp, chain, TokenValidationStatus.VALIDATION_ERROR)
+      val decodedToken = URLDecoder.decode(token, Charsets.UTF_8)
+      val status =
+        videoTokenProvider.validateToken(
+          decodedToken, mapOf(TokenConstants.PARAM_VIDEO_ID to videoId))
+      logger.debug("Token Validation Status: $status")
+      if (TokenValidationStatus.VALID == status) {
+        val auth = videoTokenProvider.createAuthentication(decodedToken)
+        SecurityContextHolder.getContext().authentication = auth
       }
-    }
-      ?: unauthenticated(req, resp, chain, TokenValidationStatus.NO_TOKEN)
-  }
-
-  private fun unauthenticated(
-    req: HttpServletRequest,
-    resp: HttpServletResponse,
-    chain: FilterChain,
-    status: TokenValidationStatus
-  ) {
-    val request = "${req.method} ${getPathUri(req)}"
-    logger.error("Attempted unauthenticated access. Request: $request Status: $status")
-    SecurityContextHolder.clearContext()
-    when (status) {
-      TokenValidationStatus.RESOURCE_FORBIDDEN -> resp.status = 403
-      TokenValidationStatus.VALIDATION_ERROR -> resp.status = 500
-      else -> resp.status = 401
     }
   }
 }
