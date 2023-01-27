@@ -55,8 +55,7 @@ class VideoAuthenticationFilter(private val videoTokenProvider: VideoTokenProvid
     //      return
     //    }
     //
-    //    chain.doFilter(req, resp)
-    TODO()
+    chain.doFilter(req, resp)
   }
 
   private fun getUserId(req: HttpServletRequest): Long? {
