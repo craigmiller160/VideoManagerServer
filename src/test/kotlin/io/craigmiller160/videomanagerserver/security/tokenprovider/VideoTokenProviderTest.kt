@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -70,6 +71,12 @@ class VideoTokenProviderTest {
     val tokenString = videoTokenProvider.createToken(videoToken)
     val jwt = SignedJWT.parse(tokenString)
     jwt.verify(MACVerifier(tokenConfig.secretKey))
+
+    val token = VideoToken.fromMap(jwt.jwtClaimsSet.claims)
+    assertThat(token)
+      .hasFieldOrPropertyWithValue("userId", USER_ID)
+      .hasFieldOrPropertyWithValue("videoId", VIDEO_ID)
+      .hasFieldOrPropertyWithValue("filePath", FILE_PATH)
   }
 
   @Test
