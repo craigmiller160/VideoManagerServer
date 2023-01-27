@@ -64,7 +64,6 @@ class AuthServiceTest {
 
     whenever(
         videoTokenProvider.createToken(
-          "dummyUserName",
           mapOf(
             TokenConstants.PARAM_VIDEO_ID to videoId,
             TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR/$FILE_PATH",

@@ -23,7 +23,7 @@ import org.springframework.security.core.Authentication
 
 interface TokenProvider {
 
-  fun createToken(userName: String, params: Map<String, Any> = HashMap()): String
+  fun createToken(params: Map<String, Any> = HashMap()): String
 
   fun resolveToken(req: HttpServletRequest): String?
 

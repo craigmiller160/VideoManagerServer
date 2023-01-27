@@ -57,14 +57,13 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$separator.+""".toRegex()
   }
 
-  override fun createToken(userName: String, params: Map<String, Any>): String {
+  override fun createToken(params: Map<String, Any>): String {
     val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
     val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
     val userId = params[TokenConstants.PARAM_USER_ID]!!
     val exp = generateExpiration()
     val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val tokenString =
-      "$userName$separator$userId$separator$videoId$separator$exp$separator$fullFilePath"
+    val tokenString = "$userId$separator$videoId$separator$exp$separator$fullFilePath"
     return encryptHandler.doEncrypt(tokenString)
   }
 

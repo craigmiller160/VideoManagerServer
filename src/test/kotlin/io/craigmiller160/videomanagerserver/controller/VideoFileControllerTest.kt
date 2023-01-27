@@ -306,7 +306,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         TokenConstants.PARAM_VIDEO_ID to "1",
         TokenConstants.PARAM_FILE_PATH to "/foo/bar",
         TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken("user", params)
+    val token = videoTokenProvider.createToken(params)
     val file = File(".")
     `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
     val response =
@@ -323,7 +323,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         TokenConstants.PARAM_VIDEO_ID to "1",
         TokenConstants.PARAM_FILE_PATH to "/foo/bar",
         TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken("user", params)
+    val token = videoTokenProvider.createToken(params)
     val file = File(".")
     `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
     val response =
@@ -368,7 +368,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
         TokenConstants.PARAM_VIDEO_ID to "1",
         TokenConstants.PARAM_FILE_PATH to "/foo/bar",
         TokenConstants.PARAM_USER_ID to "2")
-    val token = videoTokenProvider.createToken("user", params)
+    val token = videoTokenProvider.createToken(params)
     val file = File(".")
     `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
     val response =

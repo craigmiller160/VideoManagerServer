@@ -51,9 +51,7 @@ class AuthService(
         TokenConstants.PARAM_VIDEO_ID to videoId,
         TokenConstants.PARAM_FILE_PATH to fullFilePath,
         TokenConstants.PARAM_USER_ID to userId.toString())
-    // user name should probably be completely removed in the future, for now just using a dummy
-    // value
-    val token = videoTokenProvider.createToken("dummyUserName", params)
+    val token = videoTokenProvider.createToken(params)
     return VideoTokenResponse(token)
   }
 }

@@ -82,7 +82,7 @@ class VideoTokenProviderTest {
         TokenConstants.PARAM_VIDEO_ID to VIDEO_ID,
         TokenConstants.PARAM_FILE_PATH to FILE_PATH,
         TokenConstants.PARAM_USER_ID to USER_ID)
-    val token = videoTokenProvider.createToken("userName", params)
+    val token = videoTokenProvider.createToken(params)
     val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
     assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
   }
