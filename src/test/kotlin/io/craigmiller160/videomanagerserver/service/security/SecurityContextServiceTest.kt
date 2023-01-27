@@ -54,6 +54,11 @@ class SecurityContextServiceTest {
   }
 
   @Test
+  fun test_getUserId() {
+    TODO()
+  }
+
+  @Test
   fun test_getSecurityContext() {
     val result = securityContextService.getSecurityContext()
     assertEquals(securityContext, result)
