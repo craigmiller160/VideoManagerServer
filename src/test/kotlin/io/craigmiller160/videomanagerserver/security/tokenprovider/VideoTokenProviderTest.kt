@@ -18,6 +18,8 @@
 
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
+import com.nimbusds.jose.crypto.MACVerifier
+import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
@@ -38,8 +40,8 @@ class VideoTokenProviderTest {
 
   companion object {
     private const val USER_NAME = "userName"
-    private const val VIDEO_ID = "10"
-    private const val USER_ID = 1L
+    private const val VIDEO_ID = 10L
+    private val USER_ID = UUID.randomUUID()
     private const val FILE_PATH = "/full/file/path"
     private const val KEY = "XaTw9UVgImYHxi/jXwrq3hMWHsWsnkNC6iWszHzut/U="
     private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -64,20 +66,10 @@ class VideoTokenProviderTest {
 
   @Test
   fun test_createToken() {
-    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    //    val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
-    //    val tokenRegex =
-    //
-    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateRegex$separator.*".toRegex()
-    //    val params =
-    //      mapOf(
-    //        TokenConstants.PARAM_VIDEO_ID to VIDEO_ID,
-    //        TokenConstants.PARAM_FILE_PATH to FILE_PATH,
-    //        TokenConstants.PARAM_USER_ID to USER_ID)
-    //    val token = videoTokenProvider.createToken(params)
-    //    val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
-    //    assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
-    TODO()
+    val videoToken = VideoToken(userId = USER_ID, filePath = FILE_PATH, videoId = VIDEO_ID)
+    val tokenString = videoTokenProvider.createToken(videoToken)
+    val jwt = SignedJWT.parse(tokenString)
+    jwt.verify(MACVerifier(tokenConfig.secretKey))
   }
 
   @Test
