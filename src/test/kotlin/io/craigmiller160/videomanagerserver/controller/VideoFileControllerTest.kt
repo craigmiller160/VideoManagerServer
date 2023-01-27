@@ -20,16 +20,13 @@ package io.craigmiller160.videomanagerserver.controller
 
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.dto.*
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
 import io.craigmiller160.videomanagerserver.test_util.isA
-import java.io.File
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -40,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.core.io.UrlResource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
@@ -300,36 +296,38 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Test
   fun test_playVideo() {
-    mockMvcHandler.token = token
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken(params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(206, response.status)
-    assertTrue(response.contentAsByteArray.isNotEmpty())
+    //    mockMvcHandler.token = token
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to "1",
+    //        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
+    //        TokenConstants.PARAM_USER_ID to "1")
+    //    val token = videoTokenProvider.createToken(params)
+    //    val file = File(".")
+    //    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
+    //    val response =
+    //      mockMvcHandler.doGet(
+    //        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+    //    assertEquals(206, response.status)
+    //    assertTrue(response.contentAsByteArray.isNotEmpty())
+    TODO()
   }
 
   @Test
   fun test_playVideo_noJwt_withVideoToken() {
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken(params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(403, response.status)
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to "1",
+    //        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
+    //        TokenConstants.PARAM_USER_ID to "1")
+    //    val token = videoTokenProvider.createToken(params)
+    //    val file = File(".")
+    //    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
+    //    val response =
+    //      mockMvcHandler.doGet(
+    //        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+    //    assertEquals(403, response.status)
+    TODO()
   }
 
   @Test
@@ -362,19 +360,20 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Test
   fun test_playVideo_wrongUser() {
-    mockMvcHandler.token = token
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "2")
-    val token = videoTokenProvider.createToken(params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(403, response.status)
+    //    mockMvcHandler.token = token
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to "1",
+    //        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
+    //        TokenConstants.PARAM_USER_ID to "2")
+    //    val token = videoTokenProvider.createToken(params)
+    //    val file = File(".")
+    //    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
+    //    val response =
+    //      mockMvcHandler.doGet(
+    //        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+    //    assertEquals(403, response.status)
+    TODO()
   }
 
   @Test

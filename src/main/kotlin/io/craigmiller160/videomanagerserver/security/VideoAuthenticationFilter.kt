@@ -19,7 +19,6 @@
 package io.craigmiller160.videomanagerserver.security
 
 import com.nimbusds.jwt.SignedJWT
-import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenProvider
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenValidationStatus
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
@@ -46,17 +45,18 @@ class VideoAuthenticationFilter(private val videoTokenProvider: VideoTokenProvid
     resp: HttpServletResponse,
     chain: FilterChain
   ) {
-    val pathUri = getPathUri(req)
-    if (VIDEO_URI.matches(pathUri)) {
-      val fileId = pathUri.split("/")[3]
-      val userId = getUserId(req) ?: 0
-      val params =
-        mapOf(TokenConstants.PARAM_VIDEO_ID to fileId, TokenConstants.PARAM_USER_ID to userId)
-      validateToken(req, resp, chain, videoTokenProvider, params)
-      return
-    }
-
-    chain.doFilter(req, resp)
+    //    val pathUri = getPathUri(req)
+    //    if (VIDEO_URI.matches(pathUri)) {
+    //      val fileId = pathUri.split("/")[3]
+    //      val userId = getUserId(req) ?: 0
+    //      val params =
+    //        mapOf(TokenConstants.PARAM_VIDEO_ID to fileId, TokenConstants.PARAM_USER_ID to userId)
+    //      validateToken(req, resp, chain, videoTokenProvider, params)
+    //      return
+    //    }
+    //
+    //    chain.doFilter(req, resp)
+    TODO()
   }
 
   private fun getUserId(req: HttpServletRequest): Long? {
