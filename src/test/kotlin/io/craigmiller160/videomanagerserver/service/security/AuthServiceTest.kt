@@ -18,13 +18,17 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import com.nhaarman.mockito_kotlin.whenever
 import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
+import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
+import java.util.UUID
 import kotlin.test.assertFails
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
@@ -52,30 +56,25 @@ class AuthServiceTest {
 
   @Test
   fun test_getVideoToken() {
-    //    val userName = "bobsaget"
-    //    val videoId = 10L
-    //    val token = "ABCDEFG"
-    //
-    //    val authUser =
-    //      AuthUserDto(
-    //        firstName = "Bob", lastName = "Saget", userId = 1L, username = userName, roles =
-    // listOf())
-    //    whenever(oAuth2Service.getAuthenticatedUser()).thenReturn(authUser)
-    //
-    //    whenever(
-    //        videoTokenProvider.createToken(
-    //          userName,
-    //          mapOf(
-    //            TokenConstants.PARAM_VIDEO_ID to videoId,
-    //            TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR/$FILE_PATH",
-    //            TokenConstants.PARAM_USER_ID to 1L)))
-    //      .thenReturn(token)
-    //    `when`(settingsService.getOrCreateSettings()).thenReturn(settings)
-    //    `when`(videoFileService.getVideoFile(videoId)).thenReturn(videoFile)
-    //
-    //    val result = authService.getVideoToken(videoId)
-    //    assertEquals(VideoTokenResponse(token), result)
-    TODO()
+    val userName = "bobsaget"
+    val videoId = 10L
+    val token = "ABCDEFG"
+    val userId = UUID.randomUUID()
+    whenever(securityContextService.getUserId()).thenReturn(userId)
+
+    whenever(
+        videoTokenProvider.createToken(
+          "dummyUserName",
+          mapOf(
+            TokenConstants.PARAM_VIDEO_ID to videoId,
+            TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR/$FILE_PATH",
+            TokenConstants.PARAM_USER_ID to 1L)))
+      .thenReturn(token)
+    `when`(settingsService.getOrCreateSettings()).thenReturn(settings)
+    `when`(videoFileService.getVideoFile(videoId)).thenReturn(videoFile)
+
+    val result = authService.getVideoToken(videoId)
+    assertEquals(VideoTokenResponse(token), result)
   }
 
   @Test
@@ -83,14 +82,6 @@ class AuthServiceTest {
     val userName = "userName"
     val videoId = 10L
     val token = "ABCDEFG"
-
-    `when`(
-        videoTokenProvider.createToken(
-          userName,
-          mapOf(
-            TokenConstants.PARAM_VIDEO_ID to videoId,
-            TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR$FILE_PATH")))
-      .thenReturn(token)
     `when`(settingsService.getOrCreateSettings()).thenReturn(settings)
 
     assertFails("No video file found for ID: $videoId") { authService.getVideoToken(videoId) }
