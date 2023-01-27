@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres:14.5
+    container_name: video_manager_postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./docker/postgres:/docker-entrypoint-initdb.d
