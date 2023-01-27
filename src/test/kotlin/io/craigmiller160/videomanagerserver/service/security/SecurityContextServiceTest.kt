@@ -43,7 +43,6 @@ class SecurityContextServiceTest {
   @BeforeEach
   fun setup() {
     SecurityContextHolder.setContext(securityContext)
-    whenever(securityContext.authentication).thenReturn(authentication)
 
     securityContextService = SecurityContextService()
   }
@@ -56,6 +55,7 @@ class SecurityContextServiceTest {
   @Test
   fun test_getUserId() {
     val userId = UUID.randomUUID()
+    whenever(securityContext.authentication).thenReturn(authentication)
     whenever(authentication.principal).thenReturn(principal)
     whenever(principal.name).thenReturn(userId.toString())
 
