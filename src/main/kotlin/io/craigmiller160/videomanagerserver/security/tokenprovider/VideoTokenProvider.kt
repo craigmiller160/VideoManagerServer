@@ -25,6 +25,7 @@ import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication
@@ -37,10 +38,10 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) {
     private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
   }
 
-  private fun generateExpiration(): String {
+  private fun generateExpiration(): Long {
     val now = LocalDateTime.now()
     val exp = now.plusSeconds(tokenConfig.videoExpSecs.toLong())
-    return EXP_FORMATTER.format(exp)
+    return exp.toEpochSecond(ZoneOffset.UTC)
   }
 
   private fun getTokenRegex(): Regex {

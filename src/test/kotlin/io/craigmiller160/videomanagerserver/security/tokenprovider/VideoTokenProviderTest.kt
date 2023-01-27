@@ -23,6 +23,7 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -82,8 +83,8 @@ class VideoTokenProviderTest {
 
     val format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    val expiration = ZonedDateTime.from(jwt.jwtClaimsSet.expirationTime.toInstant())
-    val expectedExpiration = ZonedDateTime.now().plusMinutes(10)
+    val expiration = jwt.jwtClaimsSet.expirationTime.toInstant().atZone(ZoneId.of("UTC"))
+    val expectedExpiration = ZonedDateTime.now(ZoneId.of("UTC")).plusMinutes(10)
     assertEquals(format.format(expectedExpiration), format.format(expiration))
   }
 
