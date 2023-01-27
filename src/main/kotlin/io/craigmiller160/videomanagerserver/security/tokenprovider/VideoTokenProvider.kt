@@ -49,19 +49,12 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) {
   }
 
   fun createToken(token: VideoToken): String {
-    val claims = token.toMap().let { JWTClaimsSet.parse(it) }
+    val claims =
+      token.toMap().let { it + ("exp" to generateExpiration()) }.let { JWTClaimsSet.parse(it) }
     val header = JWSHeader(JWSAlgorithm.HS256)
     val jwt = SignedJWT(header, claims)
     jwt.sign(MACSigner(tokenConfig.secretKey))
     return jwt.serialize()
-
-    //    val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
-    //    val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
-    //    val userId = params[TokenConstants.PARAM_USER_ID]!!
-    //    val exp = generateExpiration()
-    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    //    val tokenString = "$userId$separator$videoId$separator$exp$separator$fullFilePath"
-    //    return encryptHandler.doEncrypt(tokenString)
   }
 
   fun resolveToken(req: HttpServletRequest): String? {
