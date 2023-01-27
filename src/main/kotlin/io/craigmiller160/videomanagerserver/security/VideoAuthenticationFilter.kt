@@ -55,6 +55,8 @@ class VideoAuthenticationFilter(private val videoTokenProvider: VideoTokenProvid
     //      return
     //    }
     //
+    // TODO get the token from the cookie, validate it, compare to video id, and if all is good
+    // setup the authentication
     chain.doFilter(req, resp)
   }
 
