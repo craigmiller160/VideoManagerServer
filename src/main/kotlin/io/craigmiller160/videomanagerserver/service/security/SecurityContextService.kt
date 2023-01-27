@@ -22,7 +22,6 @@ import java.util.UUID
 import org.keycloak.KeycloakPrincipal
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 @Service
@@ -34,13 +33,4 @@ class SecurityContextService {
     (SecurityContextHolder.getContext().authentication.principal as KeycloakPrincipal<*>).name.let {
       UUID.fromString(it)
     }
-
-  fun getUserName(): String {
-    val principal = getSecurityContext().authentication.principal
-    if (principal is UserDetails) {
-      return principal.username
-    }
-
-    return principal.toString()
-  }
 }

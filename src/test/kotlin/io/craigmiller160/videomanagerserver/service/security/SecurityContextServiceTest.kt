@@ -25,13 +25,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockitoExtension::class)
 class SecurityContextServiceTest {
@@ -62,25 +59,5 @@ class SecurityContextServiceTest {
   fun test_getSecurityContext() {
     val result = securityContextService.getSecurityContext()
     assertEquals(securityContext, result)
-  }
-
-  @Test
-  fun test_getUserName_userDetails() {
-    val userName = "userName"
-    val userDetails = mock(UserDetails::class.java)
-    `when`(userDetails.username).thenReturn(userName)
-    `when`(authentication.principal).thenReturn(userDetails)
-
-    val result = securityContextService.getUserName()
-    assertEquals(userName, result)
-  }
-
-  @Test
-  fun test_getUserName_string() {
-    val userName = "userName"
-    `when`(authentication.principal).thenReturn(userName)
-
-    val result = securityContextService.getUserName()
-    assertEquals(userName, result)
   }
 }

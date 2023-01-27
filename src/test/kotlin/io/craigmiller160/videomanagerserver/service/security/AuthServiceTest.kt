@@ -84,7 +84,6 @@ class AuthServiceTest {
     val videoId = 10L
     val token = "ABCDEFG"
 
-    `when`(securityContextService.getUserName()).thenReturn(userName)
     `when`(
         videoTokenProvider.createToken(
           userName,
