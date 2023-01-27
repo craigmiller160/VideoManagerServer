@@ -18,11 +18,13 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import com.nhaarman.mockito_kotlin.whenever
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
@@ -34,16 +36,14 @@ import org.springframework.security.core.userdetails.UserDetails
 @ExtendWith(MockitoExtension::class)
 class SecurityContextServiceTest {
 
-  private lateinit var securityContext: SecurityContext
-  private lateinit var authentication: Authentication
+  @Mock private lateinit var securityContext: SecurityContext
+  @Mock private lateinit var authentication: Authentication
   private lateinit var securityContextService: SecurityContextService
 
   @BeforeEach
   fun setup() {
-    securityContext = mock(SecurityContext::class.java)
-    authentication = mock(Authentication::class.java)
-
     SecurityContextHolder.setContext(securityContext)
+    whenever(securityContext.authentication).thenReturn(authentication)
 
     securityContextService = SecurityContextService()
   }
