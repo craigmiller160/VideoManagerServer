@@ -21,16 +21,10 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
-import io.craigmiller160.videomanagerserver.security.VideoTokenAuthentication
-import io.craigmiller160.videomanagerserver.util.parseQueryString
-import java.security.GeneralSecurityException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 
 @Component
@@ -58,19 +52,21 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
   }
 
   override fun createToken(params: Map<String, Any>): String {
-    val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
-    val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
-    val userId = params[TokenConstants.PARAM_USER_ID]!!
-    val exp = generateExpiration()
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val tokenString = "$userId$separator$videoId$separator$exp$separator$fullFilePath"
-    return encryptHandler.doEncrypt(tokenString)
+    //    val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
+    //    val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
+    //    val userId = params[TokenConstants.PARAM_USER_ID]!!
+    //    val exp = generateExpiration()
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val tokenString = "$userId$separator$videoId$separator$exp$separator$fullFilePath"
+    //    return encryptHandler.doEncrypt(tokenString)
+    TODO()
   }
 
   override fun resolveToken(req: HttpServletRequest): String? {
-    val queryString = req.queryString ?: ""
-    val queryParams = parseQueryString(queryString)
-    return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
+    //    val queryString = req.queryString ?: ""
+    //    val queryParams = parseQueryString(queryString)
+    //    return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
+    TODO()
   }
 
   override fun validateToken(token: String, params: Map<String, Any>): TokenValidationStatus {
@@ -78,57 +74,60 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
       return TokenValidationStatus.NO_TOKEN
     }
 
-    val tokenDecrypted: String
-    try {
-      tokenDecrypted = encryptHandler.doDecrypt(token)
-      if (!getTokenRegex().matches(tokenDecrypted)) {
-        return TokenValidationStatus.BAD_SIGNATURE
-      }
-    } catch (ex: GeneralSecurityException) {
-      return TokenValidationStatus.BAD_SIGNATURE
-    }
-
-    val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
-    try {
-      val expDateTime = LocalDateTime.parse(tokenParts[3], EXP_FORMATTER)
-      val now = LocalDateTime.now()
-      if (now > expDateTime) {
-        return TokenValidationStatus.EXPIRED
-      }
-    } catch (ex: DateTimeParseException) {
-      return TokenValidationStatus.EXPIRED
-    }
-
-    val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-    if (videoId != tokenParts[2]) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
-    val userId = params[TokenConstants.PARAM_USER_ID]
-    if (userId != tokenParts[1].toLong()) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
-    return TokenValidationStatus.VALID
+    //    val tokenDecrypted: String
+    //    try {
+    //      tokenDecrypted = encryptHandler.doDecrypt(token)
+    //      if (!getTokenRegex().matches(tokenDecrypted)) {
+    //        return TokenValidationStatus.BAD_SIGNATURE
+    //      }
+    //    } catch (ex: GeneralSecurityException) {
+    //      return TokenValidationStatus.BAD_SIGNATURE
+    //    }
+    //
+    //    val tokenParts = tokenDecrypted.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
+    //    try {
+    //      val expDateTime = LocalDateTime.parse(tokenParts[3], EXP_FORMATTER)
+    //      val now = LocalDateTime.now()
+    //      if (now > expDateTime) {
+    //        return TokenValidationStatus.EXPIRED
+    //      }
+    //    } catch (ex: DateTimeParseException) {
+    //      return TokenValidationStatus.EXPIRED
+    //    }
+    //
+    //    val videoId = params[TokenConstants.PARAM_VIDEO_ID]
+    //    if (videoId != tokenParts[2]) {
+    //      return TokenValidationStatus.RESOURCE_FORBIDDEN
+    //    }
+    //
+    //    val userId = params[TokenConstants.PARAM_USER_ID]
+    //    if (userId != tokenParts[1].toLong()) {
+    //      return TokenValidationStatus.RESOURCE_FORBIDDEN
+    //    }
+    //
+    //    return TokenValidationStatus.VALID
+    TODO()
   }
 
   override fun createAuthentication(token: String): Authentication {
-    val claims = getClaims(token)
-    val userDetails =
-      User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
-        .password("")
-        .authorities(ArrayList<GrantedAuthority>())
-        .build()
-    return VideoTokenAuthentication(userDetails, claims)
+    //    val claims = getClaims(token)
+    //    val userDetails =
+    //      User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
+    //        .password("")
+    //        .authorities(ArrayList<GrantedAuthority>())
+    //        .build()
+    //    return VideoTokenAuthentication(userDetails, claims)
+    TODO()
   }
 
   override fun getClaims(token: String): Map<String, Any> {
-    val tokenString = encryptHandler.doDecrypt(token)
-    val tokenParams = tokenString.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
-    return mapOf(
-      TokenConstants.CLAIM_SUBJECT to tokenParams[0],
-      TokenConstants.CLAIM_VIDEO_ID to tokenParams[2],
-      TokenConstants.CLAIM_EXP to tokenParams[3],
-      TokenConstants.CLAIM_FILE_PATH to tokenParams[4])
+    //    val tokenString = encryptHandler.doDecrypt(token)
+    //    val tokenParams = tokenString.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
+    //    return mapOf(
+    //      TokenConstants.CLAIM_SUBJECT to tokenParams[0],
+    //      TokenConstants.CLAIM_VIDEO_ID to tokenParams[2],
+    //      TokenConstants.CLAIM_EXP to tokenParams[3],
+    //      TokenConstants.CLAIM_FILE_PATH to tokenParams[4])
+    TODO()
   }
 }

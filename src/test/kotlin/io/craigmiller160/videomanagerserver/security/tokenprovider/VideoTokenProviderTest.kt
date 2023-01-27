@@ -21,26 +21,17 @@ package io.craigmiller160.videomanagerserver.security.tokenprovider
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
-import javax.servlet.http.HttpServletRequest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockitoExtension::class)
 class VideoTokenProviderTest {
@@ -73,143 +64,161 @@ class VideoTokenProviderTest {
 
   @Test
   fun test_createToken() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
-    val tokenRegex =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateRegex$separator.*".toRegex()
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to VIDEO_ID,
-        TokenConstants.PARAM_FILE_PATH to FILE_PATH,
-        TokenConstants.PARAM_USER_ID to USER_ID)
-    val token = videoTokenProvider.createToken(params)
-    val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
-    assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val dateRegex = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"""
+    //    val tokenRegex =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateRegex$separator.*".toRegex()
+    //    val params =
+    //      mapOf(
+    //        TokenConstants.PARAM_VIDEO_ID to VIDEO_ID,
+    //        TokenConstants.PARAM_FILE_PATH to FILE_PATH,
+    //        TokenConstants.PARAM_USER_ID to USER_ID)
+    //    val token = videoTokenProvider.createToken(params)
+    //    val tokenDecrypted = aesEncryptHandler.doDecrypt(token)
+    //    assertTrue("No match: $tokenDecrypted") { tokenRegex.matches(tokenDecrypted) }
+    TODO()
   }
 
   @Test
   fun test_resolveToken() {
-    val token = "ABCDEFG"
-    val queryString = "${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token"
-    val req = mock(HttpServletRequest::class.java)
-    `when`(req.queryString).thenReturn(queryString)
-
-    val result = videoTokenProvider.resolveToken(req)
-    assertEquals(token, result)
+    //    val token = "ABCDEFG"
+    //    val queryString = "${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token"
+    //    val req = mock(HttpServletRequest::class.java)
+    //    `when`(req.queryString).thenReturn(queryString)
+    //
+    //    val result = videoTokenProvider.resolveToken(req)
+    //    assertEquals(token, result)
+    TODO()
   }
 
   @Test
   fun test_resolveToken_noToken() {
-    val req = mock(HttpServletRequest::class.java)
-    val result = videoTokenProvider.resolveToken(req)
-    assertNull(result)
+    //    val req = mock(HttpServletRequest::class.java)
+    //    val result = videoTokenProvider.resolveToken(req)
+    //    assertNull(result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_empty() {
-    val result = videoTokenProvider.validateToken("")
-    assertEquals(TokenValidationStatus.NO_TOKEN, result)
+    //    val result = videoTokenProvider.validateToken("")
+    //    assertEquals(TokenValidationStatus.NO_TOKEN, result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_badSignature() {
-    val token = "ABCDEFGHIJLKMNO"
-    val result = videoTokenProvider.validateToken(token)
-    assertEquals(TokenValidationStatus.BAD_SIGNATURE, result)
+    //    val token = "ABCDEFGHIJLKMNO"
+    //    val result = videoTokenProvider.validateToken(token)
+    //    assertEquals(TokenValidationStatus.BAD_SIGNATURE, result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_expired() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.of(2001, 1, 1, 1, 1, 1)
-    val dateString = EXP_FORMATTER.format(date)
-    val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val result = videoTokenProvider.validateToken(tokenEncrypted)
-    assertEquals(TokenValidationStatus.EXPIRED, result)
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.of(2001, 1, 1, 1, 1, 1)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token = "$USER_NAME$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //    val result = videoTokenProvider.validateToken(tokenEncrypted)
+    //    assertEquals(TokenValidationStatus.EXPIRED, result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_invalidVideo() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "11")
-    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
-    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.now().plusHours(10)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //    val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "11")
+    //    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
+    //    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_valid() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val params =
-      mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to USER_ID)
-    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
-    assertEquals(TokenValidationStatus.VALID, result)
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.now().plusHours(10)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //    val params =
+    //      mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to
+    // USER_ID)
+    //    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
+    //    assertEquals(TokenValidationStatus.VALID, result)
+    TODO()
   }
 
   @Test
   fun test_validateToken_invalidUser() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val params =
-      mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to 44)
-    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
-    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.now().plusHours(10)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //    val params =
+    //      mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to 44)
+    //    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
+    //    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
+    TODO()
   }
 
   @Test
   fun test_createAuthentication() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-
-    val result = videoTokenProvider.createAuthentication(tokenEncrypted)
-    assertThat(
-      result,
-      allOf(
-        hasProperty(
-          "principal",
-          allOf<UserDetails>(
-            hasProperty("username", equalTo(USER_NAME)),
-            hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0)),
-          )),
-        hasProperty("filePath", equalTo(FILE_PATH)),
-        hasProperty("claims", aMapWithSize<String, Any>(4))))
-    assertTrue { result.isAuthenticated }
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.now().plusHours(10)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //
+    //    val result = videoTokenProvider.createAuthentication(tokenEncrypted)
+    //    assertThat(
+    //      result,
+    //      allOf(
+    //        hasProperty(
+    //          "principal",
+    //          allOf<UserDetails>(
+    //            hasProperty("username", equalTo(USER_NAME)),
+    //            hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0)),
+    //          )),
+    //        hasProperty("filePath", equalTo(FILE_PATH)),
+    //        hasProperty("claims", aMapWithSize<String, Any>(4))))
+    //    assertTrue { result.isAuthenticated }
+    TODO()
   }
 
   @Test
   fun test_getClaims() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-
-    val claims = videoTokenProvider.getClaims(tokenEncrypted)
-    assertThat(
-      claims,
-      allOf<Map<String, Any>>(
-        hasEntry(TokenConstants.CLAIM_SUBJECT, USER_NAME),
-        hasEntry(TokenConstants.CLAIM_VIDEO_ID, VIDEO_ID),
-        hasEntry(TokenConstants.CLAIM_EXP, dateString),
-        hasEntry(TokenConstants.CLAIM_FILE_PATH, FILE_PATH)))
+    //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
+    //    val date = LocalDateTime.now().plusHours(10)
+    //    val dateString = EXP_FORMATTER.format(date)
+    //    val token =
+    //
+    // "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
+    //    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
+    //
+    //    val claims = videoTokenProvider.getClaims(tokenEncrypted)
+    //    assertThat(
+    //      claims,
+    //      allOf<Map<String, Any>>(
+    //        hasEntry(TokenConstants.CLAIM_SUBJECT, USER_NAME),
+    //        hasEntry(TokenConstants.CLAIM_VIDEO_ID, VIDEO_ID),
+    //        hasEntry(TokenConstants.CLAIM_EXP, dateString),
+    //        hasEntry(TokenConstants.CLAIM_FILE_PATH, FILE_PATH)))
+    TODO()
   }
 }
