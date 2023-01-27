@@ -18,9 +18,12 @@
 
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.crypto.MACSigner
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
-import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.servlet.http.HttpServletRequest
@@ -28,13 +31,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 
 @Component
-class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
-
-  private val encryptHandler: EncryptHandler
-
-  init {
-    encryptHandler = AesEncryptHandler(tokenConfig.secretKey, true)
-  }
+class VideoTokenProvider(private val tokenConfig: TokenConfig) {
 
   companion object {
     private val EXP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -51,7 +48,13 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     return """.+$separator\d{1,10}$separator\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$separator.+""".toRegex()
   }
 
-  override fun createToken(params: Map<String, Any>): String {
+  fun createToken(token: VideoToken): String {
+    val claims = token.toMap().let { JWTClaimsSet.parse(it) }
+    val header = JWSHeader(JWSAlgorithm.HS256)
+    val jwt = SignedJWT(header, claims)
+    jwt.sign(MACSigner(tokenConfig.secretKey))
+    return jwt.serialize()
+
     //    val videoId = params[TokenConstants.PARAM_VIDEO_ID]!!
     //    val fullFilePath = params[TokenConstants.PARAM_FILE_PATH]!!
     //    val userId = params[TokenConstants.PARAM_USER_ID]!!
@@ -59,17 +62,16 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     //    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
     //    val tokenString = "$userId$separator$videoId$separator$exp$separator$fullFilePath"
     //    return encryptHandler.doEncrypt(tokenString)
-    TODO()
   }
 
-  override fun resolveToken(req: HttpServletRequest): String? {
+  fun resolveToken(req: HttpServletRequest): String? {
     //    val queryString = req.queryString ?: ""
     //    val queryParams = parseQueryString(queryString)
     //    return queryParams[TokenConstants.QUERY_PARAM_VIDEO_TOKEN]
     TODO()
   }
 
-  override fun validateToken(token: String, params: Map<String, Any>): TokenValidationStatus {
+  fun validateToken(token: String, params: Map<String, Any>): TokenValidationStatus {
     if (token.isEmpty()) {
       return TokenValidationStatus.NO_TOKEN
     }
@@ -109,7 +111,7 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     TODO()
   }
 
-  override fun createAuthentication(token: String): Authentication {
+  fun createAuthentication(token: String): Authentication {
     //    val claims = getClaims(token)
     //    val userDetails =
     //      User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
@@ -120,7 +122,7 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     TODO()
   }
 
-  override fun getClaims(token: String): Map<String, Any> {
+  fun getClaims(token: String): Map<String, Any> {
     //    val tokenString = encryptHandler.doDecrypt(token)
     //    val tokenParams = tokenString.split(TokenConstants.VIDEO_TOKEN_SEPARATOR)
     //    return mapOf(

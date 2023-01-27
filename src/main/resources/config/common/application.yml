@@ -56,7 +56,7 @@ video:
     token:
       expSecs: 300
       refreshExpSecs: 1200
-      videoExpSecs: 21600
+      videoExpSecs: 600
 
 localfile:
   homeDir: ${user.home}
