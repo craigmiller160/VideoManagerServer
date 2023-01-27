@@ -23,10 +23,12 @@ import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
 import io.craigmiller160.videomanagerserver.crypto.AesEncryptHandler
 import io.craigmiller160.videomanagerserver.crypto.EncryptHandler
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
+import kotlin.test.assertEquals
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeEach
@@ -72,11 +74,17 @@ class VideoTokenProviderTest {
     val jwt = SignedJWT.parse(tokenString)
     jwt.verify(MACVerifier(tokenConfig.secretKey))
 
-    val token = VideoToken.fromMap(jwt.jwtClaimsSet.claims)
-    assertThat(token)
+    val resultVideoToken = VideoToken.fromMap(jwt.jwtClaimsSet.claims)
+    assertThat(resultVideoToken)
       .hasFieldOrPropertyWithValue("userId", USER_ID)
       .hasFieldOrPropertyWithValue("videoId", VIDEO_ID)
       .hasFieldOrPropertyWithValue("filePath", FILE_PATH)
+
+    val format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
+    val expiration = ZonedDateTime.from(jwt.jwtClaimsSet.expirationTime.toInstant())
+    val expectedExpiration = ZonedDateTime.now().plusMinutes(10)
+    assertEquals(format.format(expectedExpiration), format.format(expiration))
   }
 
   @Test
