@@ -18,8 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
-import io.craigmiller160.videomanagerserver.security.COOKIE_NAME
-import javax.servlet.http.Cookie
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
@@ -43,7 +41,7 @@ class MockMvcHandler(private val mockMvc: MockMvc) {
       .with(csrf())
 
     if (token.isNotBlank()) {
-      builder.cookie(Cookie(COOKIE_NAME, token))
+      builder.header("Authorization", "Bearer $token")
     }
   }
 
