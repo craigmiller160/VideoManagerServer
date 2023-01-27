@@ -42,7 +42,6 @@ class SecurityContextServiceTest {
   fun setup() {
     securityContext = mock(SecurityContext::class.java)
     authentication = mock(Authentication::class.java)
-    `when`(securityContext.authentication).thenReturn(authentication)
 
     SecurityContextHolder.setContext(securityContext)
 
