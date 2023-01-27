@@ -22,6 +22,7 @@ import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.test_util.AuthenticationConfig
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import java.time.LocalDateTime
 import org.hamcrest.MatcherAssert.assertThat
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -67,6 +69,7 @@ class VideoFileRepositoryIntegrationTest {
   @Autowired private lateinit var starRepo: StarRepository
 
   @Autowired private lateinit var dbTestUtils: DbTestUtils
+  @MockBean private lateinit var authConfig: AuthenticationConfig
 
   private lateinit var videoFile: VideoFile
   private lateinit var videoFile2: VideoFile
