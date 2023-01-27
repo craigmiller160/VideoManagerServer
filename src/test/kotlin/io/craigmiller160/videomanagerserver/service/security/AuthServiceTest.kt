@@ -68,7 +68,7 @@ class AuthServiceTest {
           mapOf(
             TokenConstants.PARAM_VIDEO_ID to videoId,
             TokenConstants.PARAM_FILE_PATH to "$ROOT_DIR/$FILE_PATH",
-            TokenConstants.PARAM_USER_ID to 1L)))
+            TokenConstants.PARAM_USER_ID to userId.toString())))
       .thenReturn(token)
     `when`(settingsService.getOrCreateSettings()).thenReturn(settings)
     `when`(videoFileService.getVideoFile(videoId)).thenReturn(videoFile)
