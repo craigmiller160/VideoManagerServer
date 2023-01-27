@@ -32,7 +32,7 @@ video:
       expSecs: 300
       refreshExpSecs: 1200
       key: /RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM=
-      videoExpSecs: 10000
+      videoExpSecs: 600
     password:
       hashRounds: 12
 

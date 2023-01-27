@@ -24,8 +24,8 @@ import com.nimbusds.jose.crypto.MACSigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication
@@ -39,9 +39,9 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) {
   }
 
   private fun generateExpiration(): Long {
-    val now = LocalDateTime.now()
+    val now = ZonedDateTime.now(ZoneId.of("UTC"))
     val exp = now.plusSeconds(tokenConfig.videoExpSecs.toLong())
-    return exp.toEpochSecond(ZoneOffset.UTC)
+    return exp.toEpochSecond()
   }
 
   private fun getTokenRegex(): Regex {

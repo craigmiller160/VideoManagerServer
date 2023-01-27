@@ -18,6 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.security.tokenprovider
 
+import com.nhaarman.mockito_kotlin.whenever
 import com.nimbusds.jose.crypto.MACVerifier
 import com.nimbusds.jwt.SignedJWT
 import io.craigmiller160.videomanagerserver.config.TokenConfig
@@ -65,6 +66,7 @@ class VideoTokenProviderTest {
     this.secretKey = SecretKeySpec(keyBytes, 0, keyBytes.size, "AES")
     aesEncryptHandler = AesEncryptHandler(this.secretKey, true)
     `when`(tokenConfig.secretKey).thenReturn(secretKey)
+    whenever(tokenConfig.videoExpSecs).thenReturn(600)
     videoTokenProvider = VideoTokenProvider(tokenConfig)
   }
 
