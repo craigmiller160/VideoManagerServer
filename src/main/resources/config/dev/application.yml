@@ -1,10 +1,10 @@
 spring:
   datasource:
     db: vm_dev
-    host: craigmiller160.ddns.net
-    port: 30019
-    username: ${POSTGRES_ROOT_USER}
-    password: ${POSTGRES_ROOT_PASSWORD}
+    host: localhost
+    port: 5432
+    username: postgres
+    password: password
 
 logging:
   level:
