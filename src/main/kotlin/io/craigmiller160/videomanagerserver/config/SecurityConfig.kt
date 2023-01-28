@@ -47,6 +47,8 @@ class SecurityConfig(
       .authorizeRequests()
       .antMatchers("/actuator/health")
       .permitAll()
+      .antMatchers("/video-files/play/*")
+      .hasRole("video-access")
       .anyRequest()
       .hasRole("access")
       .and()

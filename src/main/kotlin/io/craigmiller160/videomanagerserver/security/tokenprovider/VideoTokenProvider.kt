@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 
@@ -113,7 +113,7 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     val userDetails =
       User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
         .password("")
-        .authorities(ArrayList<GrantedAuthority>())
+        .authorities(listOf(SimpleGrantedAuthority("video-access")))
         .build()
     return VideoTokenAuthentication(userDetails, claims)
   }
