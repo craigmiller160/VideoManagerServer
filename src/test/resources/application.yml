@@ -22,6 +22,7 @@ cors:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+    org.keycloak: DEBUG
 
 video:
   filePathRoot: FILE_PATH_ROOT
