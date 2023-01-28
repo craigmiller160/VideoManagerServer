@@ -336,6 +336,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
   fun test_playVideo_noToken() {
     val response = mockMvcHandler.doGet("/api/video-files/play/1")
     assertThat(response, hasProperty("status", equalTo(401)))
+    verify(videoFileService, times(0)).playVideo(any())
   }
 
   @Test
@@ -343,6 +344,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
     mockMvcHandler.token = token
     val response = mockMvcHandler.doGet("/api/video-files/play/1")
     assertThat(response, hasProperty("status", equalTo(403)))
+    verify(videoFileService, times(0)).playVideo(any())
   }
 
   @Test
