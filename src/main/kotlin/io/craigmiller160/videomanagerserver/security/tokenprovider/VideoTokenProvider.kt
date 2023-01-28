@@ -100,11 +100,6 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
       return TokenValidationStatus.EXPIRED
     }
 
-    val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-    if (videoId != tokenParts[2]) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
     return TokenValidationStatus.VALID
   }
 
