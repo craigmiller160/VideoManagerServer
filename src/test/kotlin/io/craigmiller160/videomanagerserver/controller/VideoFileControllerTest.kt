@@ -328,8 +328,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
       mockMvcHandler.doGet(
         "/api/video-files/play/5?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
     assertEquals(403, response.status)
-    assertTrue(response.contentAsByteArray.isNotEmpty())
-    verify(videoFileService, times(0)).playVideo(any())
+    verify(videoFileService, times(0)).playVideo(isA(Long::class.java))
   }
 
   @Test

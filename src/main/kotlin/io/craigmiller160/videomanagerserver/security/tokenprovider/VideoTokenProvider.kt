@@ -108,7 +108,10 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     val userDetails =
       User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
         .password("")
-        .authorities(listOf(SimpleGrantedAuthority("ROLE_video-access")))
+        .authorities(
+          listOf(
+            SimpleGrantedAuthority("ROLE_video-access"),
+            SimpleGrantedAuthority("file_${claims[TokenConstants.PARAM_VIDEO_ID]}")))
         .build()
     return VideoTokenAuthentication(userDetails, claims)
   }
