@@ -317,7 +317,19 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Test
   fun test_playVideo_wrongVideo() {
-    TODO()
+    val params =
+      mapOf(
+        TokenConstants.PARAM_VIDEO_ID to "1",
+        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
+        TokenConstants.PARAM_USER_ID to "1")
+    val token = videoTokenProvider.createToken("user", params)
+    val file = File(".")
+    val response =
+      mockMvcHandler.doGet(
+        "/api/video-files/play/5?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+    assertEquals(403, response.status)
+    assertTrue(response.contentAsByteArray.isNotEmpty())
+    verify(videoFileService, times(0)).playVideo(any())
   }
 
   @Test
