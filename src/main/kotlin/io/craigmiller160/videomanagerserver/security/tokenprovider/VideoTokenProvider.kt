@@ -113,7 +113,7 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     val userDetails =
       User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
         .password("")
-        .authorities(listOf(SimpleGrantedAuthority("video-access")))
+        .authorities(listOf(SimpleGrantedAuthority("ROLE_video-access")))
         .build()
     return VideoTokenAuthentication(userDetails, claims)
   }
