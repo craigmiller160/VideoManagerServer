@@ -40,6 +40,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @ExtendWith(MockitoExtension::class)
@@ -130,19 +131,6 @@ class VideoTokenProviderTest {
   }
 
   @Test
-  fun test_validateToken_invalidVideo() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val params = mapOf(TokenConstants.PARAM_VIDEO_ID to "11")
-    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
-    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
-  }
-
-  @Test
   fun test_validateToken_valid() {
     val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
     val date = LocalDateTime.now().plusHours(10)
@@ -154,20 +142,6 @@ class VideoTokenProviderTest {
       mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to USER_ID)
     val result = videoTokenProvider.validateToken(tokenEncrypted, params)
     assertEquals(TokenValidationStatus.VALID, result)
-  }
-
-  @Test
-  fun test_validateToken_invalidUser() {
-    val separator = TokenConstants.VIDEO_TOKEN_SEPARATOR
-    val date = LocalDateTime.now().plusHours(10)
-    val dateString = EXP_FORMATTER.format(date)
-    val token =
-      "$USER_NAME$separator$USER_ID$separator$VIDEO_ID$separator$dateString$separator$FILE_PATH"
-    val tokenEncrypted = aesEncryptHandler.doEncrypt(token)
-    val params =
-      mapOf(TokenConstants.PARAM_VIDEO_ID to VIDEO_ID, TokenConstants.PARAM_USER_ID to 44)
-    val result = videoTokenProvider.validateToken(tokenEncrypted, params)
-    assertEquals(TokenValidationStatus.RESOURCE_FORBIDDEN, result)
   }
 
   @Test
@@ -187,7 +161,11 @@ class VideoTokenProviderTest {
           "principal",
           allOf<UserDetails>(
             hasProperty("username", equalTo(USER_NAME)),
-            hasProperty("authorities", hasSize<Collection<GrantedAuthority>>(0)),
+            hasProperty(
+              "authorities",
+              contains<GrantedAuthority>(
+                SimpleGrantedAuthority("ROLE_video-access"),
+                SimpleGrantedAuthority("file_$VIDEO_ID"))),
           )),
         hasProperty("filePath", equalTo(FILE_PATH)),
         hasProperty("claims", aMapWithSize<String, Any>(4))))
