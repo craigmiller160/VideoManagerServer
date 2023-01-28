@@ -333,9 +333,14 @@ class VideoFileControllerTest : AbstractControllerTest() {
   }
 
   @Test
-  fun test_playVideo_unauthorized() {
+  fun test_playVideo_noToken() {
     val response = mockMvcHandler.doGet("/api/video-files/play/1")
     assertThat(response, hasProperty("status", equalTo(401)))
+  }
+
+  @Test
+  fun test_playVideo_bearerTokenOnly() {
+    TODO()
   }
 
   @Test
