@@ -18,7 +18,6 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
-import io.craigmiller160.oauth2.service.OAuth2Service
 import io.craigmiller160.videomanagerserver.dto.VideoTokenResponse
 import io.craigmiller160.videomanagerserver.exception.VideoFileNotFoundException
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
@@ -33,11 +32,11 @@ class AuthService(
   private val videoTokenProvider: VideoTokenProvider,
   private val settingsService: SettingsService,
   private val videoFileService: VideoFileService,
-  private val oAuth2Service: OAuth2Service
+  private val securityContextService: SecurityContextService
 ) {
 
   fun getVideoToken(videoId: Long): VideoTokenResponse {
-    val authUser = oAuth2Service.getAuthenticatedUser()
+    val userId = securityContextService.getUserId()
     val rootDirectory = settingsService.getOrCreateSettings().rootDir
     if (rootDirectory.isEmpty()) {
       throw IllegalStateException("Root directory is not set")
@@ -51,8 +50,10 @@ class AuthService(
       mapOf(
         TokenConstants.PARAM_VIDEO_ID to videoId,
         TokenConstants.PARAM_FILE_PATH to fullFilePath,
-        TokenConstants.PARAM_USER_ID to authUser.userId)
-    val token = videoTokenProvider.createToken(authUser.username, params)
+        TokenConstants.PARAM_USER_ID to userId.toString())
+    // user name should probably be completely removed in the future, for now just using a dummy
+    // value
+    val token = videoTokenProvider.createToken("dummyUserName", params)
     return VideoTokenResponse(token)
   }
 }

@@ -18,7 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.controller
 
-import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.mock.web.MockHttpServletResponse
 
 const val CONTENT_TYPE_JSON = "application/json"

@@ -28,14 +28,12 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.junit.jupiter.MockitoExtension
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class LocalFileServiceTest {
 
   companion object {
@@ -51,21 +49,19 @@ class LocalFileServiceTest {
     private const val TEXT = "Hello World"
   }
 
-  @get:Rule val tempFolder = TemporaryFolder()
-
   private lateinit var targetDir: File
   private lateinit var homeDir: File
   private lateinit var localFileService: LocalFileService
 
-  @Before
+  @BeforeEach
   fun setup() {
-    targetDir = tempFolder.newFolder(TARGET_DIR_NAME)
+    targetDir = Files.createTempDirectory(TARGET_DIR_NAME).toFile()
     Files.write(File(targetDir, FILE_1_NAME).toPath(), TEXT.toByteArray())
     Files.write(File(targetDir, FILE_2_NAME).toPath(), TEXT.toByteArray())
     Files.write(File(targetDir, FILE_3_NAME).toPath(), TEXT.toByteArray())
     File(targetDir, DIR_2_NAME).mkdirs()
 
-    homeDir = tempFolder.newFolder(HOME_DIR_NAME)
+    homeDir = Files.createTempDirectory(HOME_DIR_NAME).toFile()
     Files.write(File(homeDir, FILE_4_NAME).toPath(), TEXT.toByteArray())
     Files.write(File(homeDir, FILE_5_NAME).toPath(), TEXT.toByteArray())
     File(homeDir, DIR_1_NAME).mkdirs()

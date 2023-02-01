@@ -19,9 +19,9 @@
 package io.craigmiller160.videomanagerserver.controller
 
 import java.util.Optional
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 class ResponseUtilsTest {
 

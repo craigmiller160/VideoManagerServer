@@ -18,65 +18,54 @@
 
 package io.craigmiller160.videomanagerserver.service.security
 
+import com.nhaarman.mockito_kotlin.whenever
+import java.util.UUID
 import kotlin.test.assertEquals
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.keycloak.KeycloakPrincipal
+import org.mockito.Mock
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class SecurityContextServiceTest {
 
-  private lateinit var securityContext: SecurityContext
-  private lateinit var authentication: Authentication
+  @Mock private lateinit var securityContext: SecurityContext
+  @Mock private lateinit var authentication: Authentication
+  @Mock private lateinit var principal: KeycloakPrincipal<*>
   private lateinit var securityContextService: SecurityContextService
 
-  @Before
+  @BeforeEach
   fun setup() {
-    securityContext = mock(SecurityContext::class.java)
-    authentication = mock(Authentication::class.java)
-    `when`(securityContext.authentication).thenReturn(authentication)
-
     SecurityContextHolder.setContext(securityContext)
 
     securityContextService = SecurityContextService()
   }
 
-  @After
+  @AfterEach
   fun cleanup() {
     SecurityContextHolder.clearContext()
+  }
+
+  @Test
+  fun test_getUserId() {
+    val userId = UUID.randomUUID()
+    whenever(securityContext.authentication).thenReturn(authentication)
+    whenever(authentication.principal).thenReturn(principal)
+    whenever(principal.name).thenReturn(userId.toString())
+
+    val result = securityContextService.getUserId()
+    assertEquals(userId, result)
   }
 
   @Test
   fun test_getSecurityContext() {
     val result = securityContextService.getSecurityContext()
     assertEquals(securityContext, result)
-  }
-
-  @Test
-  fun test_getUserName_userDetails() {
-    val userName = "userName"
-    val userDetails = mock(UserDetails::class.java)
-    `when`(userDetails.username).thenReturn(userName)
-    `when`(authentication.principal).thenReturn(userDetails)
-
-    val result = securityContextService.getUserName()
-    assertEquals(userName, result)
-  }
-
-  @Test
-  fun test_getUserName_string() {
-    val userName = "userName"
-    `when`(authentication.principal).thenReturn(userName)
-
-    val result = securityContextService.getUserName()
-    assertEquals(userName, result)
   }
 }

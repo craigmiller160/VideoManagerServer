@@ -61,12 +61,9 @@ video:
 localfile:
   homeDir: ${user.home}
 
-oauth2:
-  cookie-name: vm_token
-  cookie-max-age-secs: 86400
-  cookie-path: "/video-manager"
-  auth-login-base-uri: "/video-manager/oauth2"
-  auth-code-redirect-uri: "/video-manager/api/oauth/authcode/code"
-  post-auth-redirect: "/video-manager"
-  auth-code-wait-mins: 10
-  insecure-paths: "/actuator/health"
+keycloak:
+  auth-server-url: https://auth-craigmiller160.ddns.net
+  ssl-required: all
+  resource: video-manager-server
+  use-resource-role-mappings: true
+  bearer-only: true

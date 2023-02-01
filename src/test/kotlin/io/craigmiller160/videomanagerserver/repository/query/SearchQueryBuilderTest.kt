@@ -23,18 +23,18 @@ import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
 import io.craigmiller160.videomanagerserver.test_util.isA
 import javax.persistence.Query
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.data.domain.Sort
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class SearchQueryBuilderTest {
 
   @InjectMocks private lateinit var searchQueryBuilder: SearchQueryBuilder
@@ -47,7 +47,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest()
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -58,7 +58,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(sortDir = Sort.Direction.DESC)
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -69,7 +69,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.VIEW_COUNT)
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -80,7 +80,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_VIEWED)
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -91,7 +91,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.LAST_MODIFIED)
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -102,7 +102,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.FILE_ADDED)
     val query = searchQueryBuilder.buildQueryOrderBy(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -123,7 +123,7 @@ class SearchQueryBuilderTest {
 
     val search = VideoSearchRequest("Hello", 1, 1, 1)
     val query = searchQueryBuilder.buildQueryCriteria(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -137,7 +137,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest("Hello")
     val query = searchQueryBuilder.buildQueryCriteria(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -150,7 +150,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(categoryId = 1)
     val query = searchQueryBuilder.buildQueryCriteria(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -163,7 +163,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(starId = 1)
     val query = searchQueryBuilder.buildQueryCriteria(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -176,7 +176,7 @@ class SearchQueryBuilderTest {
         """.trimIndent()
     val search = VideoSearchRequest(seriesId = 1)
     val query = searchQueryBuilder.buildQueryCriteria(search)
-    Assert.assertEquals(expected, query)
+    assertEquals(expected, query)
   }
 
   @Test
@@ -186,7 +186,7 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(0)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(0, argumentCaptor.allValues.size)
+    assertEquals(0, argumentCaptor.allValues.size)
   }
 
   @Test
@@ -196,8 +196,8 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(4)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(4, argumentCaptor.allValues.size)
-    Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>("%Hello%", 1L, 1L, 1L))
+    assertEquals(4, argumentCaptor.allValues.size)
+    assertThat(argumentCaptor.allValues, Matchers.contains<Any>("%Hello%", 1L, 1L, 1L))
   }
 
   @Test
@@ -207,8 +207,8 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(1)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(1, argumentCaptor.allValues.size)
-    Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>("%Hello%"))
+    assertEquals(1, argumentCaptor.allValues.size)
+    assertThat(argumentCaptor.allValues, Matchers.contains<Any>("%Hello%"))
   }
 
   @Test
@@ -218,8 +218,8 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(1)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(1, argumentCaptor.allValues.size)
-    Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
+    assertEquals(1, argumentCaptor.allValues.size)
+    assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
   }
 
   @Test
@@ -229,8 +229,8 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(1)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(1, argumentCaptor.allValues.size)
-    Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
+    assertEquals(1, argumentCaptor.allValues.size)
+    assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
   }
 
   @Test
@@ -240,8 +240,8 @@ class SearchQueryBuilderTest {
     searchQueryBuilder.addParamsToQuery(search, query)
     val argumentCaptor = ArgumentCaptor.forClass(Any::class.java)
     verify(query, Mockito.times(1)).setParameter(isA(String::class.java), argumentCaptor.capture())
-    Assert.assertEquals(1, argumentCaptor.allValues.size)
-    Assert.assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
+    assertEquals(1, argumentCaptor.allValues.size)
+    assertThat(argumentCaptor.allValues, Matchers.contains<Any>(1L))
   }
 
   @Test

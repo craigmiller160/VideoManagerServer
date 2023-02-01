@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 
@@ -100,16 +100,6 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
       return TokenValidationStatus.EXPIRED
     }
 
-    val videoId = params[TokenConstants.PARAM_VIDEO_ID]
-    if (videoId != tokenParts[2]) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
-    val userId = params[TokenConstants.PARAM_USER_ID]
-    if (userId != tokenParts[1].toLong()) {
-      return TokenValidationStatus.RESOURCE_FORBIDDEN
-    }
-
     return TokenValidationStatus.VALID
   }
 
@@ -118,7 +108,10 @@ class VideoTokenProvider(private val tokenConfig: TokenConfig) : TokenProvider {
     val userDetails =
       User.withUsername(claims[TokenConstants.CLAIM_SUBJECT] as String)
         .password("")
-        .authorities(ArrayList<GrantedAuthority>())
+        .authorities(
+          listOf(
+            SimpleGrantedAuthority("ROLE_video-access"),
+            SimpleGrantedAuthority("file_${claims[TokenConstants.PARAM_VIDEO_ID]}")))
         .build()
     return VideoTokenAuthentication(userDetails, claims)
   }

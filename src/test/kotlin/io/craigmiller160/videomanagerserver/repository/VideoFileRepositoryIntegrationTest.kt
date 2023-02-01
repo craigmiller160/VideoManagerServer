@@ -18,32 +18,32 @@
 
 package io.craigmiller160.videomanagerserver.repository
 
-import io.craigmiller160.oauth2.config.OAuth2Config
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.Series
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.test_util.AuthenticationConfig
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import java.time.LocalDateTime
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
 import org.hamcrest.Matchers.hasSize
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 class VideoFileRepositoryIntegrationTest {
 
@@ -69,13 +69,12 @@ class VideoFileRepositoryIntegrationTest {
   @Autowired private lateinit var starRepo: StarRepository
 
   @Autowired private lateinit var dbTestUtils: DbTestUtils
+  @MockBean private lateinit var authConfig: AuthenticationConfig
 
   private lateinit var videoFile: VideoFile
   private lateinit var videoFile2: VideoFile
 
-  @MockBean private lateinit var oauthConfig: OAuth2Config
-
-  @Before
+  @BeforeEach
   fun setup() {
     var category = Category(categoryName = CATEGORY_NAME)
     var category2 = Category(categoryName = CATEGORY_2_NAME)
@@ -104,7 +103,7 @@ class VideoFileRepositoryIntegrationTest {
     videoFile2 = videoFileRepo.save(videoFile2)
   }
 
-  @After
+  @AfterEach
   fun clean() {
     dbTestUtils.cleanDb()
   }

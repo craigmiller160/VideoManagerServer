@@ -23,15 +23,16 @@ import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.security.tokenprovider.TokenConstants
 import io.craigmiller160.videomanagerserver.security.tokenprovider.VideoTokenProvider
 import io.craigmiller160.videomanagerserver.service.videofile.VideoFileService
-import io.craigmiller160.videomanagerserver.test_util.JwtUtils
 import io.craigmiller160.videomanagerserver.test_util.isA
 import java.io.File
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasProperty
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.*
@@ -41,10 +42,10 @@ import org.springframework.boot.test.json.JacksonTester
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.UrlResource
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
 
-@RunWith(SpringJUnit4ClassRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 @WebAppConfiguration
 @ContextConfiguration
@@ -74,7 +75,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Autowired private lateinit var tokenConfig: TokenConfig
 
-  @Before
+  @BeforeEach
   override fun setup() {
     super.setup()
     videoFileNoId = VideoFilePayload(fileName = "NoId")
@@ -299,7 +300,6 @@ class VideoFileControllerTest : AbstractControllerTest() {
 
   @Test
   fun test_playVideo() {
-    mockMvcHandler.token = token
     val params =
       mapOf(
         TokenConstants.PARAM_VIDEO_ID to "1",
@@ -316,7 +316,7 @@ class VideoFileControllerTest : AbstractControllerTest() {
   }
 
   @Test
-  fun test_playVideo_noJwt_withVideoToken() {
+  fun test_playVideo_wrongVideo() {
     val params =
       mapOf(
         TokenConstants.PARAM_VIDEO_ID to "1",
@@ -324,55 +324,26 @@ class VideoFileControllerTest : AbstractControllerTest() {
         TokenConstants.PARAM_USER_ID to "1")
     val token = videoTokenProvider.createToken("user", params)
     val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
     val response =
       mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
+        "/api/video-files/play/5?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
     assertEquals(403, response.status)
+    verify(videoFileService, times(0)).playVideo(isA(Long::class.java))
   }
 
   @Test
-  fun test_playVideo_expiredJwt_validVideoToken() {
-    val expiredToken =
-      JwtUtils.createJwt(-10).let { JwtUtils.signAndSerializeJwt(it, keyPair.private) }
-    mockMvcHandler.token = expiredToken
-
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "1")
-    val token = videoTokenProvider.createToken("user", params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(206, response.status)
-    assertTrue(response.contentAsByteArray.isNotEmpty())
-  }
-
-  @Test
-  fun test_playVideo_unauthorized() {
+  fun test_playVideo_noToken() {
     val response = mockMvcHandler.doGet("/api/video-files/play/1")
     assertThat(response, hasProperty("status", equalTo(401)))
+    verify(videoFileService, times(0)).playVideo(isA(Long::class.java))
   }
 
   @Test
-  fun test_playVideo_wrongUser() {
+  fun test_playVideo_bearerTokenOnly() {
     mockMvcHandler.token = token
-    val params =
-      mapOf(
-        TokenConstants.PARAM_VIDEO_ID to "1",
-        TokenConstants.PARAM_FILE_PATH to "/foo/bar",
-        TokenConstants.PARAM_USER_ID to "2")
-    val token = videoTokenProvider.createToken("user", params)
-    val file = File(".")
-    `when`(videoFileService.playVideo(1L)).thenReturn(UrlResource(file.toURI()))
-    val response =
-      mockMvcHandler.doGet(
-        "/api/video-files/play/1?${TokenConstants.QUERY_PARAM_VIDEO_TOKEN}=$token")
-    assertEquals(403, response.status)
+    val response = mockMvcHandler.doGet("/api/video-files/play/1")
+    assertThat(response, hasProperty("status", equalTo(403)))
+    verify(videoFileService, times(0)).playVideo(isA(Long::class.java))
   }
 
   @Test

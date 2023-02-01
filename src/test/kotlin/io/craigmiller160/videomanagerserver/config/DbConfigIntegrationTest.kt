@@ -18,17 +18,17 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuth2Config
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
+import io.craigmiller160.videomanagerserver.test_util.AuthenticationConfig
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 class DbConfigIntegrationTest {
 
@@ -40,9 +40,8 @@ class DbConfigIntegrationTest {
     private const val DB = "test"
   }
 
-  @MockBean private lateinit var oauthConfig: OAuth2Config
-
   @Autowired private lateinit var dbConfig: DbConfig
+  @MockBean private lateinit var authConfig: AuthenticationConfig
 
   @Test
   fun testUrl() {

@@ -18,12 +18,12 @@
 
 package io.craigmiller160.videomanagerserver.util
 
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.aMapWithSize
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.hasEntry
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class PathUtilsTest {
 

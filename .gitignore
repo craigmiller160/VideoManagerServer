@@ -31,3 +31,4 @@ sql/drop-schema.sql
 deploy/build
 deploy/chart/charts
 *.tgz
+.terraform

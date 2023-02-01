@@ -18,16 +18,14 @@
 
 package io.craigmiller160.videomanagerserver.config
 
-import io.craigmiller160.oauth2.config.OAuth2Config
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 class VideoConfigurationIntegrationTest {
 
@@ -36,8 +34,6 @@ class VideoConfigurationIntegrationTest {
     private const val PAGE_SIZE = 10
     private const val FILE_EXTS = "FILE_EXTS"
   }
-
-  @MockBean private lateinit var oauthConfig: OAuth2Config
 
   @Autowired private lateinit var videoConfig: VideoConfiguration
 

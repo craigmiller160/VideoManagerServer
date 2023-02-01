@@ -18,12 +18,7 @@
 
 package io.craigmiller160.videomanagerserver.service.videofile
 
-import io.craigmiller160.oauth2.config.OAuth2Config
-import io.craigmiller160.videomanagerserver.dto.CategoryPayload
-import io.craigmiller160.videomanagerserver.dto.SeriesPayload
-import io.craigmiller160.videomanagerserver.dto.StarPayload
-import io.craigmiller160.videomanagerserver.dto.VideoFilePayload
-import io.craigmiller160.videomanagerserver.dto.VideoSearchRequest
+import io.craigmiller160.videomanagerserver.dto.*
 import io.craigmiller160.videomanagerserver.entity.Category
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.entity.sort.VideoFileSortBy
@@ -36,22 +31,17 @@ import kotlin.test.assertEquals
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsInAnyOrder
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasProperty
-import org.hamcrest.Matchers.hasSize
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Sort
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 class VideoFileServiceIntegrationTest {
 
@@ -74,14 +64,12 @@ class VideoFileServiceIntegrationTest {
   @Autowired private lateinit var videoFileRepo: VideoFileRepository
   @Autowired private lateinit var modelMapper: VMModelMapper
 
-  @MockBean private lateinit var oauthConfig: OAuth2Config
-
   private lateinit var file1: VideoFilePayload
   private lateinit var file2: VideoFilePayload
   private lateinit var file3: VideoFilePayload
   private lateinit var file4: VideoFilePayload
 
-  @Before
+  @BeforeEach
   fun setup() {
     val category = CategoryPayload(categoryName = "MyCategory")
     val series = SeriesPayload(seriesName = "MySeries")
@@ -108,7 +96,7 @@ class VideoFileServiceIntegrationTest {
     file4 = VideoFilePayload(fileName = FILE_NAME_4)
   }
 
-  @After
+  @AfterEach
   fun clean() {
     dbTestUtils.cleanDb()
   }
@@ -117,7 +105,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_sortAsc() {
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.NAME, sortDir = Sort.Direction.ASC)
     val results = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       results,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -182,7 +170,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_sortDesc() {
     val search = VideoSearchRequest(sortBy = VideoFileSortBy.NAME, sortDir = Sort.Direction.DESC)
     val results = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       results,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -198,9 +186,9 @@ class VideoFileServiceIntegrationTest {
     videoFileService.updateVideoFile(1L, file!!)
 
     val result = videoFileService.getVideoFile(1L)
-    Assert.assertEquals(0, result?.categories?.size)
-    Assert.assertEquals(1, result?.series?.size)
-    Assert.assertEquals(1, result?.stars?.size)
+    assertEquals(0, result?.categories?.size)
+    assertEquals(1, result?.series?.size)
+    assertEquals(1, result?.stars?.size)
   }
 
   @Test
@@ -210,16 +198,16 @@ class VideoFileServiceIntegrationTest {
     videoFileService.updateVideoFile(1L, file!!)
 
     val result = videoFileService.getVideoFile(1L)
-    Assert.assertEquals(2, result?.categories?.size)
-    Assert.assertEquals(1, result?.series?.size)
-    Assert.assertEquals(1, result?.stars?.size)
+    assertEquals(2, result?.categories?.size)
+    assertEquals(1, result?.series?.size)
+    assertEquals(1, result?.stars?.size)
   }
 
   @Test
   fun test_searchForVideos_noCriteria() {
     val search = VideoSearchRequest()
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -232,7 +220,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_allCriteria() {
     val search = VideoSearchRequest("File", 1, 1, 1)
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -245,7 +233,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_onlyText() {
     val search = VideoSearchRequest("File")
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
@@ -258,7 +246,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_onlyCategory() {
     val search = VideoSearchRequest(categoryId = 1)
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -271,7 +259,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_onlySeries() {
     val search = VideoSearchRequest(seriesId = 1)
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -284,7 +272,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_onlyStar() {
     val search = VideoSearchRequest(starId = 1)
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(1L)),
@@ -297,7 +285,7 @@ class VideoFileServiceIntegrationTest {
   fun test_searchForVideos_caseInsensitive() {
     val search = VideoSearchRequest(searchText = "FILE")
     val result = videoFileService.searchForVideos(search)
-    Assert.assertThat(
+    assertThat(
       result,
       Matchers.allOf(
         Matchers.hasProperty("totalFiles", Matchers.equalTo(3L)),
