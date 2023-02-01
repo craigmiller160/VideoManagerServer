@@ -18,11 +18,13 @@
 
 package io.craigmiller160.videomanagerserver.config
 
+import io.craigmiller160.videomanagerserver.test_util.AuthenticationConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -36,6 +38,7 @@ class VideoConfigurationIntegrationTest {
   }
 
   @Autowired private lateinit var videoConfig: VideoConfiguration
+  @MockBean private lateinit var authConfig: AuthenticationConfig
 
   @Test
   fun testApiPageSize() {

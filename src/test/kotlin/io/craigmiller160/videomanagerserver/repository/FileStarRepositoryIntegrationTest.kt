@@ -20,6 +20,7 @@ package io.craigmiller160.videomanagerserver.repository
 
 import io.craigmiller160.videomanagerserver.entity.Star
 import io.craigmiller160.videomanagerserver.entity.VideoFile
+import io.craigmiller160.videomanagerserver.test_util.AuthenticationConfig
 import io.craigmiller160.videomanagerserver.test_util.DbTestUtils
 import kotlin.test.assertEquals
 import org.hamcrest.MatcherAssert.assertThat
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -52,6 +54,7 @@ class FileStarRepositoryIntegrationTest {
   @Autowired private lateinit var fileStarRepo: FileStarRepository
   @Autowired private lateinit var videoFileRepo: VideoFileRepository
   @Autowired private lateinit var dbTestUtils: DbTestUtils
+  @MockBean private lateinit var authConfig: AuthenticationConfig
 
   private var fileId = 0L
   private var starId = 0L
