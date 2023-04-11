@@ -9,6 +9,7 @@ import ws.schild.jave.encode.EncodingAttributes
 import ws.schild.jave.encode.VideoAttributes
 import ws.schild.jave.encode.enums.X264_PROFILE
 import ws.schild.jave.info.MultimediaInfo
+import ws.schild.jave.progress.EncoderProgressListener
 
 // TODO delete this
 fun main() {
@@ -35,8 +36,24 @@ class FileConverterService {
         setVideoAttributes(video)
       }
 
+    val listener: EncoderProgressListener =
+      object : EncoderProgressListener {
+        override fun sourceInfo(info: MultimediaInfo?) {
+          println("INFO: $info")
+        }
+
+        override fun progress(permil: Int) {
+          println("PROGRESS: $permil")
+        }
+
+        override fun message(message: String?) {
+          println("MESSAGE: $message")
+        }
+      }
+
     val encoder = Encoder()
-    encoder.encode(mediaSource, target, attrs)
+    encoder.encode(mediaSource, target, attrs, listener)
+    println("DONE")
   }
 
   private fun getAudioVideoAttributes(
