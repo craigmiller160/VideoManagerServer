@@ -19,7 +19,7 @@ fun main() {
 }
 
 val AUDIO_AAC_REGEX = Regex("^.*aac.*$")
-val VIDEO_X265_REGEX = Regex("^.*hvec.*$")
+val VIDEO_X265_REGEX = Regex("^.*hevc.*$")
 
 class FileConverterService {
   fun convert(source: File, target: File) {
@@ -89,6 +89,6 @@ enum class AudioCodec(val codecString: String) {
 }
 
 enum class VideoCodec(val codecString: String) {
-  H265("h265"),
+  H265("hevc"),
   H264("h264")
 }
