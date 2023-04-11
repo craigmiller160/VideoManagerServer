@@ -39,8 +39,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -70,6 +73,9 @@ class VideoFileRepositoryIntegrationTest {
 
   @Autowired private lateinit var dbTestUtils: DbTestUtils
   @MockBean private lateinit var authConfig: AuthenticationConfig
+  @MockBean private lateinit var clientRegRepo: ClientRegistrationRepository
+  @MockBean private lateinit var authClientRepo: OAuth2AuthorizedClientRepository
+  @MockBean private lateinit var oauth2Props: OAuth2ClientProperties
 
   private lateinit var videoFile: VideoFile
   private lateinit var videoFile2: VideoFile
