@@ -75,9 +75,17 @@ constructor(
 
         val filesMap = allPossibleFiles.groupBy { getFileType(it) }
 
-        (filesMap[FileType.CONSUME] ?: listOf())
-          .map { file -> async { consumeFile(filePathRoot, scanTimestamp, file) } }
-          .awaitAll()
+        val deferredFileConsumations =
+          (filesMap[FileType.CONSUME] ?: listOf()).map { file ->
+            async { consumeFile(filePathRoot, scanTimestamp, file) }
+          }
+
+        val deferredFileConversions =
+          (filesMap[FileType.CONVERT] ?: listOf()).map { file -> async { convertFile(file) } }
+
+        deferredFileConsumations.awaitAll()
+        deferredFileConversions.awaitAll()
+
         videoFileRepo.setOldFilesInactive(scanTimestamp)
         logger.info("Scan completed successfully")
         done(true)
