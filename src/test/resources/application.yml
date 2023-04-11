@@ -39,6 +39,7 @@ video:
   filePathRoot: FILE_PATH_ROOT
   apiPageSize: 10
   fileExts: FILE_EXTS
+  converterUrl: http://localhost:3000/hello
   security:
     token:
       expSecs: 300
