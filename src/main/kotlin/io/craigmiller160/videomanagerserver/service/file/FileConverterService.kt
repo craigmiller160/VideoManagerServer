@@ -13,12 +13,13 @@ import ws.schild.jave.info.MultimediaInfo
 // TODO delete this
 fun main() {
   val service = FileConverterService()
-  val source =
-    Paths.get(System.getProperty("user.home"), "Downloaders", "Temp", "movie.mkv").toFile()
-  val target =
-    Paths.get(System.getProperty("user.home"), "Downloaders", "Temp", "movie.mp4").toFile()
+  val source = Paths.get(System.getProperty("user.home"), "Downloads", "Temp", "movie.mkv").toFile()
+  val target = Paths.get(System.getProperty("user.home"), "Downloads", "Temp", "movie.mp4").toFile()
   service.convert(source, target)
 }
+
+val AUDIO_AAC_REGEX = Regex("^.*aac.*$")
+val VIDEO_X265_REGEX = Regex("^.*hvec.*$")
 
 class FileConverterService {
   fun convert(source: File, target: File) {
@@ -29,11 +30,13 @@ class FileConverterService {
 
     val (audio, video) = mediaSource.let { getAudioVideoAttributes(it.info) }
 
-    val attrs = EncodingAttributes()
-    attrs.setInputFormat("mkv")
-    attrs.setOutputFormat("mp4")
-    attrs.setAudioAttributes(audio)
-    attrs.setVideoAttributes(video)
+    val attrs =
+      EncodingAttributes().apply {
+        //      setInputFormat("matroska,webm")
+        setOutputFormat("mp4")
+        setAudioAttributes(audio)
+        setVideoAttributes(video)
+      }
 
     val encoder = Encoder()
     encoder.encode(mediaSource, target, attrs)
@@ -44,7 +47,8 @@ class FileConverterService {
   ): Pair<AudioAttributes, VideoAttributes> {
     val audio =
       AudioAttributes().apply {
-        setCodec("aac")
+        val codec = getAudioCodec(info)
+        setCodec(codec.codecString)
         setBitRate(info.audio.bitRate)
         setChannels(info.audio.channels)
         setSamplingRate(info.audio.samplingRate)
@@ -52,8 +56,11 @@ class FileConverterService {
 
     val video =
       VideoAttributes().apply {
-        setCodec("h264")
-        setX264Profile(X264_PROFILE.BASELINE)
+        val codec = getVideoCodec(info)
+        setCodec(codec.codecString)
+        if (VideoCodec.H264 == codec) {
+          setX264Profile(X264_PROFILE.BASELINE)
+        }
         setBitRate(info.video.bitRate)
         setFrameRate(info.video.frameRate.toInt())
         setSize(info.video.size)
@@ -61,4 +68,27 @@ class FileConverterService {
 
     return audio to video
   }
+
+  private fun getAudioCodec(info: MultimediaInfo): AudioCodec {
+    if (AUDIO_AAC_REGEX.matches(info.audio.decoder)) {
+      return AudioCodec.AAC
+    }
+    throw UnsupportedOperationException("Unsupported audio codec: ${info.audio.decoder}")
+  }
+
+  private fun getVideoCodec(info: MultimediaInfo): VideoCodec {
+    if (VIDEO_X265_REGEX.matches(info.video.decoder)) {
+      return VideoCodec.H265
+    }
+    throw UnsupportedOperationException("Unsupported video codec: ${info.video.decoder}")
+  }
+}
+
+enum class AudioCodec(val codecString: String) {
+  AAC("aac")
+}
+
+enum class VideoCodec(val codecString: String) {
+  H265("h265"),
+  H264("h264")
 }
