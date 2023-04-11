@@ -15,6 +15,17 @@ spring:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
   flyway:
     enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          custom:
+            client-id: ${keycloak.resource}
+            client-secret: ${keycloak.credentials.secret}
+            authorization-grant-type: client_credentials
+        provider:
+          custom:
+            token-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token
 
 cors:
   origins: abc
