@@ -49,7 +49,9 @@ class FileConverterService {
       AudioAttributes().apply {
         val codec = getAudioCodec(info)
         setCodec(codec.codecString)
-        setBitRate(info.audio.bitRate)
+        if (info.audio.bitRate > 0) {
+          setBitRate(info.audio.bitRate)
+        }
         setChannels(info.audio.channels)
         setSamplingRate(info.audio.samplingRate)
       }
@@ -61,7 +63,9 @@ class FileConverterService {
         if (VideoCodec.H264 == codec) {
           setX264Profile(X264_PROFILE.BASELINE)
         }
-        setBitRate(info.video.bitRate)
+        if (info.video.bitRate > 0) {
+          setBitRate(info.video.bitRate)
+        }
         setFrameRate(info.video.frameRate.toInt())
         setSize(info.video.size)
       }
