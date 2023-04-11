@@ -18,9 +18,6 @@ fun main() {
   service.convert(source, target)
 }
 
-val AUDIO_AAC_REGEX = Regex("^.*aac.*$")
-val VIDEO_X265_REGEX = Regex("^.*hevc.*$")
-
 class FileConverterService {
   fun convert(source: File, target: File) {
     // TODO need to be able to set all of this based on the source
@@ -73,26 +70,20 @@ class FileConverterService {
     return audio to video
   }
 
-  private fun getAudioCodec(info: MultimediaInfo): AudioCodec {
-    if (AUDIO_AAC_REGEX.matches(info.audio.decoder)) {
-      return AudioCodec.AAC
-    }
-    throw UnsupportedOperationException("Unsupported audio codec: ${info.audio.decoder}")
-  }
+  private fun getAudioCodec(info: MultimediaInfo): AudioCodec =
+    AudioCodec.values().find { codec -> codec.regex.matches(info.audio.decoder) }
+      ?: throw UnsupportedOperationException("Unsupported audio codec: ${info.audio.decoder}")
 
-  private fun getVideoCodec(info: MultimediaInfo): VideoCodec {
-    if (VIDEO_X265_REGEX.matches(info.video.decoder)) {
-      return VideoCodec.H265
-    }
-    throw UnsupportedOperationException("Unsupported video codec: ${info.video.decoder}")
-  }
+  private fun getVideoCodec(info: MultimediaInfo): VideoCodec =
+    VideoCodec.values().find { codec -> codec.regex.matches(info.video.decoder) }
+      ?: throw UnsupportedOperationException("Unsupported video codec: ${info.video.decoder}")
 }
 
-enum class AudioCodec(val codecString: String) {
-  AAC("aac")
+enum class AudioCodec(val codecString: String, val regex: Regex) {
+  AAC("aac", Regex("^.*aac.*$"))
 }
 
-enum class VideoCodec(val codecString: String) {
-  H265("hevc"),
-  H264("h264")
+enum class VideoCodec(val codecString: String, val regex: Regex) {
+  H265("hevc", Regex("^.*hevc.*$")),
+  H264("h264", Regex("^$"))
 }
