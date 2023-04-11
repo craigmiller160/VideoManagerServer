@@ -25,13 +25,18 @@ import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import kotlin.io.path.extension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -46,6 +51,8 @@ constructor(
 ) {
 
   private val logger = LoggerFactory.getLogger(FileScanner::class.java)
+  private val fileExts = videoConfig.splitFileExts()
+  private val converterFileExts = videoConfig.splitConverterFileExts()
 
   fun scanForFiles(done: (Boolean) -> Unit = {}): Job {
     val settings = settingsService.getOrCreateSettings()
@@ -54,33 +61,23 @@ constructor(
     }
 
     val filePathRoot = ensureTrailingSlash(settings.rootDir)
-    val fileExts = videoConfig.splitFileExts()
+
     val scanTimestamp = LocalDateTime.now()
 
     return GlobalScope.launch(Dispatchers.IO) {
       try {
         logger.info("Starting scan of directory: $filePathRoot")
-        Files.walk(Paths.get(filePathRoot))
-          .filter { p -> !p.toFile().isDirectory }
-          .filter { p -> !p.toFile().isHidden }
-          .filter { p -> fileExts.contains(p.toFile().extension) }
-          .forEach { p ->
-            val name = p.toString().replace(Regex("^$filePathRoot"), "")
-            logger.trace("Scanning file: $name")
-            val lastModifiedTime = Files.getLastModifiedTime(p)
-            val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
-            val videoFile =
-              videoFileRepo.findByFileName(name)
-                ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
-            videoFile.lastModified = lastModified
-            videoFile.lastScanTimestamp = scanTimestamp
-            videoFile.active = true
-            if (videoFile.fileAdded == null) {
-              videoFile.fileAdded = lastModified
-            }
-            if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
-            videoFileRepo.save(videoFile)
-          }
+        val allPossibleFiles =
+          Files.walk(Paths.get(filePathRoot))
+            .filter { p -> !p.toFile().isDirectory }
+            .filter { p -> !p.toFile().isHidden }
+            .toList()
+
+        val filesMap = allPossibleFiles.groupBy { getFileType(it) }
+
+        (filesMap[FileType.CONSUME] ?: listOf())
+          .map { file -> async { consumeFile(filePathRoot, scanTimestamp, file) } }
+          .awaitAll()
         videoFileRepo.setOldFilesInactive(scanTimestamp)
         logger.info("Scan completed successfully")
         done(true)
@@ -90,4 +87,46 @@ constructor(
       }
     }
   }
+
+  private suspend fun consumeFile(filePathRoot: String, scanTimestamp: LocalDateTime, file: Path) =
+    withContext(Dispatchers.IO) {
+      val name = file.toString().replace(Regex("^$filePathRoot"), "")
+      logger.trace("Scanning file: $name")
+      val lastModifiedTime = Files.getLastModifiedTime(file)
+      val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
+      val videoFile =
+        videoFileRepo.findByFileName(name)
+          ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
+      videoFile.lastModified = lastModified
+      videoFile.lastScanTimestamp = scanTimestamp
+      videoFile.active = true
+      if (videoFile.fileAdded == null) {
+        videoFile.fileAdded = lastModified
+      }
+      if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
+      videoFileRepo.save(videoFile)
+    }
+
+  private fun getFileType(file: Path): FileType {
+    if (fileExts.contains(file.extension)) {
+      return FileType.CONSUME
+    }
+
+    if (converterFileExts.contains(file.extension)) {
+      return FileType.CONVERT
+    }
+
+    return FileType.IGNORE
+  }
+
+  private suspend fun convertFile(file: Path) =
+    withContext(Dispatchers.IO) {
+      // TODO finish this
+    }
+}
+
+private enum class FileType {
+  CONSUME,
+  CONVERT,
+  IGNORE
 }
