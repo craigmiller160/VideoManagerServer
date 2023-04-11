@@ -122,7 +122,7 @@ constructor(
       videoFileRepo.save(videoFile)
     }
 
-  private fun getFileType(filePathRoot: String, file: Path): FileType {
+  private fun getFileType(file: Path): FileType {
     if (fileExts.contains(file.extension)) {
       return FileType.CONSUME
     }
