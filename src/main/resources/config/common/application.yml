@@ -50,6 +50,7 @@ video:
   vlcCommand: vlc
   apiPageSize: 10
   fileExts: mp4,m4v
+  converterFileExts: mkv
   security:
     password:
       hashRounds: 12
