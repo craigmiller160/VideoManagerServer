@@ -48,6 +48,7 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.springframework.web.reactive.function.client.WebClient
 
 class FileScannerTest {
 
@@ -74,6 +75,7 @@ class FileScannerTest {
   private lateinit var fileScanner: FileScanner
 
   @Mock private lateinit var settingsService: SettingsService
+  @Mock private lateinit var webClient: WebClient
 
   @BeforeEach
   fun setup() {
@@ -81,7 +83,7 @@ class FileScannerTest {
 
     videoConfig = VideoConfiguration()
     videoConfig.fileExts = "txt,csv"
-    fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService)
+    fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService, webClient)
   }
 
   @Test

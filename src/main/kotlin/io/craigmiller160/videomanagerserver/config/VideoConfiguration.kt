@@ -30,7 +30,8 @@ data class VideoConfiguration(
   var vlcCommand: String = "",
   var apiPageSize: Int = 0,
   var fileExts: String = "",
-  var converterFileExts: String = ""
+  var converterFileExts: String = "",
+  var converterUrl: String = ""
 ) {
 
   fun splitFileExts(): List<String> {
