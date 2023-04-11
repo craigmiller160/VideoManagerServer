@@ -119,7 +119,7 @@ constructor(
         videoFile.fileAdded = lastModified
       }
       if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
-      videoFileRepo.save(videoFile)
+      videoFileRepo.saveAndFlush(videoFile)
     }
 
   private fun getFileType(file: Path): FileType {
