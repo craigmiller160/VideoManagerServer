@@ -14,7 +14,7 @@ logging:
     io.craigmiller160: DEBUG
 
 video:
-  converterUrl: http://localhost:3000/hello
+  converterUrl: http://localhost:8080/video-converter
   security:
     token:
       key: /RoM6KSD6jiYtYUOmd1klD4dtzpKs6vxJbLWT8DjsbM=
