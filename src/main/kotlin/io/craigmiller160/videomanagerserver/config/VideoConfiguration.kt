@@ -29,10 +29,16 @@ import org.springframework.validation.annotation.Validated
 data class VideoConfiguration(
   var vlcCommand: String = "",
   var apiPageSize: Int = 0,
-  var fileExts: String = ""
+  var fileExts: String = "",
+  var converterFileExts: String = "",
+  var converterUrl: String = ""
 ) {
 
   fun splitFileExts(): List<String> {
     return fileExts.split(",").map { ext -> ext.trim() }
+  }
+
+  fun splitConverterFileExts(): List<String> {
+    return converterFileExts.split(",").map { it.trim() }
   }
 }

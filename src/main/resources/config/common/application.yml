@@ -13,6 +13,17 @@ spring:
     dispatch-options-request: true
   flyway:
     enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          custom:
+            client-id: ${keycloak.resource}
+            client-secret: ${keycloak.credentials.secret}
+            authorization-grant-type: client_credentials
+        provider:
+          custom:
+            token-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/token
 
 cors:
   origins: http://localhost:3000
@@ -50,6 +61,7 @@ video:
   vlcCommand: vlc
   apiPageSize: 10
   fileExts: mp4,m4v
+  converterFileExts: mkv
   security:
     password:
       hashRounds: 12

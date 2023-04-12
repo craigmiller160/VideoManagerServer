@@ -27,9 +27,12 @@ import io.craigmiller160.videomanagerserver.dto.SettingsPayload
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.WebClientService
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.hamcrest.MatcherAssert.assertThat
@@ -54,6 +57,7 @@ class FileScannerTest {
   companion object {
 
     private lateinit var rootPath: String
+    private lateinit var homeDir: String
 
     @BeforeAll
     @JvmStatic
@@ -64,6 +68,7 @@ class FileScannerTest {
           .classLoader
           .getResource("io/craigmiller160/videomanagerserver/file/")
       rootPath = url.toURI().path
+      homeDir = Paths.get(rootPath).parent.toString()
     }
   }
 
@@ -74,6 +79,7 @@ class FileScannerTest {
   private lateinit var fileScanner: FileScanner
 
   @Mock private lateinit var settingsService: SettingsService
+  @Mock private lateinit var webClientService: WebClientService
 
   @BeforeEach
   fun setup() {
@@ -81,7 +87,9 @@ class FileScannerTest {
 
     videoConfig = VideoConfiguration()
     videoConfig.fileExts = "txt,csv"
-    fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService)
+    videoConfig.converterFileExts = "mkv"
+    fileScanner =
+      FileScanner(videoConfig, videoFileRepo, settingsService, webClientService, homeDir)
   }
 
   @Test
@@ -111,12 +119,21 @@ class FileScannerTest {
 
       // This insanity is from needing a separate library to handle kotlin null safety and some
       // mocking methods
-      val argumentCaptor =
-        argumentCaptor<VideoFile>().apply { verify(videoFileRepo, times(4)).save(capture()) }
+      val consumeCaptor =
+        argumentCaptor<VideoFile>().apply {
+          verify(videoFileRepo, times(4)).saveAndFlush(capture())
+        }
+
+      val convertCaptor =
+        argumentCaptor<String>().apply {
+          verify(webClientService, times(1)).sendConvertFileRequest(capture())
+        }
+
+      assertEquals("/file/foo.mkv", convertCaptor.firstValue)
 
       verify(videoFileRepo, times(1)).setOldFilesInactive(any())
 
-      val allValues = argumentCaptor.allValues
+      val allValues = consumeCaptor.allValues
       val allValuesSorted = allValues.sortedBy { it.fileName }
       assertThat(
         allValuesSorted,
