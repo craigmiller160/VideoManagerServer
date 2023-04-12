@@ -19,10 +19,10 @@
 package io.craigmiller160.videomanagerserver.file
 
 import io.craigmiller160.videomanagerserver.config.VideoConfiguration
-import io.craigmiller160.videomanagerserver.dto.FileConversionRequest
 import io.craigmiller160.videomanagerserver.entity.VideoFile
 import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
+import io.craigmiller160.videomanagerserver.service.WebClientService
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
 import io.craigmiller160.videomanagerserver.util.ensureTrailingSlash
 import java.nio.file.Files
@@ -40,9 +40,6 @@ import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.awaitExchange
 
 @Component
 class FileScanner
@@ -51,7 +48,7 @@ constructor(
   private val videoConfig: VideoConfiguration,
   private val videoFileRepo: VideoFileRepository,
   private val settingsService: SettingsService,
-  private val webClient: WebClient
+  private val webClientService: WebClientService
 ) {
 
   private val logger = LoggerFactory.getLogger(FileScanner::class.java)
@@ -134,11 +131,7 @@ constructor(
 
   private suspend fun convertFile(filePathRoot: String, file: Path) {
     val name = file.toString().replace(Regex("^$filePathRoot"), "")
-    webClient
-      .post()
-      .uri(videoConfig.converterUrl)
-      .body(BodyInserters.fromValue(FileConversionRequest(name)))
-      .awaitExchange {}
+    webClientService.sendConvertFileRequest(name)
   }
 }
 
