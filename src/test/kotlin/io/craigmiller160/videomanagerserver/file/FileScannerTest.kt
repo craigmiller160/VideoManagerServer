@@ -29,6 +29,7 @@ import io.craigmiller160.videomanagerserver.exception.InvalidSettingException
 import io.craigmiller160.videomanagerserver.repository.VideoFileRepository
 import io.craigmiller160.videomanagerserver.service.WebClientService
 import io.craigmiller160.videomanagerserver.service.settings.SettingsService
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertEquals
@@ -56,6 +57,7 @@ class FileScannerTest {
   companion object {
 
     private lateinit var rootPath: String
+    private lateinit var homeDir: String
 
     @BeforeAll
     @JvmStatic
@@ -66,6 +68,7 @@ class FileScannerTest {
           .classLoader
           .getResource("io/craigmiller160/videomanagerserver/file/")
       rootPath = url.toURI().path
+      homeDir = Paths.get(rootPath).parent.toString()
     }
   }
 
@@ -85,7 +88,8 @@ class FileScannerTest {
     videoConfig = VideoConfiguration()
     videoConfig.fileExts = "txt,csv"
     videoConfig.converterFileExts = "mkv"
-    fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService, webClientService)
+    fileScanner =
+      FileScanner(videoConfig, videoFileRepo, settingsService, webClientService, homeDir)
   }
 
   @Test
@@ -125,7 +129,7 @@ class FileScannerTest {
           verify(webClientService, times(1)).sendConvertFileRequest(capture())
         }
 
-      assertEquals("foo.mkv", convertCaptor.firstValue)
+      assertEquals("/file/foo.mkv", convertCaptor.firstValue)
 
       verify(videoFileRepo, times(1)).setOldFilesInactive(any())
 
