@@ -83,6 +83,7 @@ class FileScannerTest {
 
     videoConfig = VideoConfiguration()
     videoConfig.fileExts = "txt,csv"
+    videoConfig.converterFileExts = "mkv"
     fileScanner = FileScanner(videoConfig, videoFileRepo, settingsService, webClient)
   }
 
