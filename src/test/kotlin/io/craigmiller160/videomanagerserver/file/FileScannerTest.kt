@@ -114,7 +114,9 @@ class FileScannerTest {
       // This insanity is from needing a separate library to handle kotlin null safety and some
       // mocking methods
       val argumentCaptor =
-        argumentCaptor<VideoFile>().apply { verify(videoFileRepo, times(4)).save(capture()) }
+        argumentCaptor<VideoFile>().apply {
+          verify(videoFileRepo, times(4)).saveAndFlush(capture())
+        }
 
       verify(videoFileRepo, times(1)).setOldFilesInactive(any())
 
