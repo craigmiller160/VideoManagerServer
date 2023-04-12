@@ -39,6 +39,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
@@ -48,7 +49,8 @@ constructor(
   private val videoConfig: VideoConfiguration,
   private val videoFileRepo: VideoFileRepository,
   private val settingsService: SettingsService,
-  private val webClientService: WebClientService
+  private val webClientService: WebClientService,
+  @Value("\${localfile.homeDir}") private val homeDir: String
 ) {
 
   private val logger = LoggerFactory.getLogger(FileScanner::class.java)
@@ -83,7 +85,7 @@ constructor(
 
         val deferredFileConversions =
           (filesMap[FileType.CONVERT] ?: listOf()).map { file ->
-            async(Dispatchers.IO) { convertFile(filePathRoot, file) }
+            async(Dispatchers.IO) { convertFile(file) }
           }
 
         deferredFileConsumations.awaitAll()
@@ -129,8 +131,8 @@ constructor(
     return FileType.IGNORE
   }
 
-  private suspend fun convertFile(filePathRoot: String, file: Path) {
-    val name = file.toString().replace(Regex("^$filePathRoot"), "")
+  private suspend fun convertFile(file: Path) {
+    val name = file.toString().replace(Regex("^$homeDir"), "")
     webClientService.sendConvertFileRequest(name)
   }
 }
