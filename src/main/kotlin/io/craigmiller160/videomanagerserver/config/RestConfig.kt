@@ -4,11 +4,11 @@ import java.time.Duration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
@@ -18,13 +18,14 @@ class RestConfig {
   @Bean
   fun oauth2ClientManager(
     clientRegistrationRepository: ClientRegistrationRepository,
-    authorizedClientRepository: OAuth2AuthorizedClientRepository
+    authorizedClientService: OAuth2AuthorizedClientService
   ): OAuth2AuthorizedClientManager {
     val authorizedClientProvider =
-      OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build()
+      OAuth2AuthorizedClientProviderBuilder.builder().refreshToken().clientCredentials().build()
 
     val authorizedClientManager =
-      DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository)
+      AuthorizedClientServiceOAuth2AuthorizedClientManager(
+        clientRegistrationRepository, authorizedClientService)
     authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
 
     return authorizedClientManager
