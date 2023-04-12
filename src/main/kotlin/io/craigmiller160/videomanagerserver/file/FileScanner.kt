@@ -37,7 +37,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -82,12 +81,12 @@ constructor(
 
         val deferredFileConsumations =
           (filesMap[FileType.CONSUME] ?: listOf()).map { file ->
-            async { consumeFile(filePathRoot, scanTimestamp, file) }
+            async(Dispatchers.IO) { consumeFile(filePathRoot, scanTimestamp, file) }
           }
 
         val deferredFileConversions =
           (filesMap[FileType.CONVERT] ?: listOf()).map { file ->
-            async { convertFile(filePathRoot, file) }
+            async(Dispatchers.IO) { convertFile(filePathRoot, file) }
           }
 
         deferredFileConsumations.awaitAll()
@@ -103,24 +102,23 @@ constructor(
     }
   }
 
-  private suspend fun consumeFile(filePathRoot: String, scanTimestamp: LocalDateTime, file: Path) =
-    withContext(Dispatchers.IO) {
-      val name = file.toString().replace(Regex("^$filePathRoot"), "")
-      logger.trace("Scanning file: $name")
-      val lastModifiedTime = Files.getLastModifiedTime(file)
-      val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
-      val videoFile =
-        videoFileRepo.findByFileName(name)
-          ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
-      videoFile.lastModified = lastModified
-      videoFile.lastScanTimestamp = scanTimestamp
-      videoFile.active = true
-      if (videoFile.fileAdded == null) {
-        videoFile.fileAdded = lastModified
-      }
-      if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
-      videoFileRepo.saveAndFlush(videoFile)
+  private suspend fun consumeFile(filePathRoot: String, scanTimestamp: LocalDateTime, file: Path) {
+    val name = file.toString().replace(Regex("^$filePathRoot"), "")
+    logger.trace("Scanning file: $name")
+    val lastModifiedTime = Files.getLastModifiedTime(file)
+    val lastModified = LocalDateTime.ofInstant(lastModifiedTime.toInstant(), ZoneOffset.UTC)
+    val videoFile =
+      videoFileRepo.findByFileName(name)
+        ?: VideoFile(fileName = name, fileAdded = LocalDateTime.now())
+    videoFile.lastModified = lastModified
+    videoFile.lastScanTimestamp = scanTimestamp
+    videoFile.active = true
+    if (videoFile.fileAdded == null) {
+      videoFile.fileAdded = lastModified
     }
+    if (videoFile.displayName == "") videoFile.displayName = videoFile.fileName
+    videoFileRepo.saveAndFlush(videoFile)
+  }
 
   private fun getFileType(file: Path): FileType {
     if (fileExts.contains(file.extension)) {
@@ -136,13 +134,11 @@ constructor(
 
   private suspend fun convertFile(filePathRoot: String, file: Path) {
     val name = file.toString().replace(Regex("^$filePathRoot"), "")
-    withContext(Dispatchers.IO) {
-      webClient
-        .post()
-        .uri(videoConfig.converterUrl)
-        .body(BodyInserters.fromValue(FileConversionRequest(name)))
-        .awaitExchange {}
-    }
+    webClient
+      .post()
+      .uri(videoConfig.converterUrl)
+      .body(BodyInserters.fromValue(FileConversionRequest(name)))
+      .awaitExchange {}
   }
 }
 
