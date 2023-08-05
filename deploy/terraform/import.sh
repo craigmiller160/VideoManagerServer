@@ -24,4 +24,7 @@ import "keycloak_role.video_manager_server_edit_role_prod" "apps-prod/37516b53-e
 import "keycloak_role.video_manager_server_scan_role_prod" "apps-prod/317935b1-6ed3-4917-8f89-a5f6158a50c9"
 import "keycloak_role.video_manager_server_admin_role_prod" "apps-prod/3dbd7e57-bd2e-458e-84b4-d368808e5820"
 
+import "keycloak_openid_client_service_account_role.video_manager_server_converter_access_role_dev" "apps-dev/3286e1b2-5bd9-44aa-a31d-72d1098ab217/ce88d0b8-07bc-4eed-9066-153247200fa9/2580f310-2993-46ce-a713-dc2fab7cd174"
+import "keycloak_openid_client_service_account_role.video_manager_server_converter_access_role_prod" "apps-prod/0ea34c2e-ee3d-4b7a-a610-ae67fcdf73d2/ce38689c-8034-48c5-bb89-8927b7a33aa0/d4abb156-7d66-45f5-8dca-0556adb5e7b7"
+
 plan
