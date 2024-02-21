@@ -55,7 +55,7 @@
         <kotlin.version>1.7.21</kotlin.version>
         <web.utils.version>1.1.4</web.utils.version>
         <api.test.processor.version>1.2.3</api.test.processor.version>
-        <postgres.version>42.3.1</postgres.version>
+        <postgres.version>42.7.2</postgres.version>
         <mockito.kotlin.version>1.6.0</mockito.kotlin.version>
         <nimbus.jose.version>9.15.2</nimbus.jose.version>
         <kotlin.coroutines.version>1.5.2</kotlin.coroutines.version>
